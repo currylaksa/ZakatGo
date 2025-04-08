@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+
+* html {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gradient-bg-welcome {
+  background-color: #0f0e13;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(4, 54, 74, 0.15) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(4, 54, 74, 0.3) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(23, 107, 135, 0.25) 0, transparent 50%);
+}
+
+.gradient-bg-services {
+  background-color: #0f0e13;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(4, 54, 74, 0.15) 0, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(23, 107, 135, 0.25) 0, transparent 50%);
+}
+
+.gradient-bg-transactions {
+  background-color: #0f0e13;
+  background-image:
+    radial-gradient(at 0% 100%, rgba(4, 54, 74, 0.15) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(23, 107, 135, 0.25) 0, transparent 50%);
+}
+
+.gradient-bg-footer {
+  background-color: #0f0e13;
+  background-image:
+    radial-gradient(at 0% 100%, rgba(4, 54, 74, 0.15) 0, transparent 53%),
+    radial-gradient(at 50% 150%, rgba(23, 107, 135, 0.25) 0, transparent 50%);
+}
+
+.primary-glassmorphism {
+  background: rgba(4, 54, 74, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(4, 54, 74, 0.3);
+}
+
+.secondary-glassmorphism {
+  background: rgba(4, 54, 74, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(4, 54, 74, 0.3);
+}
+
+.white-glassmorphism {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.eth-card {
+  background-color: #04364A;
+  background-image:
+    radial-gradient(at 83% 67%, rgba(4, 54, 74, 0.6) 0, transparent 58%),
+    radial-gradient(at 67% 20%, rgba(23, 107, 135, 0.4) 0, transparent 59%),
+    radial-gradient(at 88% 35%, rgba(4, 54, 74, 0.4) 0, transparent 50%),
+    radial-gradient(at 31% 91%, rgba(23, 107, 135, 0.3) 0, transparent 52%),
+    radial-gradient(at 27% 71%, rgba(4, 54, 74, 0.5) 0, transparent 49%),
+    radial-gradient(at 74% 89%, rgba(23, 107, 135, 0.4) 0, transparent 51%),
+    radial-gradient(at 53% 75%, rgba(4, 54, 74, 0.4) 0, transparent 45%);
+}
+
+.text-gradient {
+  background-color: #fff;
+  background-image:
+    radial-gradient(at 4% 36%, hsla(0, 0%, 100%, 1) 0, transparent 53%),
+    radial-gradient(at 100% 60%, rgb(0, 0, 0) 0, transparent 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animation for expandable content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme utility classes */
+@layer utilities {
+  .text-primary {
+    color: #04364A;
+  }
+  
+  .text-secondary {
+    color: #176B87;
+  }
+  
+  .text-tertiary {
+    color: #176B87;
+  }
+  
+  .bg-primary {
+    background-color: #04364A;
+  }
+  
+  .bg-secondary {
+    background-color: #176B87;
+  }
+  
+  .bg-tertiary {
+    background-color: #176B87;
+  }
+  
+  .hover\:bg-primaryHover:hover {
+    background-color: #03293A;
+  }
+  
+  .hover\:bg-secondaryLight:hover {
+    background-color: #2685A3;
+  }
+  
+  .focus\:ring-primary:focus {
+    --tw-ring-color: #04364A;
+  }
+  
+  .border-primary {
+    border-color: #04364A;
+  }
+}
