@@ -19,7 +19,9 @@ import {
   LoanFundingPage,
   FundingReviewPage,
   ZakatCalculator,
+  BlockchainLedgerPage,
   LoanFundingSuccessPage,
+  ImpactDashboardPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -49,7 +51,6 @@ const AppContent = () => {
         <div className={!isOnboardingRoute ? "pt-16" : ""}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<HomePage />} />
             <Route path="/donation-history" element={<DonationDashboard />} />
             <Route path="/campaigns" element={<DonationPage />} />
             <Route path="/donate/:id" element={<DonationFormPage />} />
@@ -68,7 +69,8 @@ const AppContent = () => {
             <Route path="/lender-reports" element={<LenderReportsPage />} />
             <Route path="/withdraw-tutorial" element={<WithdrawTutorialPage />} />
             <Route path="/calculator" element={<ZakatCalculator />} />
-            
+            <Route path="/blockchain-ledger" element={<BlockchainLedgerPage />} />
+            <Route path="/dashboard" element={<ImpactDashboardPage />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
