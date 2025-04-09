@@ -18,6 +18,7 @@ import {
   LenderReportsPage,
   LoanFundingPage,
   FundingReviewPage,
+  ZakatCalculator,
   LoanFundingSuccessPage,
   // Onboarding pages
   OnboardingWelcome,
@@ -66,6 +67,7 @@ const AppContent = () => {
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/lender-reports" element={<LenderReportsPage />} />
             <Route path="/withdraw-tutorial" element={<WithdrawTutorialPage />} />
+            <Route path="/calculator" element={<ZakatCalculator />} />
             
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
