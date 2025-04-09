@@ -16,7 +16,6 @@ export { default as NotFoundPage } from './NotFoundPage';
 export { default as LoanFundingPage } from './LoanFundingPage';
 export { default as FundingReviewPage } from './FundingReviewPage';
 export { default as LoanFundingSuccessPage } from './LoanFundingSuccessPage';
-export { default as TransparencyPage } from './TransparencyPage';
 
 // Onboarding flow pages
 export { default as OnboardingWelcome } from './OnboardingWelcome';
