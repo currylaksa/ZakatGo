@@ -1,165 +1,129 @@
-<a id="readme-top"></a>
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="https://github.com/user-attachments/assets/6e375089-c4c4-435f-aee2-86d48463c7e1" alt="Logo" width="300" height="300">
-  </a>
+# ZakatGo: Transparent, Automated & Shariah-Compliant Giving Platform
 
+![ZakatGo Banner](https://placehold.co/600x200?text=ZakatGo)
 
+## 🌟 Overview
 
+ZakatGo is a blockchain-powered platform revolutionizing Islamic charity through transparency, automation, and accessibility. Our solution addresses the core challenges in Zakat, Waqf, and Sadaqah management using smart contracts, decentralized ledgers, and user-centric design.
 
-<h3 align="center">LendKawKaw</h3>
+## 🚀 Key Features
 
-  <p align="center">
-    Blockchain Powered Microloan Webapp
+- 🔒 **Zakat Auto-Calculator & Eligibility Engine** - Smart contracts verify if users must pay zakat and calculate exact amounts according to Shariah principles
+- 📊 **Transparent Impact Dashboard** - Real-time visualization of donation flow with charts, maps, and progress tracking
+- 📡 **GeoSadaqah** - Location-based suggestions for nearby verified causes (mosques, food banks, etc.)
+- 🤖 **AI-Driven Priority Allocation** - Intelligent fund routing based on need classification (medical > food > education)
+- 🌐 **DeFi-style Waqf Pool** - Investment opportunities for Waqf with returns directed to charity
+- 👥 **Digital Impact Badges** - Gamified referral system with meaningful rewards for contributors
+- 📱 **Unbanked-Friendly Onboarding** - QR codes and MyKad/National ID integration for inclusive access
 
-  </p>
-</div>
+## 💻 Tech Stack
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+- **Frontend:** React.js with Tailwind CSS
+- **Blockchain:** Ethereum/Polygon testnet
+- **Smart Contracts:** Solidity
+- **Backend:** Node.js
+- **Data Visualization:** Chart.js/Recharts
 
+## 📋 Project Structure
 
+```
+zakatgo/
+├── client/                 # Frontend React application
+│   ├── public/             # Static files
+│   └── src/
+│       ├── components/     # Reusable UI components
+│       ├── contracts/      # Smart contract ABIs
+│       ├── pages/          # Main application pages
+│       └── utils/          # Utility functions
+├── contracts/              # Solidity smart contracts
+│   ├── Zakat.sol           # Zakat calculation and distribution
+│   ├── Waqf.sol            # Waqf management contracts
+│   └── Sadaqah.sol         # Sadaqah distribution logic
+├── server/                 # Backend Node.js application
+├── scripts/                # Deployment and testing scripts
+└── test/                   # Contract and application tests
+```
 
--   **Blockchain-Powered Platform:** Utilizes blockchain technology to ensure security, transparency, and efficiency in lending.
-    
--   **Minimal Documentation:** Requires just a selfie and basic financial proof (e.g., bank statements, grocery receipts, or education expenses) to streamline the process.
-    
--   **Competitive Interest Rates:** Offers low-interest rates, making microloans more affordable.
-    
--   **Accelerated Lending Process:** Reduces paperwork and processing time, speeding up loan approvals.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-## Tech Stack
-- **Smart Contracts**: Solidity + Hardhat
-- **Frontend**: React + Tailwind CSS
-- **Blockchain**: Ethereum 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js v16+
-- MetaMask wallet
-- [Alchemy API Key](https://www.alchemy.com/)
+
+- Node.js (v16 or higher)
+- npm or yarn
+- MetaMask or similar Web3 wallet
+- Truffle/Hardhat (for development)
 
 ### Installation
-```bash
-# Clone repository
-git clone https://github.com/seechee6/LendKawKaw.git
-cd LendKawKaw
 
-# Install frontend dependencies
-cd client && npm install
+1. Clone the repository
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/zakatgo.git
+   cd zakatgo
+   ```
 
-# Install smart contract dependencies 
-cd ../smart_contract && npm install
-```
+2. Install frontend dependencies
+   ```bash
+   cd client
+   npm install
+   ```
 
-### Running Locally
-```bash
-# Start frontend
-cd client && npm run dev
+3. Install backend dependencies
+   ```bash
+   cd ../server
+   npm install
+   ```
 
-# Deploy contracts
-cd ../smart_contract && npx hardhat run scripts/deploy.js --network localhost
-```
+4. Install contract development tools
+   ```bash
+   npm install -g truffle
+   ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+5. Start the development server
+   ```bash
+   # Terminal 1 - Frontend
+   cd client
+   npm start
+   
+   # Terminal 2 - Backend
+   cd server
+   npm run dev
+   
+   # Terminal 3 - Local blockchain (if needed)
+   cd ..
+   truffle develop
+   ```
 
-<!-- USAGE EXAMPLES -->
-## Usage
-### 🆔 Onboarding
-- **Secure Verification**: Start with a quick selfie + flexible documentation (payslips, grocery receipts, or education bills)
-- **Inclusive Access**: No traditional income proof? Validate through essential spending patterns
-- **Instant Access**: Approved within hours after verification
+## 🖼️ Screenshots
 
-### 📊 Dashboard
-- **Financial Snapshot**: Track active loans, repayments, and balances at a glance
-- **Payment Alerts**: Never miss deadlines with smart notifications
+![Dashboard](https://placehold.co/800x450?text=ZakatGo+Dashboard)
+![Zakat Calculator](https://placehold.co/800x450?text=Zakat+Calculator)
+![Impact Tracking](https://placehold.co/800x450?text=Impact+Visualization)
 
-### 💰 Loan Page
-- **Smart Scoring**: Personalized rates via AI credit evaluation
-- **Guarantor Boost**: Increase limits by inviting trusted co-signers
-- **Lender Protection Fee**: Safeguards lenders against defaults
+## 🛣️ Roadmap
 
-### 🤝 Lend Page
-- **Testnet Transactions**: Fund via MetaMask (Sepolia ETH)
-- **Stable Future**: Post-launch transition to USDT
-- **Transparent Deals**: Review borrower risk before funding
+- [x] Initial concept and UMHackathon prototype
+- [ ] Testnet deployment with core smart contracts
+- [ ] Beta release with limited user group
+- [ ] Mobile application development
+- [ ] Partner integration with local Zakat authorities
+- [ ] Mainnet launch and full rollout
 
-### 🔍 Premium Features
-- **Pro Insights**: Monthly subscription for risk analysis & portfolio reports
-- **Predictive Tools**: AI-driven default risk assessments
-<br><br>
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/62a77740-11fa-4815-b056-1b7258611a77" alt="User Onboarding" width="100%">
-        <br><br>
-        <b>User Onboarding</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/8ad281df-2c2d-4249-9a56-86c988354383" alt="Dashboard" width="100%">
-        <br><br>
-        <b>Dashboard</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/2e1611b1-5960-42c9-b73e-699a73f8b404" alt="Loan Page" width="100%">
-        <br><br>
-        <b>Loan Page</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/0be7255c-82b4-46d0-99bd-7c0419394d3f" alt="Lending Page" width="100%">
-        <br><br>
-        <b>Lending Page</b>
-        <br><br>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/fd2db3d5-dec1-4a5e-a512-dbc1bf5ee7a3" alt="Transfer Funds" width="100%">
-        <br><br>
-        <b>Transfer Funds</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/ad394cac-77c4-4513-a841-655bca6594ca" alt="Transactions History" width="100%">
-        <br><br>
-        <b>Transactions History</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/c93c54e1-19e7-4f5c-8865-3fc2a539f0cf" alt="Profile" width="100%">
-        <br><br>
-        <b>Profile</b>
-        <br><br>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/user-attachments/assets/25359646-1bd8-4bd9-9a5e-d11520f37aa2" alt="Premium Reports" width="100%">
-        <br><br>
-        <b>Premium Reports</b>
-        <br><br>
-      </td>
-    </tr>
-  </table>
-</div>
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## 👥 Team
 
+ZakatGo is developed by team **Oversized Minions** during the UMHackathon 2025 organized by Securities Commission Malaysia.
 
+## 🤝 Contributing
 
+We welcome contributions to ZakatGo! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
 
+## 📄 License
 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 📞 Contact
 
+For questions or suggestions, please open an issue or contact us at [email@example.com](mailto:email@example.com).
+
+---
+
+*ZakatGo - Redefining the way charity works.*
