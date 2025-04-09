@@ -27,7 +27,6 @@ const navItems = [
   { title: "Donations", path: "/campaigns" },
   { title: "Donation History", path: "/donation-history" },
   { title: "Transactions", path: "/transactions" },
-  { title: "Transparency", path: "/transparency" },
   //{ title: "Onboarding", path: "/onboarding" },
   { title: "Profile", path: "/profile" }
 ];
