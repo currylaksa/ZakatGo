@@ -37,6 +37,7 @@ const zakatGoNavItems = [
   { title: "Donation History", path: "/donation-history" }, // Kept from original clone
   { title: "Zakat Calculator", path: "/calculator" }, // Link to calculator
   { title: "Blockchain-ledger", path: "/blockchain-ledger" },
+  { title: "Transparency", path: "/transparency" }, // Link to transparency page
   { title: "Impact Dashboard", path: "/dashboard" }, // Link to see donation impact
   // { title: "About Us", path: "/about" }, // Optional: Add an about page
   { title: "Profile", path: "/profile" } // User profile/settings
