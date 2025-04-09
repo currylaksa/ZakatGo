@@ -50,7 +50,8 @@ const AppContent = () => {
         {!isOnboardingRoute && <Navbar />}
         <div className={!isOnboardingRoute ? "pt-16" : ""}>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/HomePage" replace />} />
+            <Route path="/HomePage" element={<HomePage />} />
             <Route path="/donation-history" element={<DonationDashboard />} />
             <Route path="/campaigns" element={<DonationPage />} />
             <Route path="/donate/:id" element={<DonationFormPage />} />
