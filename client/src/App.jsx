@@ -19,6 +19,7 @@ import {
   LoanFundingPage,
   FundingReviewPage,
   LoanFundingSuccessPage,
+  TransparencyPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -66,6 +67,7 @@ const AppContent = () => {
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/lender-reports" element={<LenderReportsPage />} />
             <Route path="/withdraw-tutorial" element={<WithdrawTutorialPage />} />
+            <Route path="/transparency" element={<TransparencyPage />} />
             
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />

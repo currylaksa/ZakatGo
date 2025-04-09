@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "qrcode.react": "^4.2.0"
+    "qrcode.react": "^4.2.0",
+    "recharts": "^2.15.2"
   }
 }
