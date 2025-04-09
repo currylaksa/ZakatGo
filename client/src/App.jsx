@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar, Footer, Transactions, Services, ThemeSwitcher } from "./components";
 import { 
+  DonationFormPage,
+  DonationSuccessPage,
+  DonationPage,
   LoanPage, 
-  LendPage, 
   LoanConfirmationPage, 
   HomePage, 
   LoanSuccessPage, 
@@ -46,8 +48,10 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/campaigns" element={<DonationPage />} />
+            <Route path="/donate/:id" element={<DonationFormPage />} />
+            <Route path="/donation-success" element={<DonationSuccessPage />} />
             <Route path="/loan" element={<LoanPage />} />
-            <Route path="/lend" element={<LendPage />} />
             <Route path="/loan-confirmation" element={<LoanConfirmationPage />} />
             <Route path="/loan-success" element={<LoanSuccessPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />

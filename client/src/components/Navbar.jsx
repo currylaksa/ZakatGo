@@ -4,7 +4,7 @@ import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 import LanguageToggle from './LanguageToggle';
 
-import logo from "../../images/logo.png";
+import logo from "../../images/ZakatGoLogo.png";
 
 const NavbarItem = ({ title, classProps, to, onClick }) => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const NavbarItem = ({ title, classProps, to, onClick }) => {
 
 const navItems = [
   { title: "Loan", path: "/loan" },
-  { title: "Lend", path: "/lend" },
+  { title: "Donations", path: "/campaigns" },
   { title: "Transactions", path: "/transactions" },
   //{ title: "Onboarding", path: "/onboarding" },
   { title: "Profile", path: "/profile" }
