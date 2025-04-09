@@ -17,6 +17,8 @@ export { default as LoanFundingPage } from './LoanFundingPage';
 export { default as FundingReviewPage } from './FundingReviewPage';
 export { default as LoanFundingSuccessPage } from './LoanFundingSuccessPage';
 export { default as ZakatCalculator } from './ZakatCalculator';
+export { default as BlockchainLedgerPage } from './BlockchainLedgerPage';
+export { default as ImpactDashboardPage  } from './ImpactDashboardPage';
 
 // Onboarding flow pages
 export { default as OnboardingWelcome } from './OnboardingWelcome';
