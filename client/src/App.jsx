@@ -22,6 +22,7 @@ import {
   BlockchainLedgerPage,
   LoanFundingSuccessPage,
   ImpactDashboardPage,
+  TransparencyPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -72,6 +73,7 @@ const AppContent = () => {
             <Route path="/calculator" element={<ZakatCalculator />} />
             <Route path="/blockchain-ledger" element={<BlockchainLedgerPage />} />
             <Route path="/dashboard" element={<ImpactDashboardPage />} />
+            <Route path="/transparency" element={<TransparencyPage />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
