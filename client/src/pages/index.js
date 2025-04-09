@@ -1,5 +1,7 @@
 export { default as HomePage } from './HomePage';
-export { default as LendPage } from './LendPage';
+export { default as DonationPage } from './DonationCampaignsPage';
+export { default as DonationFormPage } from './DonationFormPage';
+export { default as DonationSuccessPage } from './DonationSuccessPage';
 export { default as LoanPage } from './LoanPage';
 export { default as LoanConfirmationPage } from './LoanConfirmationPage';
 export { default as LoanSuccessPage } from './LoanSuccessPage';
