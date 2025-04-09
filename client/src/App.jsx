@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar, Footer, Transactions, Services, ThemeSwitcher } from "./components";
 import { 
+  DonationDashboard,
   DonationFormPage,
   DonationSuccessPage,
   DonationPage,
@@ -48,6 +49,7 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/donation-history" element={<DonationDashboard />} />
             <Route path="/campaigns" element={<DonationPage />} />
             <Route path="/donate/:id" element={<DonationFormPage />} />
             <Route path="/donation-success" element={<DonationSuccessPage />} />

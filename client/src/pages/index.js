@@ -1,5 +1,6 @@
 export { default as HomePage } from './HomePage';
 export { default as DonationPage } from './DonationCampaignsPage';
+export { default as DonationDashboard } from './DonationDashboard';
 export { default as DonationFormPage } from './DonationFormPage';
 export { default as DonationSuccessPage } from './DonationSuccessPage';
 export { default as LoanPage } from './LoanPage';
