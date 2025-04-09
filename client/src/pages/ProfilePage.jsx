@@ -267,7 +267,7 @@ const ProfilePage = () => {
                           <span className="text-lg">Loading...</span>
                         </div>
                       ) : (
-                        `RM{walletBalance} ETH`
+                        `RM${walletBalance} ETH`
                       )
                     )}
                   </div>
@@ -448,7 +448,7 @@ const ProfilePage = () => {
               <div key={donation.id} className="flex justify-between items-center py-2 border-b border-gray-50">
                 <div>
                   <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full mr-2 RM{donation.type === 'Zakat' ? 'bg-green-500' : donation.type === 'Sadaqah' ? 'bg-blue-500' : 'bg-purple-500'}`}></div>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${donation.type === 'Zakat' ? 'bg-green-500' : donation.type === 'Sadaqah' ? 'bg-blue-500' : 'bg-purple-500'}`}></div>
                     <span className="font-medium text-sm">{donation.type}</span>
                   </div>
                   <div className="text-xs text-gray-500 mt-1">{donation.recipient}</div>
