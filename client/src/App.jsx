@@ -24,6 +24,7 @@ import {
   ImpactDashboardPage,
   TransparencyPage,
   HelpPage,
+  CreateCampaignsPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -78,6 +79,7 @@ const AppContent = () => {
             <Route path="/transparency" element={<TransparencyPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/zakat-payment" element={<ZakatPaymentPage />} />
+            <Route path="/create-campaigns" element={<CreateCampaignsPage />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
