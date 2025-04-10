@@ -90,6 +90,7 @@ const AppContent = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
+        {!isOnboardingRoute && <Footer />}
         {showThemeSwitcher && <ThemeSwitcher />}
       </div>
     </div>
