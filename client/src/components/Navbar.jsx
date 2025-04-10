@@ -78,7 +78,7 @@ const Navbar = () => {
             title="Login / Sign Up"
             to="/login" // Link to your login/signup page
             // Styling for the login button: light background, navy text
-            classProps="bg-white text-blue-900 py-2 px-6 mx-4 rounded-full cursor-pointer hover:bg-gray-200 transition duration-200 font-medium"
+            classProps="bg-green-600 text-white py-2 px-6 mx-4 rounded-full cursor-pointer hover:bg-green-700 transition duration-200 font-medium shadow-md"
           />
         )}
       </ul>
@@ -99,36 +99,52 @@ const Navbar = () => {
           />
         )}
 
-        {/* --- Mobile Menu Panel --- */}
-        {toggleMenu && (
-          // Navy blue background for mobile menu
-          <ul className="z-50 fixed top-0 -right-2 p-4 w-[70vw] h-screen shadow-2xl list-none
-            flex flex-col justify-start items-end rounded-md bg-blue-800 text-white animate-slide-in">
-            <li className="text-xl w-full my-2">
-              <AiOutlineClose onClick={handleCloseMenu} className="cursor-pointer" />
-            </li>
-            {/* Map through ZakatGo specific nav items */}
-            {zakatGoNavItems.map((item, index) => (
-              <NavbarItem
-                key={item.title + index}
-                title={item.title}
-                to={item.path}
-                classProps="my-3 text-lg w-full text-right pr-2" // Adjusted styling for mobile
-                onClick={handleCloseMenu} // Close menu on click
-              />
-            ))}
-             {/* Mobile Login/Signup Button */}
-             <li className="w-full mt-4 flex justify-end pr-2">
-                <NavbarItem
-                  title={isLoggedIn ? "My Account" : "Login / Sign Up"}
-                  to={isLoggedIn ? "/profile" : "/login"}
-                  // Simple text link for mobile menu
-                  classProps="my-2 text-lg font-medium text-teal-300" // Accent color for mobile login
-                  onClick={handleCloseMenu}
-                />
-             </li>
-          </ul>
-        )}
+      {/* --- Mobile Menu Panel --- */}
+      {toggleMenu && (
+        // Updated mobile menu styling
+        <ul className="z-50 fixed top-0 right-0 p-6 w-[70vw] h-screen shadow-2xl list-none
+          flex flex-col justify-start items-start rounded-l-xl bg-gradient-to-b from-blue-900 to-blue-800 text-white animate-slide-in">
+          {/* Header with close button */}
+          <div className="w-full flex justify-between items-center mb-8">
+            <img src={logo} alt="ZakatGo Logo" className="w-28" />
+            <AiOutlineClose 
+              fontSize={24} 
+              onClick={handleCloseMenu} 
+              className="cursor-pointer text-gray-300 hover:text-white" 
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="w-full h-px bg-blue-700 mb-6"></div>
+
+          {/* Navigation links */}
+          {zakatGoNavItems.map((item, index) => (
+            <NavbarItem
+              key={item.title + index}
+              title={item.title}
+              to={item.path}
+              classProps="my-3 text-lg w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200" 
+              onClick={handleCloseMenu}
+            />
+          ))}
+
+          {/* Divider */}
+          <div className="w-full h-px bg-blue-700 my-4"></div>
+
+          {/* Login button */}
+          <div className="w-full mt-4">
+            <button 
+              onClick={() => {
+                handleCloseMenu();
+                navigate(isLoggedIn ? "/profile" : "/login");
+              }}
+              className="w-full bg-green-600 text-white py-3 rounded-lg font-medium text-center hover:bg-green-700 transition duration-200 shadow-md"
+            >
+              {isLoggedIn ? "My Account" : "Login / Sign Up"}
+            </button>
+          </div>
+        </ul>
+      )}
       </div>
     </nav>
   );
