@@ -1,132 +1,270 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { motion } from 'framer-motion';
 
-const DocumentUploadStep = ({ nextStep, updateUserData, userData }) => {
+const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, setIsLoading }) => {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
 
+  // File types that we accept
+  const acceptedFileTypes = {
+    'application/pdf': ['.pdf'],
+    'image/jpeg': ['.jpg', '.jpeg'],
+    'image/png': ['.png']
+  };
+
+  // Handle file drop
   const onDrop = useCallback(acceptedFiles => {
+    // Reset states
+    setError('');
+    setUploadSuccess(false);
+    setUploadProgress(0);
+    
     // We only take the first file
     const selectedFile = acceptedFiles[0];
-    if (selectedFile && (selectedFile.type.includes('pdf') || selectedFile.type.includes('image'))) {
+    
+    // Validate file type
+    if (selectedFile && (
+      selectedFile.type.includes('pdf') || 
+      selectedFile.type.includes('image/jpeg') || 
+      selectedFile.type.includes('image/png')
+    )) {
       setFile(selectedFile);
-      setUploadSuccess(false); // Reset success state on new file
-      setError('');
     } else {
       setError('Invalid file type. Please upload PDF or image files.');
       setFile(null);
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     onDrop,
-    accept: {
-      'application/pdf': ['.pdf'],
-      'image/jpeg': ['.jpg', '.jpeg'],
-      'image/png': ['.png']
-    },
-    multiple: false
+    accept: acceptedFileTypes,
+    multiple: false,
+    maxSize: 5242880, // 5MB max size
   });
 
-  const processDocument = () => {
+  // Handle document processing
+  const processDocument = useCallback(() => {
     if (!file) return;
 
     setIsProcessing(true);
     setError('');
-    setUploadSuccess(false);
+    
+    // Simulate file upload progress
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        const newProgress = prev + Math.random() * 15;
+        return newProgress >= 100 ? 100 : newProgress;
+      });
+    }, 200);
 
-    // Simulate AI document processing [cite: 6, 23]
-    console.log("Simulating AI processing for:", file.name);
+    // Simulate AI document processing
+    console.log("Processing document:", file.name);
+    
     setTimeout(() => {
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
       // Mock data - replace with actual AI extraction logic
       const extractedData = {
-        name: 'Ahmad bin Abdullah', // Example data
+        name: 'Ahmad bin Abdullah',
         salary: 6500,
         deductions: 700,
         assets: 15000
-        // Add other fields extracted by AI
       };
 
-      // Merge extracted data with existing userData.documentData
-      // This ensures if user goes back and re-uploads, previous data isn't lost
-      updateUserData({ documentData: { ...userData.documentData, ...extractedData } });
+      // Update user data with extracted information
+      updateUserData({ 
+        documentData: { 
+          ...userData.documentData, 
+          ...extractedData 
+        } 
+      });
+      
       setIsProcessing(false);
       setUploadSuccess(true);
-      console.log("Simulated AI processing complete. Extracted:", extractedData);
-
-      // Automatically proceed to the next step after successful processing
+      
+      // Proceed to next step after showing success message
       setTimeout(() => {
-         nextStep();
-      }, 1000); // Short delay to show success message
+        nextStep();
+      }, 1500);
+    }, 3000);
+  }, [file, nextStep, updateUserData, userData.documentData]);
 
-    }, 2500); // Increased timeout for simulation effect
-  };
-
-  // Trigger processing immediately after a file is selected and validated
-  React.useEffect(() => {
+  // Trigger processing automatically when file is selected
+  useEffect(() => {
     if (file && !uploadSuccess && !isProcessing && !error) {
       processDocument();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file]); // Dependency on 'file' state
+  }, [file, uploadSuccess, isProcessing, error, processDocument]);
+
+  // Get the right border color based on drag state
+  const getBorderColor = () => {
+    if (isDragAccept) return 'border-green-500';
+    if (isDragReject) return 'border-red-500';
+    if (isDragActive) return 'border-blue-400';
+    return 'border-gray-300';
+  };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-700">Step 1: Document Upload</h2>
-      <p className="text-gray-600">Upload your payslip or other financial documents (PDF, JPG, PNG). The system will attempt to extract the relevant information automatically[cite: 6].</p>
-
-      <div
-        {...getRootProps()}
-        className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-200 ease-in-out ${
-          isDragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-gray-400'
-        }`}
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <p className="text-green-600">Drop the file here ...</p>
-        ) : (
-          <p className="text-gray-500">Drag 'n' drop your file here, or click to select file</p>
-        )}
-        <p className="text-sm text-gray-400 mt-1">PDF, JPG, or PNG files only</p>
+      <div className="bg-green-50 rounded-lg p-4 border border-green-100 mb-6">
+        <h3 className="text-green-800 font-medium flex items-center">
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+          Upload Required Documents
+        </h3>
+        <p className="text-green-700 text-sm mt-1">
+          Our AI will automatically extract information from your payslip or financial statements to calculate your Zakat.
+        </p>
       </div>
 
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
-      {file && (
-        <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-          <p className="text-gray-700 font-medium">Selected file: {file.name}</p>
-          {isProcessing && (
-            <div className="mt-2 flex items-center text-blue-600">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Processing document... Please wait.
+      {!file && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div
+            {...getRootProps()}
+            className={`p-10 border-2 border-dashed rounded-lg text-center cursor-pointer transition-all duration-200 ease-in-out ${getBorderColor()} hover:bg-gray-50`}
+          >
+            <input {...getInputProps()} />
+            
+            <div className="space-y-4">
+              <div className="mx-auto flex justify-center">
+                <svg className="w-14 h-14 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              
+              <div>
+                <p className="text-lg font-medium text-gray-700">
+                  {isDragActive ? 'Drop your file here' : 'Drag & drop your document'}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">or click to browse from your device</p>
+              </div>
+              
+              <div className="flex flex-wrap justify-center gap-2 pt-2">
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">PDF</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">JPG</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">PNG</span>
+              </div>
+              
+              <p className="text-xs text-gray-400">Maximum file size: 5MB</p>
             </div>
-          )}
-          {uploadSuccess && !isProcessing && (
-            <p className="mt-2 text-green-600 font-semibold">Document processed successfully! Proceeding to the next step...</p>
-          )}
-        </div>
+          </div>
+        </motion.div>
       )}
 
-      {/* Button is removed as processing starts automatically */}
-      {/* Kept for reference if manual trigger is preferred */}
-      {/* {file && !isProcessing && !uploadSuccess && (
-        <div className="mt-4">
-          <button
-            onClick={processDocument}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-            disabled={isProcessing}
-          >
-            {isProcessing ? 'Processing...' : 'Process Document'}
-          </button>
-        </div>
-      )} */}
+      {error && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-4 bg-red-50 border-l-4 border-red-500 rounded-md"
+        >
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
-      {/* Removed the explicit "Continue" button as it proceeds automatically */}
+      {file && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden"
+        >
+          <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+            <div className="flex items-center">
+              {file.type.includes('pdf') ? (
+                <svg className="w-8 h-8 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                  <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+                </svg>
+              ) : (
+                <svg className="w-8 h-8 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                </svg>
+              )}
+              <div>
+                <h4 className="font-medium text-gray-800">{file.name}</h4>
+                <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+              </div>
+            </div>
+            
+            {!isProcessing && !uploadSuccess && (
+              <button 
+                onClick={() => setFile(null)}
+                className="text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            )}
+          </div>
+          
+          <div className="p-4">
+            {isProcessing && (
+              <div className="space-y-3">
+                <div className="flex items-center text-sm text-blue-700">
+                  <svg className="animate-spin mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing document with AI...
+                </div>
+                
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-100">
+                    <div 
+                      style={{ width: `${uploadProgress}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 transition-all duration-300"
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-blue-700 mt-1">
+                    <span>Reading document</span>
+                    <span>{Math.round(uploadProgress)}%</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {uploadSuccess && (
+              <div className="text-center py-2">
+                <svg className="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 className="mt-2 text-lg font-medium text-gray-900">Document processed successfully!</h3>
+                <p className="mt-1 text-sm text-gray-500">We've extracted the information for your review.</p>
+                <p className="mt-3 text-sm text-blue-600">Redirecting to next step...</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+      
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+        <h4 className="font-medium text-gray-700 mb-2">Accepted Documents</h4>
+        <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
+          <li>Monthly payslip</li>
+          <li>Annual income statement</li>
+          <li>Bank statements showing assets</li>
+          <li>Investment account statements</li>
+        </ul>
+      </div>
     </div>
   );
 };
