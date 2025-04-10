@@ -23,6 +23,7 @@ import {
   LoanFundingSuccessPage,
   ImpactDashboardPage,
   TransparencyPage,
+  HelpPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -32,7 +33,7 @@ import {
   UploadPayslipPage,
   OnboardingSuccessPage,
   NotFoundPage,
-  WithdrawTutorialPage
+  WithdrawTutorialPage,
 } from "./pages";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -74,6 +75,7 @@ const AppContent = () => {
             <Route path="/blockchain-ledger" element={<BlockchainLedgerPage />} />
             <Route path="/dashboard" element={<ImpactDashboardPage />} />
             <Route path="/transparency" element={<TransparencyPage />} />
+            <Route path="/help" element={<HelpPage />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
