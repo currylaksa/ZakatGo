@@ -35,6 +35,7 @@ import {
   NotFoundPage,
   WithdrawTutorialPage,
 } from "./pages";
+import {ZakatPaymentPage} from "./pages/zakat"
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from './contexts/LanguageContext';
 
@@ -76,6 +77,7 @@ const AppContent = () => {
             <Route path="/dashboard" element={<ImpactDashboardPage />} />
             <Route path="/transparency" element={<TransparencyPage />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/zakat-payment" element={<ZakatPaymentPage />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
