@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
 // ZakatGo logo imported
-import logo from "../../images/ZakatGoLogo.png"; 
+import logo from "../../images/ZakatGoLogo.png";
 
 // --- NavbarItem Component ---
 // Handles navigation link clicks using react-router-dom
@@ -13,7 +13,7 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  
+
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -21,13 +21,13 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
         setIsOpen(false);
       }
     };
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
   const handleClick = (e) => {
     if (hasSubmenu) {
       e.preventDefault();
@@ -49,7 +49,7 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
           {hasSubmenu && <MdKeyboardArrowDown className={`ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
         </li>
       </a>
-      
+
       {/* Submenu */}
       {hasSubmenu && isOpen && (
         <div className="absolute mt-2 bg-blue-800 rounded-md shadow-lg z-50 min-w-max py-2">
@@ -63,13 +63,13 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
 // --- Submenu Item Component ---
 const SubmenuItem = ({ title, to, onClick }) => {
   const navigate = useNavigate();
-  
+
   const handleClick = (e) => {
     e.preventDefault();
     if (onClick) onClick();
     navigate(to);
   };
-  
+
   return (
     <a href={to} onClick={handleClick} className="no-underline block">
       <div className="px-4 py-2 text-white hover:bg-blue-700 transition duration-200">
@@ -83,8 +83,8 @@ const SubmenuItem = ({ title, to, onClick }) => {
 // Updated to match the prototype documentation with Zakat submenu
 const zakatGoNavItems = [
   { title: "Home", path: "/" }, // Link to the homepage
-  { 
-    title: "Zakat Services", 
+  {
+    title: "Zakat Services",
     hasSubmenu: true,
     submenuItems: [
       { title: "Zakat Payment System", path: "/zakat-payment" },
@@ -102,19 +102,19 @@ const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const navigate = useNavigate();
   // Placeholder for login status - replace with context or state management
-  const isLoggedIn = false; 
+  const isLoggedIn = false;
 
   const handleCloseMenu = () => {
     setToggleMenu(false);
   };
-  
+
   return (
     // --- Main Navigation Bar ---
     // Added navy blue background (bg-blue-900), fixed position, full width, padding, flex layout
     <nav className="w-full flex md:justify-center justify-between items-center p-4 fixed top-0 left-0 z-50 bg-blue-900 shadow-md">
-      
+
       {/* --- Logo --- */}
-      <div className="md:flex-[0.5] pr-4 md:pl-6"> 
+      <div className="md:flex-[0.5] pr-4 md:pl-6">
         <Link to="/"> {/* Link logo to homepage */}
           <img src={logo} alt="ZakatGo Logo" className="w-36 md:w-40 cursor-pointer" />
         </Link>
@@ -124,9 +124,9 @@ const Navbar = () => {
       <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
         {zakatGoNavItems.map((item, index) => (
           item.hasSubmenu ? (
-            <NavbarItem 
-              key={item.title + index} 
-              title={item.title} 
+            <NavbarItem
+              key={item.title + index}
+              title={item.title}
               hasSubmenu={true}
             >
               {item.submenuItems.map((subItem, subIndex) => (
@@ -138,18 +138,18 @@ const Navbar = () => {
               ))}
             </NavbarItem>
           ) : (
-            <NavbarItem 
-              key={item.title + index} 
-              title={item.title} 
+            <NavbarItem
+              key={item.title + index}
+              title={item.title}
               to={item.path}
             />
           )
         ))}
-        
+
         {/* --- Login/Signup Button --- */}
         {isLoggedIn ? (
            // Optionally show something else if logged in, like a profile link/icon
-           <NavbarItem title="My Account" to="/profile" classProps="ml-5" /> 
+           <NavbarItem title="My Account" to="/profile" classProps="ml-5" />
         ) : (
           <NavbarItem
             title="Login / Sign Up"
@@ -184,10 +184,10 @@ const Navbar = () => {
           {/* Header with close button */}
           <div className="w-full flex justify-between items-center mb-8">
             <img src={logo} alt="ZakatGo Logo" className="w-28" />
-            <AiOutlineClose 
-              fontSize={24} 
-              onClick={handleCloseMenu} 
-              className="cursor-pointer text-gray-300 hover:text-white" 
+            <AiOutlineClose
+              fontSize={24}
+              onClick={handleCloseMenu}
+              className="cursor-pointer text-gray-300 hover:text-white"
             />
           </div>
 
@@ -195,7 +195,7 @@ const Navbar = () => {
           <div className="w-full h-px bg-blue-700 mb-6"></div>
 
           {/* Navigation links */}
-          {zakatGoNavItems.map((item, index) => 
+          {zakatGoNavItems.map((item, index) =>
             item.hasSubmenu ? (
               <div key={item.title + index} className="w-full">
                 <div className="my-3 text-lg w-full font-medium py-2 pl-2 text-white">
@@ -207,7 +207,7 @@ const Navbar = () => {
                       key={subItem.title + subIndex}
                       title={subItem.title}
                       to={subItem.path}
-                      classProps="my-2 text-base w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200" 
+                      classProps="my-2 text-base w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200"
                       onClick={handleCloseMenu}
                     />
                   ))}
@@ -218,7 +218,7 @@ const Navbar = () => {
                 key={item.title + index}
                 title={item.title}
                 to={item.path}
-                classProps="my-3 text-lg w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200" 
+                classProps="my-3 text-lg w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200"
                 onClick={handleCloseMenu}
               />
             )
@@ -229,7 +229,7 @@ const Navbar = () => {
 
           {/* Login button */}
           <div className="w-full mt-4">
-            <button 
+            <button
               onClick={() => {
                 handleCloseMenu();
                 navigate(isLoggedIn ? "/profile" : "/login");
@@ -246,4 +246,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar
