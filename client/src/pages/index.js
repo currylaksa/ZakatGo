@@ -20,6 +20,7 @@ export { default as ZakatCalculator } from './ZakatCalculator';
 export { default as BlockchainLedgerPage } from './BlockchainLedgerPage';
 export { default as ImpactDashboardPage  } from './ImpactDashboardPage';
 export { default as TransparencyPage } from './TransparencyPage';
+export { default as HelpPage } from './HelpPage';
 
 // Onboarding flow pages
 export { default as OnboardingWelcome } from './OnboardingWelcome';
@@ -29,6 +30,4 @@ export { default as UploadIDPage } from './UploadIDPage';
 export { default as SelfiePage } from './SelfiePage';
 export { default as UploadPayslipPage } from './UploadPayslipPage';
 export { default as OnboardingSuccessPage } from './OnboardingSuccessPage';
-
 export { default as WithdrawTutorialPage } from './WithdrawTutorialPage';
-
