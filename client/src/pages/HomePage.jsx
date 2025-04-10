@@ -294,7 +294,7 @@ const Homepage = () => {
             </div>
           </div>
           <div className="text-center mt-8">
-            <Button onClick={handleCampaignsClick} type="outline">View All Campaigns</Button>
+            <Button onClick={handleCampaignsClick} type="secondary">View All Campaigns</Button>
           </div>
         </div>
       </section>
@@ -374,7 +374,7 @@ const Homepage = () => {
               </div>
             </div>
             <div className="mt-6 text-center">
-              <Button onClick={handleImpactClick} type="outline">View Full Dashboard</Button>
+              <Button onClick={handleImpactClick} type="secondary">View Full Dashboard</Button>
             </div>
           </div>
         </div>
