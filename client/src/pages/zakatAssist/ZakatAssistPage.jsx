@@ -73,9 +73,11 @@ const ZakatAssistPage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-10">
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg transform transition-transform hover:scale-105 duration-300">
-            <span className="text-white text-3xl">ℤ</span>
-          </div>
+        <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg transform transition-transform hover:scale-105 duration-300">
+  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+</div>
           <h1 className="text-4xl font-bold text-green-800 mb-3">Zakat Assistance System</h1>
           <p className="text-gray-600 text-lg">Apply for Zakat assistance. If approved, receive a QR code to get essential goods at partnered stores.</p>
         </div>
