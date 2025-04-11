@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 
 // ZakatGo logo imported
 import logo from "../../images/ZakatGoLogo.png";
@@ -79,10 +79,55 @@ const SubmenuItem = ({ title, to, onClick }) => {
   );
 };
 
+// --- Mobile Menu Item Component ---
+const MobileNavItem = ({ title, to, onClick, hasSubmenu = false, submenuItems = [] }) => {
+  const navigate = useNavigate();
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+
+  const handleClick = () => {
+    if (hasSubmenu) {
+      setIsSubmenuOpen(!isSubmenuOpen);
+    } else {
+      if (onClick) onClick();
+      navigate(to);
+    }
+  };
+
+  return (
+    <div className="w-full">
+      <div 
+        className="flex justify-between items-center w-full py-3 px-4 hover:bg-blue-700 rounded-md cursor-pointer transition-all duration-200"
+        onClick={handleClick}
+      >
+        <span className="text-white text-lg">{title}</span>
+        {hasSubmenu && (
+          <MdKeyboardArrowRight className={`text-white text-xl transition-transform duration-300 ${isSubmenuOpen ? 'rotate-90' : ''}`} />
+        )}
+      </div>
+      
+      {hasSubmenu && isSubmenuOpen && (
+        <div className="ml-4 mt-1 mb-2 border-l-2 border-blue-600 pl-2">
+          {submenuItems.map((item, index) => (
+            <div 
+              key={index}
+              className="py-3 px-4 hover:bg-blue-700 rounded-md cursor-pointer transition-all duration-200"
+              onClick={() => {
+                if (onClick) onClick();
+                navigate(item.path);
+              }}
+            >
+              <span className="text-white">{item.title}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- ZakatGo Navigation Items ---
-// Updated to match the prototype documentation with Zakat submenu
 const zakatGoNavItems = [
-  { title: "Home", path: "/" }, // Link to the homepage
+  { title: "Home", path: "/" },
   {
     title: "Zakat Services",
     hasSubmenu: true,
@@ -91,10 +136,10 @@ const zakatGoNavItems = [
       { title: "Zakat Assistance System", path: "/zakat-assist" }
     ]
   },
-  { title: "Donation Campaigns", path: "/campaigns" }, // Updated name to match doc
-  { title: "Impact Dashboard", path: "/dashboard" }, // For tracking donation impact
-  { title: "Help", path: "/help" }, // FAQ and support
-  { title: "Profile", path: "/profile" } // User profile/account settings
+  { title: "Donation Campaigns", path: "/campaigns" },
+  { title: "Impact Dashboard", path: "/dashboard" },
+  { title: "Help", path: "/help" },
+  { title: "Profile", path: "/profile" }
 ];
 
 // --- Navbar Component ---
@@ -110,12 +155,11 @@ const Navbar = () => {
 
   return (
     // --- Main Navigation Bar ---
-    // Added navy blue background (bg-blue-900), fixed position, full width, padding, flex layout
     <nav className="w-full flex md:justify-center justify-between items-center p-4 fixed top-0 left-0 z-50 bg-blue-900 shadow-md">
 
       {/* --- Logo --- */}
       <div className="md:flex-[0.5] pr-4 md:pl-6">
-        <Link to="/"> {/* Link logo to homepage */}
+        <Link to="/">
           <img src={logo} alt="ZakatGo Logo" className="w-36 md:w-40 cursor-pointer" />
         </Link>
       </div>
@@ -148,20 +192,18 @@ const Navbar = () => {
 
         {/* --- Login/Signup Button --- */}
         {isLoggedIn ? (
-           // Optionally show something else if logged in, like a profile link/icon
            <NavbarItem title="My Account" to="/profile" classProps="ml-5" />
         ) : (
           <NavbarItem
             title="Login / Sign Up"
-            to="/login" // Link to your login/signup page
-            // Styling for the login button: light background, navy text
+            to="/login"
             classProps="bg-green-600 text-white py-2 px-6 mx-4 rounded-full cursor-pointer hover:bg-green-700 transition duration-200 font-medium shadow-md"
           />
         )}
       </ul>
 
       {/* --- Mobile Menu Button --- */}
-      <div className="flex relative md:hidden"> {/* Only show on smaller screens */}
+      <div className="flex relative md:hidden">
         {toggleMenu ? (
           <AiOutlineClose
             fontSize={28}
@@ -178,11 +220,10 @@ const Navbar = () => {
 
       {/* --- Mobile Menu Panel --- */}
       {toggleMenu && (
-        // Updated mobile menu styling
-        <ul className="z-50 fixed top-0 right-0 p-6 w-[70vw] h-screen shadow-2xl list-none
-          flex flex-col justify-start items-start rounded-l-xl bg-gradient-to-b from-blue-900 to-blue-800 text-white animate-slide-in">
+        <div className="z-50 fixed top-0 -right-2 p-0 w-[80vw] h-screen shadow-2xl
+          flex flex-col rounded-l-xl bg-blue-900 text-white animate-slide-in">
           {/* Header with close button */}
-          <div className="w-full flex justify-between items-center mb-8">
+          <div className="w-full flex justify-between items-center p-4 border-b border-blue-800">
             <img src={logo} alt="ZakatGo Logo" className="w-28" />
             <AiOutlineClose
               fontSize={24}
@@ -191,44 +232,22 @@ const Navbar = () => {
             />
           </div>
 
-          {/* Divider */}
-          <div className="w-full h-px bg-blue-700 mb-6"></div>
-
-          {/* Navigation links */}
-          {zakatGoNavItems.map((item, index) =>
-            item.hasSubmenu ? (
-              <div key={item.title + index} className="w-full">
-                <div className="my-3 text-lg w-full font-medium py-2 pl-2 text-white">
-                  {item.title}
-                </div>
-                <div className="pl-4">
-                  {item.submenuItems.map((subItem, subIndex) => (
-                    <NavbarItem
-                      key={subItem.title + subIndex}
-                      title={subItem.title}
-                      to={subItem.path}
-                      classProps="my-2 text-base w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200"
-                      onClick={handleCloseMenu}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <NavbarItem
-                key={item.title + index}
+          {/* Navigation Links Container */}
+          <div className="flex-1 overflow-y-auto py-2">
+            {zakatGoNavItems.map((item, index) => (
+              <MobileNavItem
+                key={index}
                 title={item.title}
                 to={item.path}
-                classProps="my-3 text-lg w-full font-medium py-2 pl-2 hover:bg-blue-700 hover:pl-4 rounded-md transition-all duration-200"
+                hasSubmenu={item.hasSubmenu}
+                submenuItems={item.submenuItems}
                 onClick={handleCloseMenu}
               />
-            )
-          )}
+            ))}
+          </div>
 
-          {/* Divider */}
-          <div className="w-full h-px bg-blue-700 my-4"></div>
-
-          {/* Login button */}
-          <div className="w-full mt-4">
+          {/* Login button at bottom */}
+          <div className="w-full p-4 border-t border-blue-800">
             <button
               onClick={() => {
                 handleCloseMenu();
@@ -239,11 +258,11 @@ const Navbar = () => {
               {isLoggedIn ? "My Account" : "Login / Sign Up"}
             </button>
           </div>
-        </ul>
+        </div>
       )}
       </div>
     </nav>
   );
 };
 
-export default Navbar
+export default Navbar;
