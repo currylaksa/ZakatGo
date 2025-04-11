@@ -104,10 +104,11 @@ const ApplicationForm = ({ onSubmit }) => {
       // Valid file
       setDocument(file);
       setDocumentName(file.name);
-      setErrors(prev => ({
-        ...prev,
-        document: null
-      }));
+      setErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors.document;
+        return newErrors;
+      });
       
       console.log("File selected:", file.name);
     } catch (error) {
@@ -204,55 +205,95 @@ const ApplicationForm = ({ onSubmit }) => {
     }
   };
   
+  // Handle input change and clear errors immediately
+  const handleInputChange = (fieldName) => {
+    // Get current value from ref
+    let currentValue = '';
+    switch(fieldName) {
+      case 'fullName':
+        currentValue = fullNameRef.current?.value || '';
+        break;
+      case 'icNumber':
+        currentValue = icNumberRef.current?.value || '';
+        break;
+      case 'address':
+        currentValue = addressRef.current?.value || '';
+        break;
+      case 'phone':
+        currentValue = phoneRef.current?.value || '';
+        break;
+      case 'email':
+        currentValue = emailRef.current?.value || '';
+        break;
+      case 'monthlyIncome':
+        currentValue = monthlyIncomeRef.current?.value || '';
+        break;
+      case 'dependents':
+        currentValue = dependentsRef.current?.value || '';
+        break;
+      case 'reason':
+        currentValue = reasonRef.current?.value || '';
+        break;
+      default:
+        break;
+    }
+    
+    // Clear error if field has a value
+    if (currentValue.trim()) {
+      clearError(fieldName);
+    }
+  };
+  
   // Blur event handler to validate fields individually when user leaves a field
   const handleBlur = (fieldName) => {
     syncFormDataFromRefs(); // Update state with current input values
     
     // Only validate the specific field that lost focus
     let fieldError = null;
+    const currentFormData = syncFormDataFromRefs();
     
     switch(fieldName) {
       case 'fullName':
-        if (!formData.fullName.trim()) fieldError = 'Full Name is required.';
+        if (!currentFormData.fullName.trim()) fieldError = 'Full Name is required.';
         break;
       case 'icNumber':
-        if (!formData.icNumber.trim()) {
+        if (!currentFormData.icNumber.trim()) {
           fieldError = 'IC Number is required.';
-        } else if (!/^\d{12}$/.test(formData.icNumber.replace(/-/g, ''))) {
+        } else if (!/^\d{12}$/.test(currentFormData.icNumber.replace(/-/g, ''))) {
           fieldError = 'Invalid IC Number format (should be 12 digits).';
         }
         break;
       case 'address':
-        if (!formData.address.trim()) fieldError = 'Address is required.';
+        if (!currentFormData.address.trim()) fieldError = 'Address is required.';
         break;
       case 'phone':
-        if (!formData.phone.trim()) {
+        if (!currentFormData.phone.trim()) {
           fieldError = 'Phone Number is required.';
-        } else if (!/^(\+?6?01)[0-9]{8,9}$/.test(formData.phone.replace(/[-\s]/g, ''))) {
+        } else if (!/^(\+?6?01)[0-9]{8,9}$/.test(currentFormData.phone.replace(/[-\s]/g, ''))) {
           fieldError = 'Invalid Malaysian phone number format.';
         }
         break;
       case 'email':
-        if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
+        if (currentFormData.email.trim() && !/\S+@\S+\.\S+/.test(currentFormData.email)) {
           fieldError = 'Invalid email format.';
         }
         break;
       case 'monthlyIncome':
-        if (!formData.monthlyIncome) {
+        if (!currentFormData.monthlyIncome) {
           fieldError = 'Monthly Income is required.';
-        } else if (isNaN(formData.monthlyIncome) || Number(formData.monthlyIncome) < 0) {
+        } else if (isNaN(currentFormData.monthlyIncome) || Number(currentFormData.monthlyIncome) < 0) {
           fieldError = 'Monthly Income must be a positive number.';
         }
         break;
       case 'dependents':
-        if (!formData.dependents) {
+        if (!currentFormData.dependents) {
           fieldError = 'Number of Dependents is required.';
-        } else if (isNaN(formData.dependents) || Number(formData.dependents) < 0 || !Number.isInteger(Number(formData.dependents))) {
+        } else if (isNaN(currentFormData.dependents) || Number(currentFormData.dependents) < 0 || !Number.isInteger(Number(currentFormData.dependents))) {
           fieldError = 'Number of Dependents must be a non-negative integer.';
         }
         break;
       case 'reason':
-        if (!formData.reason.trim()) fieldError = 'Reason for Assistance is required.';
+        if (!currentFormData.reason.trim()) fieldError = 'Reason for Assistance is required.';
         break;
       default:
         break;
@@ -279,6 +320,7 @@ const ApplicationForm = ({ onSubmit }) => {
           name={name}
           ref={inputRef}
           onFocus={() => clearError(name)}
+          onChange={() => handleInputChange(name)}
           onBlur={() => handleBlur(name)}
           defaultValue={formData[name]} // Use defaultValue to avoid controlled input issues
           className={`w-full px-4 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
@@ -322,6 +364,7 @@ const ApplicationForm = ({ onSubmit }) => {
             rows="3"
             ref={addressRef}
             onFocus={() => clearError('address')}
+            onChange={() => handleInputChange('address')}
             onBlur={() => handleBlur('address')}
             defaultValue={formData.address}
             className={`w-full px-4 py-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
@@ -381,6 +424,7 @@ const ApplicationForm = ({ onSubmit }) => {
             rows="4"
             ref={reasonRef}
             onFocus={() => clearError('reason')}
+            onChange={() => handleInputChange('reason')}
             onBlur={() => handleBlur('reason')}
             defaultValue={formData.reason}
             className={`w-full px-4 py-2 border ${errors.reason ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
