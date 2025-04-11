@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { TransactionContext } from '../../context/TransactionContext';
 
 const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData }) => {
-  // Initialize deposit amount strictly from calculated Zakat amount
-  const initialDepositAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0; // Default to 0 if no Zakat due
+  const initialDepositAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0;
   const [depositAmount, setDepositAmount] = useState(initialDepositAmount);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-
-  // Mock conversion rate - In a real app, fetch this from an API
-  const rmToEthRate = 0.000075; // Example rate: 1 RM = 0.000075 ETH
+  const rmToEthRate = 0.000075; 
   const [ethAmount, setEthAmount] = useState(depositAmount * rmToEthRate);
+  const { currentAccount, connectWallet, sendTransaction, isLoading, handleChange } = useContext(TransactionContext);
 
-  // Update ETH amount whenever depositAmount changes
   useEffect(() => {
      const amount = Number(depositAmount) || 0;
      if (amount < initialDepositAmount && initialDepositAmount > 0) {
@@ -22,7 +20,6 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
      setEthAmount(amount * rmToEthRate);
   }, [depositAmount, initialDepositAmount, rmToEthRate]);
 
-  // Reset deposit amount if user goes back and Zakat amount changed
    useEffect(() => {
      const newInitialAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0;
      setDepositAmount(newInitialAmount);
@@ -31,42 +28,61 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
 
   const handleDepositChange = (e) => {
     const value = e.target.value;
-    // Allow empty input temporarily, treat as 0 for calculation
     setDepositAmount(value === '' ? '' : Number(value));
   };
 
-  const processPayment = () => {
+  const processPayment = async () => {
     const finalDepositAmount = Number(depositAmount) || 0;
 
-     if (finalDepositAmount <= 0) {
-         setError('Please enter a valid amount to donate.');
-         return;
-     }
+    if (finalDepositAmount <= 0) {
+      setError('Please enter a valid amount to donate.');
+      return;
+    }
     if (finalDepositAmount < initialDepositAmount && initialDepositAmount > 0) {
       setError(`Deposit amount cannot be less than the calculated Zakat of RM ${initialDepositAmount.toFixed(2)}.`);
       return;
     }
-    setError(''); // Clear error before processing
-    setIsProcessing(true);
 
-    // Simulate blockchain transaction [cite: 8, 22]
-    console.log(`Simulating payment of RM ${finalDepositAmount} (${ethAmount.toFixed(8)} ETH)`);
-    setTimeout(() => {
+    try {
+      setError('');
+      setIsProcessing(true);
+
+      if (!currentAccount) {
+        await connectWallet();
+        return;
+      }
+
+      const ethValue = (finalDepositAmount * rmToEthRate).toFixed(18);
+      const formattedEthAmount = Number(ethValue).toLocaleString('fullwide', {
+        useGrouping: false,
+        maximumFractionDigits: 18
+      });
+
+      handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
+      handleChange({ target: { value: formattedEthAmount }}, 'amount');
+      handleChange({ target: { value: 'ZAKAT' }}, 'keyword');
+      handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
+
+      await sendTransaction();
       const transactionDetails = {
-        transactionId: '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''), // Mock ETH Tx Hash
+        transactionId: '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''),
         amount: finalDepositAmount,
-        ethAmount: ethAmount,
+        ethAmount: formattedEthAmount,
         rmToEthRate: rmToEthRate,
         timestamp: new Date().toISOString(),
-        status: 'Confirmed', // Use 'Confirmed' or 'Success'
-        categories: userData.selectedCategories.map(c => c.name).join(', ') // Store names for receipt
+        status: 'Confirmed',
+        categories: userData.selectedCategories.map(c => c.name).join(', '),
+        walletAddress: currentAccount
       };
 
-      console.log("Simulated transaction successful:", transactionDetails);
       updateUserData({ transactionDetails });
+      nextStep();
+    } catch (error) {
+      console.error('Payment error:', error);
+      setError('Transaction failed. Please try again.');
+    } finally {
       setIsProcessing(false);
-      nextStep(); // Proceed to confirmation page
-    }, 3000); // Simulate network delay
+    }
   };
 
   return (
@@ -91,7 +107,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
             id="depositAmount"
             value={depositAmount}
             onChange={handleDepositChange}
-            min={initialDepositAmount > 0 ? initialDepositAmount : 0} // Set minimum if Zakat is due
+            min={initialDepositAmount > 0 ? initialDepositAmount : 0} 
             step="any"
             className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${error ? 'border-red-500' : 'border-gray-300'}`}
              placeholder={initialDepositAmount > 0 ? `Minimum RM ${initialDepositAmount.toFixed(2)}` : 'Enter amount'}
@@ -128,17 +144,17 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       <div className="flex justify-between pt-4">
         <button
           onClick={prevStep}
-          disabled={isProcessing}
+          disabled={isProcessing || isLoading}
           className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
         >
           Back
         </button>
         <button
           onClick={processPayment}
-          disabled={isProcessing || !!error || (Number(depositAmount) <= 0) }
+          disabled={isProcessing || isLoading || !!error || (Number(depositAmount) <= 0)}
           className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 flex items-center justify-center"
         >
-          {isProcessing ? (
+          {isProcessing || isLoading ? (
             <>
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -147,11 +163,15 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
               Processing Payment...
             </>
           ) : (
-            'Complete Payment'
+            !currentAccount ? 'Connect Wallet' : 'Complete Payment'
           )}
         </button>
       </div>
-       <p className="text-xs text-gray-500 text-center mt-4">Note: This is a simulation. No real funds will be transferred.</p>
+       <p className="text-xs text-gray-500 text-center mt-4">
+        {currentAccount ? 
+          `Connected: ${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 
+          'Please connect your MetaMask wallet to make a payment'}
+      </p>
     </div>
   );
 };
