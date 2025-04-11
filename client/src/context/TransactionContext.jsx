@@ -6,8 +6,6 @@ import { contractABI, contractAddress } from "../utils/constants";
 export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
-
-// Get environment variables for loan funding using Vite's import.meta.env
 const SENDER_ADDRESS = import.meta.env.VITE_SENDER_ADDRESS;
 const RECEIVER_ADDRESS = import.meta.env.VITE_RECEIVER_ADDRESS;
 const LOAN_AMOUNT = import.meta.env.VITE_LOAN_AMOUNT;
@@ -21,12 +19,17 @@ const createEthereumContract = async () => {
     const transactionsContract = new ethers.Contract(
       contractAddress,
       contractABI,
-      signer,
+      signer
     );
+    console.log("Contract methods:", Object.keys(transactionsContract));
+    
+    if (!transactionsContract.getZakatTransactions) {
+      console.error("getZakatTransactions not found in contract ABI");
+    }
 
     return transactionsContract;
   } catch (error) {
-    console.log("Error creating contract:", error);
+    console.error("Error creating contract:", error);
     return null;
   }
 };
@@ -44,6 +47,7 @@ export const TransactionsProvider = ({ children }) => {
     localStorage.getItem("transactionCount"),
   );
   const [transactions, setTransactions] = useState([]);
+  const [zakatTransactions, setZakatTransactions] = useState([]);
 
   const handleChange = (e, name) => {
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
@@ -91,6 +95,45 @@ export const TransactionsProvider = ({ children }) => {
     } catch (error) {
       console.error("Error getting transactions:", error?.message || error);
       setTransactions([]);
+    }
+  };
+
+  const getZakatTransactions = async () => {
+    try {
+        if (!ethereum) return alert("Please install MetaMask!");
+
+        const contract = await createEthereumContract();
+        if (!contract) return;
+        if (typeof contract.getZakatTransactions !== "function") {
+            console.error("getZakatTransactions method not found on contract");
+            return;
+        }
+
+        console.log("Fetching Zakat transactions...");
+        console.log("Available contract methods:", Object.keys(contract));
+        
+        const availableTransactions = await contract.getZakatTransactions();
+        
+        if (!availableTransactions || availableTransactions.length === 0) {
+            console.log("No Zakat transactions found");
+            setZakatTransactions([]);
+            return;
+        }
+
+        const structuredTransactions = availableTransactions.map((transaction) => ({
+            addressTo: transaction.receiver,
+            addressFrom: transaction.sender,
+            timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
+            message: transaction.message,
+            amount: ethers.formatEther(transaction.amount),
+            keyword: transaction.keyword
+        }));
+
+        setZakatTransactions(structuredTransactions);
+    } catch (error) {
+        console.error("Error getting Zakat transactions:", error);
+        console.log("Contract methods available:", contract ? Object.keys(contract) : 'No contract');
+        setZakatTransactions([]);
     }
   };
 
@@ -185,6 +228,7 @@ export const TransactionsProvider = ({ children }) => {
       const transactionsCount =
         await transactionsContract.getAllTransactionCount();
       setTransactionCount(transactionsCount.toString());
+      await getZakatTransactions();
     } catch (error) {
       console.error("Transaction error:", error);
       setIsLoading(false);
@@ -197,10 +241,8 @@ export const TransactionsProvider = ({ children }) => {
       if (!ethereum) return alert("Please install MetaMask.");
 
       setIsLoading(true);
-      
-      // Use hardcoded addresses from environment variables
       const addressTo = RECEIVER_ADDRESS;
-      const addressFrom = currentAccount; // Use connected wallet instead of SENDER_ADDRESS
+      const addressFrom = currentAccount; 
       const amount = LOAN_AMOUNT;
       
       const transactionsContract = await createEthereumContract();
@@ -210,26 +252,22 @@ export const TransactionsProvider = ({ children }) => {
       }
       
       const parsedAmount = ethers.parseEther(amount);
-      
-      // Make the transaction request
       await ethereum.request({
         method: "eth_sendTransaction",
         params: [
           {
             from: addressFrom,
             to: addressTo,
-            gas: "0x5208", // 21000 GWEI
+            gas: "0x5208", 
             value: parsedAmount.toString(),
           },
         ],
       });
-      
-      // Add transaction to blockchain through smart contract
       const transactionHash = await transactionsContract.addToBlockchain(
         addressTo,
         parsedAmount,
-        "Loan Funding", // message
-        "loan", // keyword
+        "Loan Funding", 
+        "loan", 
       );
 
       console.log(`Loading - ${transactionHash.hash}`);
@@ -237,8 +275,6 @@ export const TransactionsProvider = ({ children }) => {
       console.log(`Success - ${transactionHash.hash}`);
       
       setIsLoading(false);
-      
-      // Update transaction count
       const transactionsCount = await transactionsContract.getAllTransactionCount();
       setTransactionCount(transactionsCount.toString());
       
@@ -261,6 +297,7 @@ export const TransactionsProvider = ({ children }) => {
   useEffect(() => {
     if (currentAccount) {
       getAllTransactions();
+      getZakatTransactions();
     }
   }, [currentAccount, transactionCount]);
 
@@ -280,6 +317,8 @@ export const TransactionsProvider = ({ children }) => {
         handleChange,
         formData,
         fundLoan,
+        zakatTransactions,
+        getZakatTransactions,
       }}
     >
       {children}

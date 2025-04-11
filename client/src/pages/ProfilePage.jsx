@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { HalfCircleBackground } from '../components';
 import { ethers } from 'ethers';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from '../components/LanguageToggle';
+import { TransactionContext } from "../context/TransactionContext";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   
-  const [isPremium] = useState(false); // For potential premium donor features
+  const [isPremium] = useState(false); 
   const [walletAddress, setWalletAddress] = useState('');
   const [walletBalance, setWalletBalance] = useState(null);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState(false);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
-  
-  // Enhanced states for ZakatGo platform
   const [zakatDue, setZakatDue] = useState(0);
   const [totalDonations, setTotalDonations] = useState(0);
   const [impactScore, setImpactScore] = useState(235);
@@ -27,8 +26,7 @@ const ProfilePage = () => {
     { id: 2, type: 'Food Bank', name: 'Community Food Relief', distance: '1.2km', goal: 'RM5,000', raised: 'RM2,750' },
     { id: 3, type: 'Education', name: 'Student Support Fund', distance: '2.3km', goal: 'RM8,000', raised: 'RM4,200' }
   ]);
-  
-  // Category breakdown for zakat distribution
+
   const [zakatCategories, setZakatCategories] = useState([
     { id: 1, name: 'Fuqara (Poor)', percentage: 30, color: 'bg-green-500' },
     { id: 2, name: 'Masakin (Needy)', percentage: 25, color: 'bg-blue-500' },
@@ -45,8 +43,6 @@ const ProfilePage = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-    
-    // Listen for network changes
     if (window.ethereum) {
       window.ethereum.on('chainChanged', handleChainChanged);
       window.ethereum.on('accountsChanged', handleAccountsChanged);
@@ -200,7 +196,7 @@ const ProfilePage = () => {
       if (network.chainId !== BigInt(11155111)) {
         setWalletBalance("Wrong Network");
         setNetworkError(true);
-        setIsBalanceLoading(false); // Clear loading state
+        setIsBalanceLoading(false); 
         return;
       }
       
@@ -208,27 +204,24 @@ const ProfilePage = () => {
       const formattedBalance = ethers.formatEther(balance);
       setWalletBalance(parseFloat(formattedBalance).toFixed(4));
       setNetworkError(false);
-      setIsBalanceLoading(false); // Clear loading state
+      setIsBalanceLoading(false);
     } catch (error) {
       console.error("Error fetching balance:", error);
       setWalletBalance("Error");
-      setIsBalanceLoading(false); // Clear loading state
+      setIsBalanceLoading(false); 
     }
   };
 
-  // Format address for display
   const formatAddress = (address) => {
     if (!address) return '';
     return address.slice(0, 6) + '...' + address.slice(-4);
   };
   
-  // Format transaction hash
   const formatTxHash = (hash) => {
     if (!hash) return '';
     return hash.slice(0, 6) + '...' + hash.slice(-4);
   };
   
-  // Toggle nearby donation suggestions
   const toggleLocalSuggestions = () => {
     setShowLocalSuggestions(!showLocalSuggestions);
   };
@@ -644,8 +637,8 @@ const ProfilePage = () => {
               ))}
             </div>
           </div>
-          
-          {/* Settings Section */}
+
+          <RecentZakatTransactions />
           <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
             <div className="flex items-center mb-4">
               <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -735,6 +728,94 @@ const ProfilePage = () => {
         </div>
     </HalfCircleBackground>
   );
+};
+
+const RecentZakatTransactions = () => {
+    const { zakatTransactions, getZakatTransactions, isLoading } = useContext(TransactionContext);
+    const ethToMYRRate = 13333.33; 
+    
+    useEffect(() => {
+        const fetchZakatTransactions = async () => {
+            try {
+                await getZakatTransactions();
+            } catch (error) {
+                console.error("Error fetching Zakat transactions:", error);
+            }
+        };
+        
+        fetchZakatTransactions();
+    }, [getZakatTransactions]);
+
+    const convertEthToMYR = (ethAmount) => {
+        const myrAmount = Number(ethAmount) * ethToMYRRate;
+        return myrAmount.toFixed(2);
+    };
+
+    return (
+        <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h2 className="text-base font-bold">Recent Zakat Transactions</h2>
+                </div>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+                {isLoading ? (
+                    <div className="py-4 text-center">
+                        <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-green-500 border-t-transparent"></div>
+                    </div>
+                ) : zakatTransactions && zakatTransactions.length > 0 ? (
+                    zakatTransactions.map((tx, index) => (
+                        <div key={index} className="py-3 first:pt-0 last:pb-0">
+                            <div className="flex justify-between">
+                                <div>
+                                    <div className="flex items-center mb-1">
+                                        <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                        <span className="font-medium text-sm">Zakat Payment</span>
+                                    </div>
+                                    <div className="flex items-center text-xs text-gray-500">
+                                        <span className="font-mono">
+                                            From: {tx.addressFrom.slice(0, 6)}...{tx.addressFrom.slice(-4)}
+                                        </span>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-1">{tx.message}</div>
+                                </div>
+                                
+                                <div className="text-right">
+                                    <div className="font-bold text-sm">RM {convertEthToMYR(tx.amount)}</div>
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        {Number(tx.amount).toFixed(6)} ETH
+                                    </div>
+                                    <div className="text-xs text-gray-500">{tx.timestamp}</div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-2 flex items-center text-xs text-gray-500">
+                                <a 
+                                    href={`https://sepolia.etherscan.io/tx/${tx.addressFrom}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center hover:text-green-600 transition-colors"
+                                >
+                                    View on Etherscan
+                                    <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="py-4 text-center text-gray-500 text-sm">
+                        No Zakat transactions found
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default ProfilePage;
