@@ -23,7 +23,6 @@ import {
   OnboardingWelcome,
   PersonalInfoPage,
   JobInfoPage,
-  UploadIDPage,
   SelfiePage,
   UploadPayslipPage,
   OnboardingSuccessPage,
@@ -75,9 +74,8 @@ const AppContent = () => {
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />
             <Route path="/onboarding/personal-info" element={<PersonalInfoPage />} />
             <Route path="/onboarding/job-info" element={<JobInfoPage />} />
-            <Route path="/onboarding/upload-id" element={<UploadIDPage />} />
             <Route path="/onboarding/selfie" element={<SelfiePage />} />
-            <Route path="/onboarding/upload-payslip" element={<UploadPayslipPage />} />
+            <Route path="/onboarding/upload-payslip" element={<UploadPayslipPage />} />;
             <Route path="/onboarding/success" element={<OnboardingSuccessPage />} />
             
             {/* 404 route */}
