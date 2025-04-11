@@ -47,8 +47,8 @@ const ZakatAssistPage = () => {
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
-          <h1 className="text-3xl font-bold text-center">Zakat Assistance System</h1>
-          <p className="text-center text-indigo-100 mt-1">Apply for Zakat assistance easily and securely.</p>
+          <h1 className="text-3xl font-bold text-center">Zakat Assistance Application System</h1>
+          <p className="text-center text-indigo-100 mt-1">Apply for Zakat assistance and, if approved, receive a QR code to get essential goods at partnered stores.</p>
         </div>
 
         {/* Main Content Area */}
