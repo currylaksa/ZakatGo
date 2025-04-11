@@ -20,12 +20,9 @@ export { default as CreateCampaignsPage } from './CreateCampaignsPage';
 export { default as OnboardingWelcome } from './OnboardingWelcome';
 export { default as PersonalInfoPage } from './PersonalInfoPage';
 export { default as JobInfoPage } from './JobInfoPage';
-export { default as UploadIDPage } from './UploadIDPage';
 export { default as SelfiePage } from './SelfiePage';
 export { default as UploadPayslipPage } from './UploadPayslipPage';
 export { default as OnboardingSuccessPage } from './OnboardingSuccessPage';
 export { default as WithdrawTutorialPage } from './WithdrawTutorialPage';
-
-
 export { default as ZakatPaymentPage } from './zakat/ZakatPaymentPage';
 export { default as ZakatAssistPage } from './zakatAssist/ZakatAssistPage';
