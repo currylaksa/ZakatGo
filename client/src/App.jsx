@@ -24,6 +24,7 @@ import {
   ImpactDashboardPage,
   TransparencyPage,
   HelpPage,
+  CreateCampaignsPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
