@@ -102,9 +102,32 @@ const Homepage = () => {
   const handleAssistanceClick = () => {
     window.location.href = '/zakat-assist';
   };
+  
+  const handleLearnMoreClick = () => {
+    window.location.href = '/referral-program';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
+      {/* Referral Rewards Announcement Banner - NEW SECTION */}
+      <section className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-4">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+          <div className="flex items-center mb-3 md:mb-0">
+            <div className="text-3xl mr-3">🎁</div>
+            <div>
+              <h3 className="font-bold text-lg">Referral Rewards for Good Deeds - Coming Soon!</h3>
+              <p className="text-sm text-purple-100">Invite friends to ZakatGo and earn rewards for spreading the word about charitable giving!</p>
+            </div>
+          </div>
+          <Button 
+            onClick={handleLearnMoreClick} 
+            className="bg-green text-purple-700 hover:bg-black-100 px-5 py-2"
+          >
+            Learn More
+          </Button>
+        </div>
+      </section>
+      
       {/* Hero Section - Updated to focus on core value proposition */}
       <section className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20 px-4">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
@@ -197,6 +220,83 @@ const Homepage = () => {
         </div>
       </section>
 
+      {/* NEW SECTION: Referral Rewards Feature Highlight */}
+      <section className="py-16 px-4 container mx-auto">
+        <div className="flex flex-col lg:flex-row items-center bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="lg:w-1/2 p-8 lg:p-12">
+            <div className="flex items-center mb-4">
+              <div className="bg-purple-100 p-3 rounded-full text-purple-600 mr-4">
+                <span className="text-3xl">🎁</span>
+              </div>
+              <h3 className="text-2xl font-bold text-blue-900">Referral Rewards for Good Deeds</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Soon, you'll be able to earn rewards for inviting friends and family to ZakatGo. Spread the word about charitable giving and get recognized for your positive impact!
+            </p>
+            <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500 mb-6">
+              <h4 className="font-medium text-blue-900 mb-2">How It Will Work:</h4>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-center">
+                  <div className="mr-2 text-purple-500">✓</div>
+                  <span>Invite others using your personal referral link</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="mr-2 text-purple-500">✓</div>
+                  <span>Earn badges and recognition when they join</span>
+                </li>
+                <li className="flex items-center">
+                  <div className="mr-2 text-purple-500">✓</div>
+                  <span>Track your impact and rewards on a personalized dashboard</span>
+                </li>
+              </ul>
+            </div>
+            <Button 
+              onClick={handleLearnMoreClick} 
+              type="secondary" 
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Learn More
+            </Button>
+          </div>
+          <div className="lg:w-1/2 bg-gradient-to-r from-purple-500 to-indigo-600 p-8 lg:p-12 text-white">
+            <div className="max-w-md mx-auto">
+              <h4 className="text-xl font-semibold mb-6">Preview of Rewards Dashboard:</h4>
+              <div className="bg-white bg-opacity-10 rounded-lg p-6 backdrop-blur-sm border border-white border-opacity-20">
+                <div className="mb-6">
+                  <p className="text-sm text-purple-100 mb-1">Your Impact</p>
+                  <p className="text-3xl font-bold">7 Friends Invited</p>
+                </div>
+                <div className="mb-6">
+                  <p className="text-sm text-purple-100 mb-2">Rewards Progress</p>
+                  <div className="w-full bg-white bg-opacity-20 rounded-full h-3 mb-2">
+                    <div className="bg-white h-3 rounded-full" style={{width: '70%'}}></div>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span>7 invites</span>
+                    <span>10 invites for next badge</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-purple-100 mb-3">Your Badges</p>
+                  <div className="flex space-x-3">
+                    <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                      <span className="text-lg">🌱</span>
+                    </div>
+                    <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                      <span className="text-lg">🌟</span>
+                    </div>
+                    <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center border-2 border-dashed border-white border-opacity-40">
+                      <span className="text-lg">?</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-center text-sm mt-4 text-purple-100">Coming Soon - Stay Tuned!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Zakat Categories Section - New section to highlight Islamic aspects */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
@@ -244,6 +344,151 @@ const Homepage = () => {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">4</div>
             <h3 className="text-xl font-semibold mb-2 text-blue-900">Blockchain Payment</h3>
             <p className="text-gray-600">Pay securely using ETH and track your contribution</p>
+          </div>
+        </div>
+      </section>
+
+      {/* New Section: Apply for Zakat Assistance - MODIFIED SECTION */}
+      <section className="py-16 px-4 container mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4 text-blue-900 flex items-center justify-center">
+            <span className="mr-3 text-4xl">💰</span> Need Financial Help?
+          </h2>
+          <p className="max-w-lg mx-auto text-gray-600 mb-8">Apply for Zakat assistance with dignity</p>
+        </div>
+        <div className="bg-white p-8 rounded-xl shadow-lg max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="md:w-1/2">
+              <h3 className="text-2xl font-semibold mb-6 text-blue-900">Zakat Assistance System</h3>
+              <div className="space-y-4 md:space-y-6">
+                {/* Enhanced step-by-step process with icons and better visuals */}
+                <div className="flex items-start">
+                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
+                    <span className="text-2xl">📝</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">Apply</h4>
+                    <p className="text-sm text-gray-600">Complete form & upload documents</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
+                    <span className="text-2xl">✅</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">Verification</h4>
+                    <p className="text-sm text-gray-600">Eligibility check based on Shariah guidelines</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
+                    <span className="text-2xl">🔔</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">Status</h4>
+                    <p className="text-sm text-gray-600">Get notifications via SMS or app</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
+                    <span className="text-2xl">📱</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">QR Code</h4>
+                    <p className="text-sm text-gray-600">Redeem assistance at partner locations</p>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <Button onClick={handleAssistanceClick} type="warning" className="w-full">
+                    <span className="flex items-center justify-center">
+                      <span className="mr-2">📱</span> Apply Now
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="md:w-1/2">
+              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <div className="flex items-center mb-2">
+                  <div className="bg-yellow-100 p-2 rounded-full text-yellow-600 mr-3">
+                    <span className="text-2xl">📱</span>
+                  </div>
+                  <h4 className="font-semibold text-blue-900">QR Code</h4>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">Receive help with dignity at partner stores</p>
+                <div className="bg-white p-3 rounded-lg flex items-center justify-center">
+                  <div className="border-2 border-gray-300 p-1 rounded">
+                    <div className="w-24 h-24 bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                      QR Sample
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+            {/* Impact Dashboard Preview with actual charts */}
+            <section className="bg-blue-50 py-16 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-blue-900">Track Your Impact</h2>
+            <p className="max-w-2xl mx-auto text-gray-600">Our transparent dashboard lets you see exactly how your contributions are making a difference</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-blue-900">Distribution By Category</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Legend />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-blue-900">Beneficiaries Reached</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={barData}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="beneficiaries" fill="#1e40af" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <Button onClick={handleImpactClick} type="secondary">View Full Dashboard</Button>
+            </div>
           </div>
         </div>
       </section>
@@ -358,151 +603,6 @@ const Homepage = () => {
           </div>
           <div className="text-center">
             <Button type="secondary">Enable Location Services</Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Impact Dashboard Preview with actual charts */}
-      <section className="bg-blue-50 py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-blue-900">Track Your Impact</h2>
-            <p className="max-w-2xl mx-auto text-gray-600">Our transparent dashboard lets you see exactly how your contributions are making a difference</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-4 text-blue-900">Distribution By Category</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Legend />
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-4 text-blue-900">Beneficiaries Reached</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={barData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="beneficiaries" fill="#1e40af" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 text-center">
-              <Button onClick={handleImpactClick} type="secondary">View Full Dashboard</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* New Section: Apply for Zakat Assistance - MODIFIED SECTION */}
-      <section className="py-16 px-4 container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900 flex items-center justify-center">
-            <span className="mr-3 text-4xl">💰</span> Need Help?
-          </h2>
-          <p className="max-w-lg mx-auto text-gray-600 mb-8">Apply for Zakat assistance with dignity</p>
-        </div>
-        <div className="bg-white p-8 rounded-xl shadow-lg max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="md:w-1/2">
-              <h3 className="text-2xl font-semibold mb-6 text-blue-900">Zakat Assistance System</h3>
-              <div className="space-y-4 md:space-y-6">
-                {/* Enhanced step-by-step process with icons and better visuals */}
-                <div className="flex items-start">
-                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-2xl">📝</span>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Apply</h4>
-                    <p className="text-sm text-gray-600">Complete form & upload documents</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-2xl">✅</span>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Verification</h4>
-                    <p className="text-sm text-gray-600">Eligibility check based on Shariah guidelines</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-2xl">🔔</span>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Status</h4>
-                    <p className="text-sm text-gray-600">Get notifications via SMS or app</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-2xl">📱</span>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">QR Code</h4>
-                    <p className="text-sm text-gray-600">Redeem assistance at partner locations</p>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <Button onClick={handleAssistanceClick} type="warning" className="w-full">
-                    <span className="flex items-center justify-center">
-                      <span className="mr-2">📱</span> Apply Now
-                    </span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="md:w-1/2">
-              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
-                <div className="flex items-center mb-2">
-                  <div className="bg-yellow-100 p-2 rounded-full text-yellow-600 mr-3">
-                    <span className="text-2xl">📱</span>
-                  </div>
-                  <h4 className="font-semibold text-blue-900">QR Code</h4>
-                </div>
-                <p className="text-xs text-gray-600 mb-3">Receive help with dignity at partner stores</p>
-                <div className="bg-white p-3 rounded-lg flex items-center justify-center">
-                  <div className="border-2 border-gray-300 p-1 rounded">
-                    <div className="w-24 h-24 bg-gray-200 flex items-center justify-center text-xs text-gray-500">
-                      QR Sample
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
