@@ -8,7 +8,14 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
   const [error, setError] = useState('');
   const rmToEthRate = 0.000075; 
   const [ethAmount, setEthAmount] = useState(depositAmount * rmToEthRate);
-  const { currentAccount, connectWallet, sendTransaction, isLoading, handleChange } = useContext(TransactionContext);
+  const { 
+    currentAccount, 
+    connectWallet, 
+    sendTransaction, 
+    isLoading, 
+    handleChange,
+    getZakatTransactions // Add this
+  } = useContext(TransactionContext);
 
   useEffect(() => {
      const amount = Number(depositAmount) || 0;
@@ -64,6 +71,10 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
 
       await sendTransaction();
+      
+      // Wait for transaction to be mined
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const transactionDetails = {
         transactionId: '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''),
         amount: finalDepositAmount,
@@ -76,6 +87,10 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       };
 
       updateUserData({ transactionDetails });
+      
+      // Force refresh of Zakat transactions
+      await getZakatTransactions();
+      
       nextStep();
     } catch (error) {
       console.error('Payment error:', error);
