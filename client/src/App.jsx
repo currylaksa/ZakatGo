@@ -6,21 +6,15 @@ import {
   DonationFormPage,
   DonationSuccessPage,
   DonationPage,
-  LoanPage, 
-  LoanConfirmationPage, 
   HomePage, 
-  LoanSuccessPage, 
   ProfilePage, 
   TransactionsPage, 
-  LoanRepaymentPage, 
   ReviewSummaryPage, 
   PremiumPage, 
   LenderReportsPage,
-  LoanFundingPage,
   FundingReviewPage,
   ZakatCalculator,
   BlockchainLedgerPage,
-  LoanFundingSuccessPage,
   ImpactDashboardPage,
   TransparencyPage,
   HelpPage,
@@ -61,14 +55,8 @@ const AppContent = () => {
             <Route path="/campaigns" element={<DonationPage />} />
             <Route path="/donate/:id" element={<DonationFormPage />} />
             <Route path="/donation-success" element={<DonationSuccessPage />} />
-            <Route path="/loan" element={<LoanPage />} />
-            <Route path="/loan-confirmation" element={<LoanConfirmationPage />} />
-            <Route path="/loan-success" element={<LoanSuccessPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
-            <Route path="/fund/:loanId" element={<LoanFundingPage />} />
             <Route path="/funding-review/:loanId" element={<FundingReviewPage />} />
-            <Route path="/funding-success/:loanId" element={<LoanFundingSuccessPage />} />
-            <Route path="/repay/:loanId" element={<LoanRepaymentPage />} />
             <Route path="/review-summary/:loanId" element={<ReviewSummaryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/premium" element={<PremiumPage />} />
