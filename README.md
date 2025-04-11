@@ -1,116 +1,115 @@
-# ZakatGo - One-Stop Zakat Payment Platform with Blockchain & AI Integration
+# ZakatGo 🌙
 
-![ZakatGo Logo](https://via.placeholder.com/200x100?text=ZakatGo)
+> A One-Stop Zakat Payment Platform with Blockchain & Cloud Vision API Integration
 
-## Overview
+![ZakatGo Banner](https://via.placeholder.com/800x200?text=ZakatGo+-+Transparent+Zakat+Payments)
 
-ZakatGo is a transparent, automated, and Shariah-compliant Zakat platform that leverages blockchain technology and AI to simplify the Zakat payment process. Our solution addresses key challenges in the current Zakat management system, including lack of transparency, inefficiency, limited accessibility, and inadequate feedback to donors.
+## 📋 Overview
 
-## Problem Statement
+ZakatGo is a cutting-edge Shariah-compliant web platform designed to streamline and enhance the Zakat payment process through fintech innovation. By integrating blockchain technology, Google Cloud Vision API, and smart contracts, ZakatGo ensures transparency, efficiency, and accessibility for both donors and those seeking Zakat assistance.
 
-In Malaysia, the Zakat payment process faces several challenges:
+*Developed by Team Oversized Minions for UMHackathon 2025 - Securities Commission Malaysia*
 
-- **Lack of Transparency**: Donors often don't know how their contributions are being distributed
-- **Inefficiency**: Manual calculation and distribution processes are time-consuming and error-prone
-- **Limited Access**: Many unbanked or rural individuals are excluded due to lack of accessible donation methods
-- **Inadequate Feedback**: Donors lack clear and timely feedback on how their contributions are being used
+## 🌟 Key Features
 
-## Our Solution
+### 🕌 For Donors - Zakat Payment System
+- **Zakat Auto-Calculator with Cloud Vision API**
+  - Upload documents (payslips, etc.)
+  - Automatic text extraction and data population
+  - Smart calculation of Zakat obligations
+- **Blockchain-Powered Transparency**
+  - Deposit Malaysian Ringgit (RM)
+  - Convert to Ethereum (ETH)
+  - Make secure payments on the Ethereum blockchain
+- **Categorized Distribution**
+  - Select from the 8 Islamic categories for Zakat distribution
+  - Track fund allocation in real-time
 
-ZakatGo streamlines the entire Zakat payment process with innovative features:
+### 🤲 For Recipients - Zakat Assistance System
+- **Streamlined Application Process**
+  - Fill eligibility forms
+  - Upload supporting documents
+  - Receive application status updates
+- **QR Code Redemption**
+  - Successful applicants receive unique QR codes
+  - Codes can be used at partner shops like Speed99 for financial assistance
 
-### Key Features
+### 📊 Additional Features
+- **NGO Campaign Management**
+  - Submit and manage donation campaigns
+  - Track fundraising progress
+- **Impact Dashboard**
+  - View real-time fund utilization
+  - Track impact through visualizations
+- **User Profiles & Authentication**
+  - Secure login/signup
+  - Personalized donation history
+- **Help Center**
+  - FAQs and documentation
+  - Customer support access
 
-- **AI-Powered Zakat Auto-Calculator**: Automatically calculates Zakat based on uploaded documents like payslips
-- **Blockchain Integration**: Ensures transparent, real-time tracking of donations through secure, immutable records
-- **Donation Categorization**: Users can select from the 8 categories for Zakat distribution (Fuqara, Masakin, Amil Zakat, etc.)
-- **Unbanked-Friendly Onboarding**: QR codes and National ID recognition for users without bank accounts
-- **Cryptocurrency Payment**: Users can deposit in Malaysian Ringgit (RM), convert to ETH, and make blockchain payments
-- **NGO Campaign Management**: NGOs can submit and manage donation campaigns
-- **Geofencing-Based Sadaqah Suggestions**: AI-driven suggestions for nearby verified causes
-- **Impact Dashboard**: Real-time tracking of donation impact with visualizations
+## 🚀 Why ZakatGo Stands Out
 
-## Technology Stack
+- **Shariah-Compliant & Transparent**: Fully aligned with Islamic principles through smart contract integration
+- **User-Centric Design**: Intuitive interface for both banked and unbanked users
+- **Cloud Vision API Integration**: Eliminates manual entry errors with automated document processing
+- **Geofencing for Sadaqah**: Location-based suggestions for nearby verified donation causes
+- **Comprehensive Solution**: Supports both donors and applicants in a single platform
+
+## 💻 Technologies Used
 
 - **Frontend**: React + Tailwind CSS
-- **Blockchain**: Ethereum/Polygon testnet
-- **Smart Contracts**: Solidity for automated fund distribution
-- **Machine Learning**: AI for document processing and Zakat calculation
+- **Blockchain**: Ethereum testnet
+- **Smart Contracts**: Solidity
+- **Document Processing**: Google Cloud Vision API
 - **Backend**: Node.js
 - **Data Visualization**: Chart.js/Recharts
 
-## Getting Started
+## 🛠 Getting Started
 
-### Prerequisites
+```bash
+# Clone the repository
+git clone https://github.com/your-username/zakatgo.git
 
-- Node.js (v16 or higher)
-- npm or yarn
-- MetaMask or similar Web3 provider
-- Modern web browser (Chrome, Firefox, Edge, Safari)
+# Navigate to the project directory
+cd zakatgo
 
-### Installation
+# Install dependencies
+npm install
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/zakatgo.git
-   cd zakatgo
-   ```
+# Start the development server
+cd client
+npm run dev
+```
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
+## 📝 Roadmap
 
-3. Set up environment variables:
-   ```
-   cp .env.example .env
-   ```
-   Edit the `.env` file to add your API keys and configuration details.
+- **Phase 1**: Core Zakat calculation and payment system
+- **Phase 2**: Applicant assistance features and QR code implementation
+- **Phase 3**: NGO campaign management integration
+- **Phase 4**: Referral rewards system for good deeds
 
-4. Start the development server:
-   ```
-   npm start
-   ```
+## 🤝 Contributing
 
-5. The application should now be running at `http://localhost:3000`
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## System Flow
+## 📄 License
 
-1. **Homepage**: Introduction to the platform with navigation to key features
-2. **Zakat Calculator**:
-   - Upload documents (payslips, etc.)
-   - AI processes and extracts relevant data
-   - Review and complete information
-   - Get calculated Zakat amount
-   - Select donation categories
-   - Make payment through blockchain
-3. **Donation Campaigns**: Browse and donate to NGO campaigns
-4. **Impact Dashboard**: Track donation impact and history
-5. **User Profile**: Manage personal information and view transaction history
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Smart Contract Integration
+## 👥 Team Oversized Minions
 
-ZakatGo uses Ethereum/Polygon-based smart contracts to ensure transparency and automated distribution:
+- [Chan Qing Yee](https://github.com/team-member-1)
+- [Cheng See Chee](https://github.com/team-member-2)
+- [Ong Jia Yu](https://github.com/team-member-3)
+- [Tham Ren Sheng](https://github.com/team-member-4)
+- [Team Member 5](https://github.com/team-member-5)
 
-1. Funds are received through smart contracts
-2. Distribution is automated based on selected categories
-3. All transactions are recorded on the blockchain for full transparency
-4. Users can track their donations in real-time
+## 🙏 Acknowledgements
 
-## Contributing
+- Securities Commission Malaysia for hosting UMHackathon 2025
+- All mentors and advisors who supported our project development
 
-We welcome contributions to ZakatGo! Please check our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
+---
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- UMHackathon 2025
-- Securities Commission Malaysia
-- Team Oversized Minions
-
-## Contact
-
-For questions or support, please contact us at support@zakatgo.com or open an issue in this repository.
+*ZakatGo - Enhancing Charity & Donations through Fintech*
