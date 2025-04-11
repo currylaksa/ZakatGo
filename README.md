@@ -2,8 +2,6 @@
 
 > A One-Stop Zakat Payment Platform with Blockchain & Cloud Vision API Integration
 
-![ZakatGo Banner](https://via.placeholder.com/800x200?text=ZakatGo+-+Transparent+Zakat+Payments)
-
 ## 📋 Overview
 
 ZakatGo is a cutting-edge Shariah-compliant web platform designed to streamline and enhance the Zakat payment process through fintech innovation. By integrating blockchain technology, Google Cloud Vision API, and smart contracts, ZakatGo ensures transparency, efficiency, and accessibility for both donors and those seeking Zakat assistance.
