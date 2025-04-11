@@ -29,4 +29,23 @@ contract Transactions {
     function getAllTransactionCount() public view returns (uint256){
         return transactionCount;
     }
+
+    function getZakatTransactions() public view returns (TransferStruct[] memory) {
+        uint256 zakatCount = 0;
+        for (uint256 i = 0; i < transactions.length; i++) {
+            if (keccak256(bytes(transactions[i].keyword)) == keccak256(bytes("ZAKAT"))) {
+                zakatCount++;
+            }
+        }
+        TransferStruct[] memory zakatTransactions = new TransferStruct[](zakatCount);
+        uint256 currentIndex = 0;
+        for (uint256 i = 0; i < transactions.length; i++) {
+            if (keccak256(bytes(transactions[i].keyword)) == keccak256(bytes("ZAKAT"))) {
+                zakatTransactions[currentIndex] = transactions[i];
+                currentIndex++;
+            }
+        }
+        
+        return zakatTransactions;
+    }
 }
