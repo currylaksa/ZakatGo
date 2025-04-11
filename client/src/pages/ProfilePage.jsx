@@ -731,91 +731,116 @@ const ProfilePage = () => {
 };
 
 const RecentZakatTransactions = () => {
-    const { zakatTransactions, getZakatTransactions, isLoading } = useContext(TransactionContext);
-    const ethToMYRRate = 13333.33; 
-    
-    useEffect(() => {
-        const fetchZakatTransactions = async () => {
-            try {
-                await getZakatTransactions();
-            } catch (error) {
-                console.error("Error fetching Zakat transactions:", error);
-            }
-        };
-        
-        fetchZakatTransactions();
-    }, [getZakatTransactions]);
+  const { zakatTransactions, getZakatTransactions, isLoading } = useContext(TransactionContext);
+  const [walletAddress, setWalletAddress] = useState('');
+  const ethToMYRRate = 13333.33;
+  
+  useEffect(() => {
+      // Get current wallet address when component mounts
+      const getCurrentWalletAddress = async () => {
+          if (window.ethereum) {
+              try {
+                  const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                  if (accounts.length > 0) {
+                      setWalletAddress(accounts[0].toLowerCase());
+                  }
+              } catch (error) {
+                  console.error("Error getting wallet address:", error);
+              }
+          }
+      };
+      
+      getCurrentWalletAddress();
+  }, []);
+  
+  useEffect(() => {
+      const fetchZakatTransactions = async () => {
+          try {
+              await getZakatTransactions();
+          } catch (error) {
+              console.error("Error fetching Zakat transactions:", error);
+          }
+      };
+      
+      fetchZakatTransactions();
+  }, [getZakatTransactions]);
 
-    const convertEthToMYR = (ethAmount) => {
-        const myrAmount = Number(ethAmount) * ethToMYRRate;
-        return myrAmount.toFixed(2);
-    };
+  const convertEthToMYR = (ethAmount) => {
+      const myrAmount = Number(ethAmount) * ethToMYRRate;
+      return myrAmount.toFixed(2);
+  };
+  
+  const filteredTransactions = zakatTransactions ? zakatTransactions.filter(
+      tx => walletAddress && tx.addressFrom.toLowerCase() === walletAddress
+  ) : [];
 
-    return (
-        <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                    <svg className="w-5 h-5 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h2 className="text-base font-bold">Recent Zakat Transactions</h2>
-                </div>
-            </div>
+  return (
+      <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h2 className="text-base font-bold">My Zakat Transactions</h2>
+              </div>
+          </div>
 
-            <div className="divide-y divide-gray-100">
-                {isLoading ? (
-                    <div className="py-4 text-center">
-                        <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-green-500 border-t-transparent"></div>
-                    </div>
-                ) : zakatTransactions && zakatTransactions.length > 0 ? (
-                    zakatTransactions.map((tx, index) => (
-                        <div key={index} className="py-3 first:pt-0 last:pb-0">
-                            <div className="flex justify-between">
-                                <div>
-                                    <div className="flex items-center mb-1">
-                                        <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                        <span className="font-medium text-sm">Zakat Payment</span>
-                                    </div>
-                                    <div className="flex items-center text-xs text-gray-500">
-                                        <span className="font-mono">
-                                            From: {tx.addressFrom.slice(0, 6)}...{tx.addressFrom.slice(-4)}
-                                        </span>
-                                    </div>
-                                    <div className="text-xs text-gray-500 mt-1">{tx.message}</div>
-                                </div>
-                                
-                                <div className="text-right">
-                                    <div className="font-bold text-sm">RM {convertEthToMYR(tx.amount)}</div>
-                                    <div className="text-xs text-gray-500 mt-1">
-                                        {Number(tx.amount).toFixed(6)} ETH
-                                    </div>
-                                    <div className="text-xs text-gray-500">{tx.timestamp}</div>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-2 flex items-center text-xs text-gray-500">
-                                <a 
-                                    href={`https://sepolia.etherscan.io/tx/${tx.addressFrom}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center hover:text-green-600 transition-colors"
-                                >
-                                    View on Etherscan
-                                    <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <div className="py-4 text-center text-gray-500 text-sm">
-                        No Zakat transactions found
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+          <div className="divide-y divide-gray-100">
+              {isLoading ? (
+                  <div className="py-4 text-center">
+                      <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-green-500 border-t-transparent"></div>
+                  </div>
+              ) : walletAddress && filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((tx, index) => (
+                      <div key={index} className="py-3 first:pt-0 last:pb-0">
+                          <div className="flex justify-between">
+                              <div>
+                                  <div className="flex items-center mb-1">
+                                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                      <span className="font-medium text-sm">Zakat Payment</span>
+                                  </div>
+                                  <div className="flex items-center text-xs text-gray-500">
+                                      <span className="mr-2">To: {tx.addressTo.slice(0, 6)}...{tx.addressTo.slice(-4)}</span>
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-1">{tx.message}</div>
+                              </div>
+                              
+                              <div className="text-right">
+                                  <div className="font-bold text-sm">RM {convertEthToMYR(tx.amount)}</div>
+                                  <div className="text-xs text-gray-500 mt-1">
+                                      {Number(tx.amount).toFixed(6)} ETH
+                                  </div>
+                                  <div className="text-xs text-gray-500">{tx.timestamp}</div>
+                              </div>
+                          </div>
+                          
+                          <div className="mt-2 flex items-center text-xs text-gray-500">
+                              <a 
+                                  href={`https://sepolia.etherscan.io/tx/${tx.transactionHash || tx.addressFrom}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center hover:text-green-600 transition-colors"
+                              >
+                                  View on Etherscan
+                                  <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                              </a>
+                          </div>
+                      </div>
+                  ))
+              ) : !walletAddress ? (
+                  <div className="py-4 text-center text-gray-500 text-sm">
+                      Please connect your wallet to view your transactions
+                  </div>
+              ) : (
+                  <div className="py-4 text-center text-gray-500 text-sm">
+                      No Zakat transactions found for your wallet
+                  </div>
+              )}
+          </div>
+      </div>
+  );
 };
 
 export default ProfilePage;
