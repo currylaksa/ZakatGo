@@ -31,3 +31,7 @@ export { default as SelfiePage } from './SelfiePage';
 export { default as UploadPayslipPage } from './UploadPayslipPage';
 export { default as OnboardingSuccessPage } from './OnboardingSuccessPage';
 export { default as WithdrawTutorialPage } from './WithdrawTutorialPage';
+
+
+export { default as ZakatPaymentPage } from './zakat/ZakatPaymentPage';
+export { default as ZakatAssistPage } from './zakatAssist/ZakatAssistPage';
