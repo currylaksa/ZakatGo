@@ -422,76 +422,82 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* New Section: Apply for Zakat Assistance */}
+      {/* New Section: Apply for Zakat Assistance - MODIFIED SECTION */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900">Need Financial Assistance?</h2>
-          <p className="max-w-2xl mx-auto text-gray-600">Apply for Zakat assistance through our simple, dignified process</p>
+          <h2 className="text-3xl font-bold mb-4 text-blue-900 flex items-center justify-center">
+            <span className="mr-3 text-4xl">💰</span> Need Help?
+          </h2>
+          <p className="max-w-lg mx-auto text-gray-600 mb-8">Apply for Zakat assistance with dignity</p>
         </div>
         <div className="bg-white p-8 rounded-xl shadow-lg max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-8 items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="md:w-1/2">
-              <h3 className="text-2xl font-semibold mb-6 text-blue-900">Zakat Assistance Program</h3>
-              <div className="space-y-6">
+              <h3 className="text-2xl font-semibold mb-6 text-blue-900">Zakat Assistance System</h3>
+              <div className="space-y-4 md:space-y-6">
                 {/* Enhanced step-by-step process with icons and better visuals */}
                 <div className="flex items-start">
                   <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-xl">1</span>
+                    <span className="text-2xl">📝</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Application Submission</h4>
-                    <p className="text-gray-600">Complete our user-friendly application form and upload supporting documents (ID, income proof, etc.)</p>
+                    <h4 className="font-medium text-blue-900 mb-1">Apply</h4>
+                    <p className="text-sm text-gray-600">Complete form & upload documents</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
                   <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-xl">2</span>
+                    <span className="text-2xl">✅</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Verification Process</h4>
-                    <p className="text-gray-600">Our team verifies your eligibility based on Shariah guidelines with privacy and respect</p>
+                    <h4 className="font-medium text-blue-900 mb-1">Verification</h4>
+                    <p className="text-sm text-gray-600">Eligibility check based on Shariah guidelines</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
                   <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-xl">3</span>
+                    <span className="text-2xl">🔔</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Application Status</h4>
-                    <p className="text-gray-600">Receive real-time notifications about your application status through SMS or app</p>
+                    <h4 className="font-medium text-blue-900 mb-1">Status</h4>
+                    <p className="text-sm text-gray-600">Get notifications via SMS or app</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
                   <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4 flex-shrink-0">
-                    <span className="text-xl">4</span>
+                    <span className="text-2xl">📱</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Assistance Distribution</h4>
-                    <p className="text-gray-600">If approved, receive your personalized QR code for redeeming assistance at partner locations</p>
+                    <h4 className="font-medium text-blue-900 mb-1">QR Code</h4>
+                    <p className="text-sm text-gray-600">Redeem assistance at partner locations</p>
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <Button onClick={handleAssistanceClick} type="warning" className="w-full sm:w-auto">Apply for Assistance</Button>
+                <div className="mt-4">
+                  <Button onClick={handleAssistanceClick} type="warning" className="w-full">
+                    <span className="flex items-center justify-center">
+                      <span className="mr-2">📱</span> Apply Now
+                    </span>
+                  </Button>
                 </div>
               </div>
             </div>
             <div className="md:w-1/2">
-              <div className="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
-                <div className="flex items-center mb-4">
-                  <div className="bg-yellow-100 p-3 rounded-full text-yellow-600 mr-4">
+              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <div className="flex items-center mb-2">
+                  <div className="bg-yellow-100 p-2 rounded-full text-yellow-600 mr-3">
                     <span className="text-2xl">📱</span>
                   </div>
-                  <h4 className="font-semibold text-lg text-blue-900">QR Code System</h4>
+                  <h4 className="font-semibold text-blue-900">QR Code</h4>
                 </div>
-                <p className="text-gray-600 mb-4">Our unique QR code system allows you to receive financial help with dignity at partner stores like Speed99.</p>
-                <div className="bg-white p-4 rounded-lg flex items-center justify-center">
-                  <div className="border-2 border-gray-300 p-2 rounded">
-                    <div className="w-32 h-32 bg-gray-200 flex items-center justify-center text-gray-500">
-                      QR Code Sample
+                <p className="text-xs text-gray-600 mb-3">Receive help with dignity at partner stores</p>
+                <div className="bg-white p-3 rounded-lg flex items-center justify-center">
+                  <div className="border-2 border-gray-300 p-1 rounded">
+                    <div className="w-24 h-24 bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                      QR Sample
                     </div>
                   </div>
                 </div>
