@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
+import { processDocumentWithGroq } from '../../utils/groqApi';
 
 const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, setIsLoading }) => {
   const [file, setFile] = useState(null);
@@ -8,25 +9,17 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
-
-  // File types that we accept
   const acceptedFileTypes = {
     'application/pdf': ['.pdf'],
     'image/jpeg': ['.jpg', '.jpeg'],
     'image/png': ['.png']
   };
 
-  // Handle file drop
   const onDrop = useCallback(acceptedFiles => {
-    // Reset states
     setError('');
     setUploadSuccess(false);
     setUploadProgress(0);
-    
-    // We only take the first file
     const selectedFile = acceptedFiles[0];
-    
-    // Validate file type
     if (selectedFile && (
       selectedFile.type.includes('pdf') || 
       selectedFile.type.includes('image/jpeg') || 
@@ -43,40 +36,26 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
     onDrop,
     accept: acceptedFileTypes,
     multiple: false,
-    maxSize: 5242880, // 5MB max size
+    maxSize: 5242880, 
   });
 
-  // Handle document processing
-  const processDocument = useCallback(() => {
+  const processDocument = useCallback(async () => {
     if (!file) return;
 
     setIsProcessing(true);
     setError('');
     
-    // Simulate file upload progress
-    const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
-        const newProgress = prev + Math.random() * 15;
-        return newProgress >= 100 ? 100 : newProgress;
-      });
-    }, 200);
+    try {
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          const newProgress = prev + Math.random() * 15;
+          return newProgress >= 90 ? 90 : newProgress;
+        });
+      }, 200);
 
-    // Simulate AI document processing
-    console.log("Processing document:", file.name);
-    
-    setTimeout(() => {
+      const extractedData = await processDocumentWithGroq(file);
       clearInterval(progressInterval);
       setUploadProgress(100);
-      
-      // Mock data - replace with actual AI extraction logic
-      const extractedData = {
-        name: 'Ahmad bin Abdullah',
-        salary: 6500,
-        deductions: 700,
-        assets: 15000
-      };
-
-      // Update user data with extracted information
       updateUserData({ 
         documentData: { 
           ...userData.documentData, 
@@ -86,22 +65,22 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
       
       setIsProcessing(false);
       setUploadSuccess(true);
-      
-      // Proceed to next step after showing success message
       setTimeout(() => {
         nextStep();
       }, 1500);
-    }, 3000);
-  }, [file, nextStep, updateUserData, userData.documentData]);
 
-  // Trigger processing automatically when file is selected
+    } catch (error) {
+      setError('Failed to process document. Please try again.');
+      setIsProcessing(false);
+      setUploadProgress(0);
+    }
+  }, [file, nextStep, updateUserData, userData.documentData]);
   useEffect(() => {
     if (file && !uploadSuccess && !isProcessing && !error) {
       processDocument();
     }
   }, [file, uploadSuccess, isProcessing, error, processDocument]);
 
-  // Get the right border color based on drag state
   const getBorderColor = () => {
     if (isDragAccept) return 'border-green-500';
     if (isDragReject) return 'border-red-500';
