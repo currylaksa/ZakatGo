@@ -199,6 +199,7 @@ export const TransactionsProvider = ({ children }) => {
       if (!ethereum) return alert("Please install MetaMask.");
 
       const { addressTo, amount, keyword, message } = formData;
+
       const transactionsContract = await createEthereumContract();
       if (!transactionsContract) return;
       const parsedAmount = ethers.parseEther(amount);
