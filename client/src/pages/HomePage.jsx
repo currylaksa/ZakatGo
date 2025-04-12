@@ -121,7 +121,7 @@ const Homepage = () => {
           </div>
           <Button 
             onClick={handleLearnMoreClick} 
-            className="bg-green text-purple-700 hover:bg-black-100 px-5 py-2"
+            className="bg-green text-purple-700 hover:bg-black-100 px-5 py-1"
           >
             Learn More
           </Button>
