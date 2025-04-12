@@ -170,20 +170,20 @@ const ZakatPaymentPage = () => {
                 <h2 className="text-xl font-semibold text-gray-800">
                   Step {currentStep}: {steps.find(step => step.id === currentStep)?.name}
                 </h2>
-                <p className="text-sm text-gray-500">{currentStep} of {steps.length - 1}</p>
+                <p className="text-sm text-gray-500">{currentStep} of {steps.length}</p>
               </div>
               
               {/* Progress bar */}
               <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
                 <div 
                   className="bg-green-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-                  style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}>
+                  style={{ width: `${(currentStep / (steps.length)) * 100}%` }}>
                 </div>
               </div>
 
               {/* Steps indicator */}
               <div className="hidden md:flex justify-between">
-                {steps.slice(0, 6).map((step) => (
+              {steps.map((step) => (
                   <div key={step.id} className="flex flex-col items-center">
                     <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300 ${
                       step.id < currentStep 
