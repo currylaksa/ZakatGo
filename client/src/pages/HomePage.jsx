@@ -133,7 +133,7 @@ const Homepage = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">ZakatGo: One-Stop Zakat Platform</h1>
-            <p className="text-lg md:text-xl mb-8 text-blue-100">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & AI.</p>
+            <p className="text-lg md:text-xl mb-8 text-blue-100">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Cloud Vision API Integration.</p>
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-white border-opacity-20">
@@ -231,7 +231,7 @@ const Homepage = () => {
               <h3 className="text-2xl font-bold text-blue-900">Referral Rewards for Good Deeds</h3>
             </div>
             <p className="text-gray-600 mb-6">
-              Soon, you'll be able to earn rewards for inviting friends and family to ZakatGo. Spread the word about charitable giving and get recognized for your positive impact!
+              Spread the word about charitable giving and get recognized for your positive impact!
             </p>
             <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500 mb-6">
               <h4 className="font-medium text-blue-900 mb-2">How It Will Work:</h4>
@@ -250,13 +250,6 @@ const Homepage = () => {
                 </li>
               </ul>
             </div>
-            <Button 
-              onClick={handleLearnMoreClick} 
-              type="secondary" 
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              Learn More
-            </Button>
           </div>
           <div className="lg:w-1/2 bg-gradient-to-r from-purple-500 to-indigo-600 p-8 lg:p-12 text-white">
             <div className="max-w-md mx-auto">
