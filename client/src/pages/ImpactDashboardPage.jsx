@@ -399,17 +399,6 @@ const ImpactDashboardPage = () => {
            </div>
 
          </div> {/* End Grid for Charts and Lists */}
-
-         {/* Footer section */}
-         <div className="pt-12 pb-6 text-center text-gray-500 text-sm">
-           <p>© {new Date().getFullYear()} ZakatGo. All transactions are verified on Ethereum blockchain for transparency.</p>
-           <div className="mt-4 flex justify-center space-x-4">
-             <a href="#" className="text-green-600 hover:text-green-700 transition-colors">About</a>
-             <a href="#" className="text-green-600 hover:text-green-700 transition-colors">Privacy Policy</a>
-             <a href="#" className="text-green-600 hover:text-green-700 transition-colors">Terms of Service</a>
-             <a href="#" className="text-green-600 hover:text-green-700 transition-colors">Contact</a>
-           </div>
-         </div>
        </div> {/* End Max Width Container */}
      </div> // End Main Container
    );

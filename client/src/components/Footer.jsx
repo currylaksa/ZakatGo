@@ -4,7 +4,7 @@ import { FaGithub } from 'react-icons/fa'; // Import GitHub icon
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const teamMembers = ["Chan Qing Yee", "Cheng See Chee", "Ong Jia Yu", "Tham Ren Sheng"];
+  const teamMembers = ["Chan Qing Yee", "Cheng See Chee", "Ong Jia Yu", "Tham Ren Sheng", "Tai Hui Shan"];
 
   return (
     <footer className="w-full bg-gradient-to-r from-blue-800 to-blue-900 text-white py-6">
