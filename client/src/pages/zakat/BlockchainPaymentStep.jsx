@@ -33,9 +33,16 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
      setDepositAmount(newInitialAmount);
    }, [userData.zakatAmount]);
 
+   useEffect(() => {
+    handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
+    handleChange({ target: { value: ethAmount.toString() }}, 'amount');
+    handleChange({ target: { value: 'ZAKAT' }}, 'keyword');
+    handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
+   }, []);
 
   const handleDepositChange = (e) => {
     const value = e.target.value;
+    handleChange({ target: { value: e.target.value }}, 'amount');
     setDepositAmount(value === '' ? '' : Number(value));
   };
 
@@ -61,9 +68,8 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       // This ensures we're sending a valid string to ethers.parseEther
       
       // For very small amounts, use a minimum value like "0.0001"
-      const formattedEthAmount = "0.0001";
-      
-      console.log("Sending transaction with hardcoded amount:", formattedEthAmount);
+      // const formattedEthAmount = "0.000001";
+      const formattedEthAmount = (finalDepositAmount * rmToEthRate).toString();
 
       // Set form data for transaction
       handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
