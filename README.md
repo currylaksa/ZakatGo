@@ -12,7 +12,7 @@ ZakatGo is a Shariah-compliant web platform designed to simplify and enhance the
 
 * **Proposal:** [Click Here](https://docs.google.com/document/d/1Cgw8z8w4-bED_WIjsiCra3qBnwTKwqikKobSr6u4wxs/edit?usp=sharing)
 * **Slides:** [Click Here](https://www.canva.com/design/DAGkbLg_Kpo/X1Do-aP3CzlSDU9pTPWSiw/view?utm_content=DAGkbLg_Kpo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h79acf27c2f)
-* **Demo Video:** [Click Here](https://docs.google.com/document/d/1Cgw8z8w4-bED_WIjsiCra3qBnwTKwqikKobSr6u4wxs/edit?usp=sharing) Haven't Put
+* **Demo Video:** [Click Here]() Will be upload soon
 
 ## ✨ Key Features
 
