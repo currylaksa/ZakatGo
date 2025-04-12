@@ -133,7 +133,7 @@ const Homepage = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">ZakatGo: One-Stop Zakat Platform</h1>
-            <p className="text-lg md:text-xl mb-8 text-blue-100">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Cloud Vision API Integration.</p>
+            <p className="text-lg md:text-xl mb-8 text-blue-100">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Llama Model Integration.</p>
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-white border-opacity-20">
