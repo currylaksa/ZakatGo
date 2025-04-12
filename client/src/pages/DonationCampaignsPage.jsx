@@ -265,15 +265,12 @@ const DonationCampaignsPage = () => {
   const mapCenter = userLocation ? [userLocation.lat, userLocation.lng] : [1.4927, 103.7414];
 
   return (
-    <HalfCircleBackground title="Donation Campaigns & Causes">
-      <div className="pt-2 max-w-4xl mx-auto w-full pb-20">
-         <button onClick={() => navigate(-1)} className="flex items-center text-white opacity-80 hover:opacity-100 mb-4">
-            <HiArrowLeft className="mr-1"/> Back
-         </button>
-
-        <p className="text-white text-opacity-80 mb-6">
-          Manage NGO campaigns, discover nearby Sadaqah & Waqf opportunities, donate money or in-kind items.
-        </p>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-green-600 mb-2">Donation Campaigns</h1>
+          <p className="text-xl text-gray-600">Manage NGO campaigns, discover nearby Sadaqah & Waqf opportunities, donate money or in-kind items.</p>
+        </div>
 
         {/* Connect Wallet Prompt */}
         {!currentAccount && (
@@ -417,7 +414,7 @@ const DonationCampaignsPage = () => {
 
 
       </div>
-    </HalfCircleBackground>
+    </div>
   );
 };
 
