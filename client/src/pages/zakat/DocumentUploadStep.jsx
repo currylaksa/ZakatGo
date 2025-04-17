@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import { processDocumentWithGroq } from '../../utils/groqApi';
-import { collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 
 const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, setIsLoading }) => {
@@ -112,10 +112,10 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
           <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
-          Upload Required Documents
+          Upload Income Tax Document
         </h3>
         <p className="text-green-700 text-sm mt-1">
-          Our AI will automatically extract information from your payslip or financial statements to calculate your Zakat.
+          Our AI will automatically extract information from your income tax document to calculate your Zakat.
         </p>
       </div>
 
@@ -254,10 +254,10 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
       <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
         <h4 className="font-medium text-gray-700 mb-2">Accepted Documents</h4>
         <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
-          <li>Monthly payslip</li>
-          <li>Annual income statement</li>
-          <li>Bank statements showing assets</li>
-          <li>Investment account statements</li>
+          <li>Annual income tax statement (BE Form)</li>
+          <li>Income tax assessment notice</li>
+          <li>Tax return confirmation</li>
+          <li>e-Filing receipt with tax details</li>
         </ul>
       </div>
     </div>

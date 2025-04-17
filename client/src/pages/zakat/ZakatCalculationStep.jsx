@@ -1,54 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'; // Import motion from framer-motion for animations
+import { motion } from 'framer-motion';
+import { doc, setDoc } from 'firebase/firestore'; // Import Firebase functions
+import { db } from '../../config/firebase'; // Import Firebase db
+import { calculateZakat, updateZakatInFirebase } from '../../services/zakatService'; // Import the service functions
 
 const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const [zakatAmount, setZakatAmount] = useState(0);
-  // IMPORTANT: Replace with a reliable source for the current Nisab value in Malaysia
   const [nisab, setNisab] = useState(23000); // Example Nisab value in RM (Needs regular updates)
   const [calculationSummary, setCalculationSummary] = useState({});
 
-  // Recalculate when userData changes
+  // Get personal info data from previous step
+  const personalInfo = userData.personalInfo || {};
+  
+  // Use this effect to calculate Zakat when component mounts or userData changes
   useEffect(() => {
-    const { salary = 0, deductions = 0, assets = 0 } = userData.personalInfo || {};
+    if (!personalInfo) return;
 
-    // Basic Zakat calculation (example for Zakat on Wealth/Assets)
-    const annualIncome = Number(salary) * 12;
-    const netDeductible = Number(deductions) * 12;
-    const totalAssets = Number(assets);
+    // Extract values from personalInfo
+    const annualIncome = Number(personalInfo.totalIncome || 0);
+    const totalAssets = Number(personalInfo.assets || 0);
+    const totalRelief = Number(personalInfo.totalRelief || 0);
+    const previousZakatPaid = Number(personalInfo.zakatPaid || 0);
 
-    // For demo purposes, always calculate some Zakat amount
-    // This is a simplified example. In a real app, consult with religious authorities for accurate calculation.
-    let calculatedZakat;
+    // Apply the formula: (Total Annual Income + Total Zakatable Assets Value - Total Relief - Zakat & Fitrah Paid) x 2.5%
+    const zakatableAmount = annualIncome + totalAssets - totalRelief - previousZakatPaid;
     
-    // If assets are below Nisab, calculate based on a percentage of assets
-    // If assets are above Nisab, use the standard 2.5%
-    if (totalAssets < nisab) {
-      // For demo: Calculate 2.5% of whatever assets they have
-      calculatedZakat = totalAssets * 0.025;
-      
-      // Ensure there's a minimum amount for demo purposes
-      if (calculatedZakat < 100 && totalAssets > 0) {
-        calculatedZakat = 100; // Minimum RM 100 for demo
-      }
-    } else {
-      // Standard Zakat calculation (2.5% of assets above Nisab)
-      calculatedZakat = totalAssets * 0.025;
+    let calculatedZakat = 0;
+    
+    // Only calculate Zakat if the zakatable amount is above Nisab
+    if (zakatableAmount >= nisab) {
+      calculatedZakat = zakatableAmount * 0.025; // 2.5%
+    } else if (zakatableAmount > 0) {
+      // For amounts below Nisab but above 0, calculate anyway for demonstration purposes
+      calculatedZakat = zakatableAmount * 0.025;
     }
 
+    // Ensure calculated value is not negative
+    calculatedZakat = Math.max(0, calculatedZakat);
+    
     setZakatAmount(calculatedZakat);
     setCalculationSummary({
       annualIncome: annualIncome,
-      netDeductible: netDeductible,
       totalAssets: totalAssets,
-      zakatableWealth: totalAssets,
-      nisab: nisab
+      totalRelief: totalRelief,
+      previousZakatPaid: previousZakatPaid,
+      zakatableWealth: zakatableAmount,
+      nisab: nisab,
+      isAboveNisab: zakatableAmount >= nisab
     });
 
   }, [userData.personalInfo, nisab]);
 
-  const handleContinue = () => {
-    updateUserData({ zakatAmount });
-    nextStep(); // Proceed to the next step (Category Selection)
+  const handleContinue = async () => {
+    // Update the user data locally
+    const zakatData = {
+      zakatAmount,
+      calculationSummary,
+      calculationDate: new Date().toISOString()
+    };
+    
+    updateUserData({ zakatAmount, calculationSummary: calculationSummary });
+    
+    // Update Firebase if a user ID exists
+    if (userData.userId) {
+      await updateZakatInFirebase(userData.userId, zakatData);
+    }
+    
+    nextStep(); // Proceed to the next step
   };
 
   return (
@@ -66,16 +84,38 @@ const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) 
         <h3 className="text-lg font-medium text-gray-800">Zakat Calculation Summary</h3>
         <div className="text-sm text-gray-600 space-y-2">
           <div className="flex justify-between border-b border-gray-100 pb-2">
-            <span>Total Zakatable Assets:</span> 
+            <span>Annual Income:</span> 
+            <span className="font-semibold text-gray-800">RM {calculationSummary.annualIncome?.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between border-b border-gray-100 pb-2">
+            <span>Total Assets:</span> 
             <span className="font-semibold text-gray-800">RM {calculationSummary.totalAssets?.toFixed(2)}</span>
           </div>
           <div className="flex justify-between border-b border-gray-100 pb-2">
-            <span>Nisab Threshold (Example):</span> 
+            <span>Total Relief:</span> 
+            <span className="font-semibold text-gray-800">RM {calculationSummary.totalRelief?.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between border-b border-gray-100 pb-2">
+            <span>Previous Zakat & Fitrah Paid:</span> 
+            <span className="font-semibold text-gray-800">RM {calculationSummary.previousZakatPaid?.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between border-b border-gray-100 pb-2">
+            <span>Total Zakatable Wealth:</span> 
+            <span className="font-semibold text-gray-800">RM {calculationSummary.zakatableWealth?.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between border-b border-gray-100 pb-2">
+            <span>Nisab Threshold:</span> 
             <span className="font-semibold text-gray-800">RM {calculationSummary.nisab?.toFixed(2)}</span>
           </div>
           <div className="flex justify-between border-b border-gray-100 pb-2">
             <span>Zakat Rate:</span> 
             <span className="font-semibold text-gray-800">2.5%</span>
+          </div>
+          <div className="flex justify-between pb-2">
+            <span>Zakatable Status:</span> 
+            <span className={`font-semibold ${calculationSummary.isAboveNisab ? 'text-green-600' : 'text-yellow-600'}`}>
+              {calculationSummary.isAboveNisab ? 'Above Nisab (Zakat Required)' : 'Below Nisab (Optional)'}
+            </span>
           </div>
         </div>
 
@@ -90,7 +130,9 @@ const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) 
             </div>
             <div>
               <p className="text-3xl font-bold text-green-700">RM {zakatAmount.toFixed(2)}</p>
-              <p className="text-sm text-gray-500">Based on 2.5% of your Zakatable Assets</p>
+              <p className="text-sm text-gray-500">
+                Based on the formula: (Income + Assets - Relief - Previous Zakat) × 2.5%
+              </p>
             </div>
           </div>
         </div>
@@ -150,7 +192,7 @@ const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) 
 
       {/* Disclaimer */}
       <p className="mt-4 text-xs text-gray-500 text-center">
-        Disclaimer: This is a simplified calculation for demonstration purposes. 
+        Disclaimer: This calculation follows the formula: (Income + Assets - Relief - Previous Zakat) × 2.5%.
         Please consult with a qualified religious advisor or your local Zakat authority for precise Zakat obligations.
       </p>
     </motion.div>
