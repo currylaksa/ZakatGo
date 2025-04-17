@@ -649,10 +649,10 @@ const ProfilePage = () => {
                   <div className="mt-2 flex items-center text-xs text-gray-500">
                     <span className="font-mono">{formatTxHash(donation.txHash)}</span>
                     <a 
-                      href={`https://sepolia.etherscan.io/tx/${donation.txHash}`} 
+                      href={donation.txHash ? `https://sepolia.etherscan.io/tx/${donation.txHash}` : '#'} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="ml-1 text-gray-400 hover:text-gray-600"
+                      className={`ml-1 ${donation.txHash ? 'text-gray-400 hover:text-gray-600' : 'hidden'}`}
                     >
                       <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -841,12 +841,12 @@ const RecentZakatTransactions = () => {
                   
                   <div className="mt-2 flex items-center text-xs text-gray-500">
                     <a 
-                      href={`https://sepolia.etherscan.io/tx/${tx.transactionHash || tx.addressFrom}`}
+                      href={`https://sepolia.etherscan.io/${tx.transactionHash ? `tx/${tx.transactionHash}` : `address/${tx.addressFrom}`}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center hover:text-green-600 transition-colors"
                     >
-                      View on Etherscan
+                      {tx.transactionHash ? "View Transaction on Etherscan" : "View Address on Etherscan"}
                       <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>

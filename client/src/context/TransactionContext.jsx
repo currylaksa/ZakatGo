@@ -88,6 +88,7 @@ export const TransactionsProvider = ({ children }) => {
         message: transaction.message,
         keyword: transaction.keyword,
         amount: ethers.formatEther(transaction.amount),
+        transactionHash: transaction.hash || null
       }));
 
       console.log("Structured transactions:", structuredTransactions);
@@ -126,9 +127,11 @@ export const TransactionsProvider = ({ children }) => {
             timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
             message: transaction.message,
             amount: ethers.formatEther(transaction.amount),
-            keyword: transaction.keyword
+            keyword: transaction.keyword,
+            transactionHash: transaction.hash || null
         }));
 
+        console.log("Structured Zakat transactions:", structuredTransactions);
         setZakatTransactions(structuredTransactions);
     } catch (error) {
         console.error("Error getting Zakat transactions:", error);
@@ -202,8 +205,11 @@ export const TransactionsProvider = ({ children }) => {
 
       const transactionsContract = await createEthereumContract();
       if (!transactionsContract) return;
+      
       const parsedAmount = ethers.parseEther(amount);
-      await ethereum.request({
+      
+      // First send the ETH
+      const txResponse = await ethereum.request({
         method: "eth_sendTransaction",
         params: [
           {
@@ -214,11 +220,16 @@ export const TransactionsProvider = ({ children }) => {
           },
         ],
       });
+      
+      console.log("ETH transaction hash:", txResponse);
+      
+      // Then record it on blockchain
       const transactionHash = await transactionsContract.addToBlockchain(
         addressTo,
         parsedAmount,
         message,
         keyword,
+        txResponse // Pass the transaction hash from ETH transfer
       );
 
       setIsLoading(true);
@@ -226,10 +237,14 @@ export const TransactionsProvider = ({ children }) => {
       await transactionHash.wait();
       console.log(`Success - ${transactionHash.hash}`);
       setIsLoading(false);
-      const transactionsCount =
-        await transactionsContract.getAllTransactionCount();
+      
+      const transactionsCount = await transactionsContract.getAllTransactionCount();
       setTransactionCount(transactionsCount.toString());
+      
+      // Refresh transactions
       await getZakatTransactions();
+      
+      return txResponse; // Return the transaction hash
     } catch (error) {
       console.error("Transaction error:", error);
       setIsLoading(false);

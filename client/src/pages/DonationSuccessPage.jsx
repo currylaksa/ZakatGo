@@ -129,7 +129,7 @@ const DonationSuccessPage = () => {
               <p className="text-sm font-medium text-gray-700 mb-2">Verify on Blockchain</p>
               <div className="flex justify-center">
                 <QRCodeSVG 
-                  value={`https://etherscan.io/tx/${transactionId}`} 
+                  value={`https://sepolia.etherscan.io/tx/${transactionId}`} 
                   size={120}
                   includeMargin={true}
                   bgColor="#FFFFFF"
