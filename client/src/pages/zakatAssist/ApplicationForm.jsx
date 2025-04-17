@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { submitApplication } from '../../services/applicationService';
 
 const ApplicationForm = ({ onSubmit }) => {
   // Store form data in state but don't use it for input values directly
@@ -33,7 +34,7 @@ const ApplicationForm = ({ onSubmit }) => {
   // to set initial ref values from state (if any)
   useEffect(() => {
     if (fullNameRef.current) fullNameRef.current.value = formData.fullName;
-    if (icNumberRef.current) icNumberRef.current.value = formData.icNumber;
+    if (icNumberRef.current) icNumberRef.current.value = formData.icNumber; // Fix this line
     if (addressRef.current) addressRef.current.value = formData.address;
     if (phoneRef.current) phoneRef.current.value = formData.phone;
     if (emailRef.current) emailRef.current.value = formData.email;
@@ -178,17 +179,34 @@ const ApplicationForm = ({ onSubmit }) => {
     return null; // Return null if invalid
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const validatedData = validateForm();
     if (validatedData) {
-      console.log("Form validated successfully");
-      onSubmit({
-        ...validatedData,
-        document: document,
-        applicationDate: new Date().toISOString(),
-      });
+      try {
+        // Show loading state
+        setErrors({});
+        
+        const applicationData = {
+          ...validatedData,
+          documentName: documentName,
+          applicationDate: new Date().toISOString(),
+        };
+
+        const applicationId = await submitApplication(applicationData);
+        console.log('Application submitted successfully:', applicationId);
+        onSubmit({
+          ...applicationData,
+          id: applicationId
+        });
+      } catch (error) {
+        console.error('Failed to submit application:', error);
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Failed to submit application. Please try again.'
+        }));
+      }
     } else {
       console.log("Form validation failed:", errors);
     }

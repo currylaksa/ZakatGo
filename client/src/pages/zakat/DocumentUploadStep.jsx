@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import { processDocumentWithGroq } from '../../utils/groqApi';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, setIsLoading }) => {
   const [file, setFile] = useState(null);
@@ -54,27 +56,42 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
       }, 200);
 
       const extractedData = await processDocumentWithGroq(file);
+
       clearInterval(progressInterval);
       setUploadProgress(100);
       updateUserData({ 
         documentData: { 
           ...userData.documentData, 
-          ...extractedData 
+          ...extractedData,
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: file.size,
+          uploadDate: new Date().toISOString()
         } 
+      });
+      
+      console.log("Document data stored in userData:", {
+        ...extractedData,
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size
       });
       
       setIsProcessing(false);
       setUploadSuccess(true);
+      
       setTimeout(() => {
         nextStep();
       }, 1500);
 
     } catch (error) {
+      console.error('Document processing error:', error);
       setError('Failed to process document. Please try again.');
       setIsProcessing(false);
       setUploadProgress(0);
     }
-  }, [file, nextStep, updateUserData, userData.documentData]);
+  }, [file, nextStep, updateUserData, userData]);
+
   useEffect(() => {
     if (file && !uploadSuccess && !isProcessing && !error) {
       processDocument();
@@ -129,7 +146,6 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
               </div>
               
               <div className="flex flex-wrap justify-center gap-2 pt-2">
-                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">PDF</span>
                 <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">JPG</span>
                 <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">PNG</span>
               </div>

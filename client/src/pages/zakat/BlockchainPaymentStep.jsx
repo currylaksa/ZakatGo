@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { TransactionContext } from '../../context/TransactionContext';
+import { savePayslipAfterPayment } from '../../services/payslipService'; // Import the service
 
 const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const initialDepositAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0;
@@ -16,6 +17,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
     handleChange,
     getZakatTransactions
   } = useContext(TransactionContext);
+  const [saveStatus, setSaveStatus] = useState(''); // Add a state for save status
 
   useEffect(() => {
      const amount = Number(depositAmount) || 0;
@@ -95,6 +97,14 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       };
 
       updateUserData({ transactionDetails });
+      try {
+        setSaveStatus('Saving payment record...');
+        await savePayslipAfterPayment(userData);
+        setSaveStatus('Payment record saved successfully!');
+      } catch (firestoreError) {
+        console.error("Error saving payslip data to Firestore:", firestoreError);
+        setSaveStatus('Warning: Payment completed but record could not be saved.');
+      }
       
       // Force refresh of Zakat transactions
       await getZakatTransactions();
@@ -196,6 +206,13 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
           `Connected: ${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 
           'Please connect your MetaMask wallet to make a payment'}
       </p>
+      {saveStatus && (
+        <div className={`text-sm text-center mt-2 ${
+          saveStatus.includes('Warning') ? 'text-yellow-600' : 'text-green-600'
+        }`}>
+          {saveStatus}
+        </div>
+      )}
     </div>
   );
 };
