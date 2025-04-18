@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -7,8 +9,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
   // Initialize form with data from prior steps
   const [formData, setFormData] = useState({
     name: userData.documentData?.name || userData.personalInfo?.name || '',
-    salary: userData.documentData?.salary || userData.personalInfo?.salary || '',
-    deductions: userData.documentData?.deductions || userData.personalInfo?.deductions || '',
+    annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
+    annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
+    zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
     assets: userData.documentData?.assets || userData.personalInfo?.assets || ''
   });
   
@@ -19,8 +22,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
   useEffect(() => {
     setFormData({
       name: userData.documentData?.name || userData.personalInfo?.name || '',
-      salary: userData.documentData?.salary || userData.personalInfo?.salary || '',
-      deductions: userData.documentData?.deductions || userData.personalInfo?.deductions || '',
+      annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
+      annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
+      zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
       assets: userData.documentData?.assets || userData.personalInfo?.assets || ''
     });
   }, [userData.documentData, userData.personalInfo]);
@@ -33,7 +37,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     let processedValue;
     if (name === 'name') {
       processedValue = value;
-    } else if (name === 'deductions' && value === '') {
+    } else if (name === 'annualExpenses' && value === '') {
+      processedValue = '';
+    } else if (name === 'zakatPaid' && value === '') {
       processedValue = '';
     } else {
       // Allow number input but don't convert empty strings to 0
@@ -67,14 +73,19 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           error = 'Full Name is required';
         }
         break;
-      case 'salary':
+      case 'annualIncome':
         if (value === '' || isNaN(value) || value <= 0) {
-          error = 'Valid Monthly Salary is required';
+          error = 'Valid Annual Income is required';
         }
         break;
-      case 'deductions':
+      case 'annualExpenses':
         if (value !== '' && (isNaN(value) || value < 0)) {
-          error = 'Deductions must be a valid number (0 or more)';
+          error = 'Annual Expenses must be a valid number (0 or more)';
+        }
+        break;
+      case 'zakatPaid':
+        if (value !== '' && (isNaN(value) || value < 0)) {
+          error = 'Zakat/Fitrah already paid must be a valid number (0 or more)';
         }
         break;
       case 'assets':
@@ -92,7 +103,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
 
   // Validate all form fields
   const validateForm = () => {
-    const fields = ['name', 'salary', 'deductions', 'assets'];
+    const fields = ['name', 'annualIncome', 'annualExpenses', 'zakatPaid', 'assets'];
     const newErrors = {};
     let isValid = true;
     
@@ -107,6 +118,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     return isValid;
   };
 
+  // Save data to Firebase
+  const saveToFirebase = async (userData) => {
+    try {
+      if (userData.personalInfo?.name) {
+        const userRef = doc(db, "users", userData.personalInfo.name);
+        await setDoc(userRef, {
+          personalInfo: userData.personalInfo,
+          zakatAmount: userData.zakatAmount || 0,
+          timestamp: new Date()
+        }, { merge: true });
+        console.log("User data saved to Firebase");
+      }
+    } catch (error) {
+      console.error("Error saving to Firebase:", error);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,8 +142,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     // Mark all fields as touched
     setTouched({
       name: true,
-      salary: true,
-      deductions: true,
+      annualIncome: true,
+      annualExpenses: true,
+      zakatPaid: true,
       assets: true
     });
     
@@ -125,13 +154,17 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       // Process form data (convert string values to appropriate types)
       const processedData = {
         name: formData.name,
-        salary: Number(formData.salary),
-        deductions: formData.deductions === '' ? 0 : Number(formData.deductions),
+        annualIncome: Number(formData.annualIncome),
+        annualExpenses: formData.annualExpenses === '' ? 0 : Number(formData.annualExpenses),
+        zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
         assets: Number(formData.assets)
       };
       
       // Update user data
       updateUserData({ personalInfo: processedData });
+      
+      // Save to Firebase
+      saveToFirebase({ personalInfo: processedData });
       
       // Simulate processing delay for better UX
       setTimeout(() => {
@@ -181,7 +214,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800">Important</h3>
             <div className="text-sm text-blue-700">
-              <p>We've pre-filled information extracted from your documents. Please review and complete any missing fields.</p>
+              <p>We've pre-filled information extracted from your income tax documents. Please review and complete any missing fields.</p>
             </div>
           </div>
         </div>
@@ -223,37 +256,40 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
             )}
           </div>
 
-          {/* Salary Field */}
+          {/* Annual Income Field */}
           <div>
-            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-1">Monthly Salary (RM)</label>
+            <label htmlFor="annualIncome" className="block text-sm font-medium text-gray-700 mb-1">Annual Income (RM)</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <span className="text-gray-500">RM</span>
               </div>
               <input
                 type="number"
-                id="salary"
-                name="salary"
-                value={formData.salary}
+                id="annualIncome"
+                name="annualIncome"
+                value={formData.annualIncome}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('salary')}
-                placeholder="e.g., 5000"
+                className={getInputClassName('annualIncome')}
+                placeholder="e.g., 60000"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
-                aria-invalid={errors.salary && touched.salary ? 'true' : 'false'}
+                aria-invalid={errors.annualIncome && touched.annualIncome ? 'true' : 'false'}
               />
             </div>
-            {touched.salary && errors.salary && (
-              <p className="mt-1 text-sm text-red-600" id="salary-error">{errors.salary}</p>
+            {touched.annualIncome && errors.annualIncome && (
+              <p className="mt-1 text-sm text-red-600" id="annualIncome-error">{errors.annualIncome}</p>
             )}
+            <p className="mt-1 text-xs text-gray-500">
+              Annual income after EPF contributions and tax reliefs
+            </p>
           </div>
 
-          {/* Deductions Field */}
+          {/* Annual Expenses Field */}
           <div>
-            <label htmlFor="deductions" className="block text-sm font-medium text-gray-700 mb-1">
-              Monthly Deductions (RM)
+            <label htmlFor="annualExpenses" className="block text-sm font-medium text-gray-700 mb-1">
+              Necessary Annual Expenses (RM)
               <span className="text-gray-500 text-xs ml-1">(Optional)</span>
             </label>
             <div className="relative">
@@ -262,24 +298,57 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               </div>
               <input
                 type="number"
-                id="deductions"
-                name="deductions"
-                value={formData.deductions}
+                id="annualExpenses"
+                name="annualExpenses"
+                value={formData.annualExpenses}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('deductions')}
+                className={getInputClassName('annualExpenses')}
+                placeholder="e.g., 25000 (leave empty if none)"
+                min="0"
+                step="any"
+                style={{ paddingLeft: '3rem' }}
+                aria-invalid={errors.annualExpenses && touched.annualExpenses ? 'true' : 'false'}
+              />
+            </div>
+            {touched.annualExpenses && errors.annualExpenses && (
+              <p className="mt-1 text-sm text-red-600" id="annualExpenses-error">{errors.annualExpenses}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Include housing, food, transportation, debt payments, and other essential expenses.
+            </p>
+          </div>
+
+          {/* Already Paid Zakat Field */}
+          <div>
+            <label htmlFor="zakatPaid" className="block text-sm font-medium text-gray-700 mb-1">
+              Zakat/Fitrah Already Paid (RM)
+              <span className="text-gray-500 text-xs ml-1">(Optional)</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-500">RM</span>
+              </div>
+              <input
+                type="number"
+                id="zakatPaid"
+                name="zakatPaid"
+                value={formData.zakatPaid}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={getInputClassName('zakatPaid')}
                 placeholder="e.g., 500 (leave empty if none)"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
-                aria-invalid={errors.deductions && touched.deductions ? 'true' : 'false'}
+                aria-invalid={errors.zakatPaid && touched.zakatPaid ? 'true' : 'false'}
               />
             </div>
-            {touched.deductions && errors.deductions && (
-              <p className="mt-1 text-sm text-red-600" id="deductions-error">{errors.deductions}</p>
+            {touched.zakatPaid && errors.zakatPaid && (
+              <p className="mt-1 text-sm text-red-600" id="zakatPaid-error">{errors.zakatPaid}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Include EPF, taxes, loans, and other monthly financial obligations.
+              Enter any Zakat or Fitrah already paid this year
             </p>
           </div>
 
