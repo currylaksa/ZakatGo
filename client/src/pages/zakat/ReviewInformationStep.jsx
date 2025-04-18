@@ -79,8 +79,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
         }
         break;
       case 'annualExpenses':
-        if (value !== '' && (isNaN(value) || value < 0)) {
-          error = 'Annual Expenses must be a valid number (0 or more)';
+        if (value === '' || isNaN(value) || value < 0) {
+          error = 'Valid Annual Expenses are required (0 or more)';
         }
         break;
       case 'zakatPaid':
@@ -89,8 +89,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
         }
         break;
       case 'assets':
-        if (value === '' || isNaN(value) || value < 0) {
-          error = 'Total Assets Value is required (0 or more)';
+        if (value !== '' && (isNaN(value) || value < 0)) {
+          error = 'Assets Value must be a valid number (0 or more)';
         }
         break;
       default:
@@ -155,9 +155,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       const processedData = {
         name: formData.name,
         annualIncome: Number(formData.annualIncome),
-        annualExpenses: formData.annualExpenses === '' ? 0 : Number(formData.annualExpenses),
+        annualExpenses: Number(formData.annualExpenses), // No longer optional
         zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
-        assets: Number(formData.assets)
+        assets: formData.assets === '' ? 0 : Number(formData.assets) // Made optional
       };
       
       // Update user data
@@ -258,7 +258,10 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
 
           {/* Annual Income Field */}
           <div>
-            <label htmlFor="annualIncome" className="block text-sm font-medium text-gray-700 mb-1">Annual Income (RM)</label>
+            <label htmlFor="annualIncome" className="block text-sm font-medium text-gray-700 mb-1">
+              Annual Income (RM)
+              <span className="text-red-500 text-xs ml-1">*</span>
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <span className="text-gray-500">RM</span>
@@ -276,6 +279,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 step="any"
                 style={{ paddingLeft: '3rem' }}
                 aria-invalid={errors.annualIncome && touched.annualIncome ? 'true' : 'false'}
+                required
               />
             </div>
             {touched.annualIncome && errors.annualIncome && (
@@ -290,7 +294,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div>
             <label htmlFor="annualExpenses" className="block text-sm font-medium text-gray-700 mb-1">
               Necessary Annual Expenses (RM)
-              <span className="text-gray-500 text-xs ml-1">(Optional)</span>
+              <span className="text-red-500 text-xs ml-1">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -304,11 +308,12 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={getInputClassName('annualExpenses')}
-                placeholder="e.g., 25000 (leave empty if none)"
+                placeholder="e.g., 25000"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
                 aria-invalid={errors.annualExpenses && touched.annualExpenses ? 'true' : 'false'}
+                required
               />
             </div>
             {touched.annualExpenses && errors.annualExpenses && (
@@ -356,6 +361,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div className="md:col-span-2">
             <label htmlFor="assets" className="block text-sm font-medium text-gray-700 mb-1">
               Total Zakatable Assets Value (RM)
+              <span className="text-gray-500 text-xs ml-1">(Optional)</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -369,7 +375,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={getInputClassName('assets')}
-                placeholder="e.g., 15000"
+                placeholder="e.g., 15000 (leave empty if unknown)"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
