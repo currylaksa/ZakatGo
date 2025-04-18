@@ -212,9 +212,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-blue-800">Important</h3>
+            <h3 className="text-sm font-medium text-blue-800">Document Data Extracted</h3>
             <div className="text-sm text-blue-700">
-              <p>We've pre-filled information extracted from your income tax documents. Please review and complete any missing fields.</p>
+              <p>We've extracted information from your document. Please review and adjust if needed:</p>
+              <ul className="list-disc pl-5 mt-1 text-xs space-y-1">
+                {userData.documentData?.name && (
+                  <li><strong>Name:</strong> {userData.documentData.name}</li>
+                )}
+                {userData.documentData?.annualIncome && (
+                  <li><strong>Annual Income:</strong> RM {parseFloat(userData.documentData.annualIncome).toFixed(2)}</li>
+                )}
+                {userData.documentData?.annualExpenses && (
+                  <li><strong>Necessary Expenses:</strong> RM {parseFloat(userData.documentData.annualExpenses).toFixed(2)}</li>
+                )}
+                {userData.documentData?.zakatPaid && (
+                  <li><strong>Tax Rebate:</strong> RM {parseFloat(userData.documentData.zakatPaid).toFixed(2)}</li>
+                )}
+              </ul>
             </div>
           </div>
         </div>
@@ -320,11 +334,11 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               <p className="mt-1 text-sm text-red-600" id="annualExpenses-error">{errors.annualExpenses}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Include housing, food, transportation, debt payments, and other essential expenses.
+              Your tax relief amount has been pre-filled as necessary expenses. You can adjust this value.
             </p>
           </div>
 
-          {/* Already Paid Zakat Field */}
+          {/* Already Paid Zakat Field - Updated to mention rebate */}
           <div>
             <label htmlFor="zakatPaid" className="block text-sm font-medium text-gray-700 mb-1">
               Zakat/Fitrah Already Paid (RM)
@@ -353,7 +367,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               <p className="mt-1 text-sm text-red-600" id="zakatPaid-error">{errors.zakatPaid}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Enter any Zakat or Fitrah already paid this year
+              Your tax rebate amount has been pre-filled. This can be considered as zakat already paid.
             </p>
           </div>
 

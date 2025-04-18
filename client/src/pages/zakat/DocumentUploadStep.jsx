@@ -57,6 +57,9 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
 
       const extractedData = await processDocumentWithGroq(file);
 
+      // Log what was extracted for debugging
+      console.log("Extracted data from document:", extractedData);
+
       clearInterval(progressInterval);
       setUploadProgress(100);
       updateUserData({ 
