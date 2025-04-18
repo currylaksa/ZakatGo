@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -7,9 +9,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
   // Initialize form with data from prior steps
   const [formData, setFormData] = useState({
     name: userData.documentData?.name || userData.personalInfo?.name || '',
-    totalIncome: userData.documentData?.totalIncome || userData.personalInfo?.totalIncome || '',
-    totalRelief: userData.documentData?.totalRelief || userData.personalInfo?.totalRelief || '',
-    zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
+    salary: userData.documentData?.salary || userData.personalInfo?.salary || '',
+    deductions: userData.documentData?.deductions || userData.personalInfo?.deductions || '',
     assets: userData.documentData?.assets || userData.personalInfo?.assets || ''
   });
   
@@ -20,9 +21,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
   useEffect(() => {
     setFormData({
       name: userData.documentData?.name || userData.personalInfo?.name || '',
-      totalIncome: userData.documentData?.totalIncome || userData.personalInfo?.totalIncome || '',
-      totalRelief: userData.documentData?.totalRelief || userData.personalInfo?.totalRelief || '',
-      zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
+      salary: userData.documentData?.salary || userData.personalInfo?.salary || '',
+      deductions: userData.documentData?.deductions || userData.personalInfo?.deductions || '',
       assets: userData.documentData?.assets || userData.personalInfo?.assets || ''
     });
   }, [userData.documentData, userData.personalInfo]);
@@ -35,7 +35,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     let processedValue;
     if (name === 'name') {
       processedValue = value;
-    } else if (name === 'zakatPaid' && value === '') {
+    } else if (name === 'deductions' && value === '') {
       processedValue = '';
     } else {
       // Allow number input but don't convert empty strings to 0
@@ -69,19 +69,14 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           error = 'Full Name is required';
         }
         break;
-      case 'totalIncome':
+      case 'salary':
         if (value === '' || isNaN(value) || value <= 0) {
-          error = 'Valid Total Income is required';
-        }
-        break;
-      case 'totalRelief':
-        if (value === '' || isNaN(value) || value < 0) {
-          error = 'Valid Total Relief is required';
+          error = 'Valid Monthly Salary is required';
         }
         break;
       case 'zakatPaid':
         if (value !== '' && (isNaN(value) || value < 0)) {
-          error = 'Zakat & Fitrah Paid must be a valid number (0 or more)';
+          error = 'Deductions must be a valid number (0 or more)';
         }
         break;
       case 'assets':
@@ -99,7 +94,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
 
   // Validate all form fields
   const validateForm = () => {
-    const fields = ['name', 'totalIncome', 'totalRelief', 'assets'];
+    const fields = ['name', 'salary', 'deductions', 'assets'];
     const newErrors = {};
     let isValid = true;
     
@@ -120,6 +115,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     return isValid;
   };
 
+  // Save data to Firebase
+  const saveToFirebase = async (userData) => {
+    try {
+      if (userData.personalInfo?.name) {
+        const userRef = doc(db, "users", userData.personalInfo.name);
+        await setDoc(userRef, {
+          personalInfo: userData.personalInfo,
+          zakatAmount: userData.zakatAmount || 0,
+          timestamp: new Date()
+        }, { merge: true });
+        console.log("User data saved to Firebase");
+      }
+    } catch (error) {
+      console.error("Error saving to Firebase:", error);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -127,9 +139,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     // Mark all fields as touched
     setTouched({
       name: true,
-      totalIncome: true,
-      totalRelief: true,
-      zakatPaid: true,
+      salary: true,
+      deductions: true,
       assets: true
     });
     
@@ -139,14 +150,16 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       // Process form data (convert string values to appropriate types)
       const processedData = {
         name: formData.name,
-        totalIncome: Number(formData.totalIncome),
-        totalRelief: Number(formData.totalRelief),
-        zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
+        salary: Number(formData.salary),
+        deductions: formData.deductions === '' ? 0 : Number(formData.deductions),
         assets: Number(formData.assets)
       };
       
       // Update user data
       updateUserData({ personalInfo: processedData });
+      
+      // Save to Firebase
+      saveToFirebase({ personalInfo: processedData });
       
       // Simulate processing delay for better UX
       setTimeout(() => {
@@ -196,7 +209,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800">Important</h3>
             <div className="text-sm text-blue-700">
-              <p>We've pre-filled information extracted from your income tax document. Please review and complete any missing fields.</p>
+              <p>We've pre-filled information extracted from your documents. Please review and complete any missing fields.</p>
             </div>
           </div>
         </div>
@@ -238,67 +251,40 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
             )}
           </div>
 
-          {/* Total Income Field */}
+          {/* Salary Field */}
           <div>
-            <label htmlFor="totalIncome" className="block text-sm font-medium text-gray-700 mb-1">Total Annual Income (RM)</label>
+            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-1">Monthly Salary (RM)</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <span className="text-gray-500">RM</span>
               </div>
               <input
                 type="number"
-                id="totalIncome"
-                name="totalIncome"
-                value={formData.totalIncome}
+                id="salary"
+                name="salary"
+                value={formData.salary}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('totalIncome')}
-                placeholder="e.g., 60000"
+                className={getInputClassName('salary')}
+                placeholder="e.g., 5000"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
-                aria-invalid={errors.totalIncome && touched.totalIncome ? 'true' : 'false'}
+                aria-invalid={errors.salary && touched.salary ? 'true' : 'false'}
               />
             </div>
-            {touched.totalIncome && errors.totalIncome && (
-              <p className="mt-1 text-sm text-red-600" id="totalIncome-error">{errors.totalIncome}</p>
-            )}
-          </div>
-
-          {/* Total Relief Field */}
-          <div>
-            <label htmlFor="totalRelief" className="block text-sm font-medium text-gray-700 mb-1">Total Relief (RM)</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-gray-500">RM</span>
-              </div>
-              <input
-                type="number"
-                id="totalRelief"
-                name="totalRelief"
-                value={formData.totalRelief}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={getInputClassName('totalRelief')}
-                placeholder="e.g., 9000"
-                min="0"
-                step="any"
-                style={{ paddingLeft: '3rem' }}
-                aria-invalid={errors.totalRelief && touched.totalRelief ? 'true' : 'false'}
-              />
-            </div>
-            {touched.totalRelief && errors.totalRelief && (
-              <p className="mt-1 text-sm text-red-600" id="totalRelief-error">{errors.totalRelief}</p>
+            {touched.salary && errors.salary && (
+              <p className="mt-1 text-sm text-red-600" id="salary-error">{errors.salary}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Total of all approved tax relief items.
+              Include housing, food, transportation, debt payments, and other essential expenses.
             </p>
           </div>
 
-          {/* Zakat Paid Field */}
+          {/* Deductions Field */}
           <div>
-            <label htmlFor="zakatPaid" className="block text-sm font-medium text-gray-700 mb-1">
-              Zakat & Fitrah Paid (RM)
+            <label htmlFor="deductions" className="block text-sm font-medium text-gray-700 mb-1">
+              Monthly Deductions (RM)
               <span className="text-gray-500 text-xs ml-1">(Optional)</span>
             </label>
             <div className="relative">
@@ -312,8 +298,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 value={formData.zakatPaid}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={getInputClassName('zakatPaid')}
-                placeholder="e.g., 1500 (leave empty if none)"
+                className={getInputClassName('deductions')}
+                placeholder="e.g., 500 (leave empty if none)"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
@@ -324,7 +310,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               <p className="mt-1 text-sm text-red-600" id="zakatPaid-error">{errors.zakatPaid}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Total amount of Zakat & Fitrah you've already paid for this year.
+              Include EPF, taxes, loans, and other monthly financial obligations.
             </p>
           </div>
 
