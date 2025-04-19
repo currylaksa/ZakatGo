@@ -7,7 +7,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
   const [depositAmount, setDepositAmount] = useState(initialDepositAmount);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  const rmToEthRate = 0.000075; 
+  const rmToEthRate = 450; // Updated conversion rate: 1 RM = 450 ETH
   const [ethAmount, setEthAmount] = useState(depositAmount * rmToEthRate);
   const { 
     currentAccount, 
