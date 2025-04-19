@@ -24,7 +24,7 @@ export const processDocumentWithGroq = async (file) => {
           content: [
             {
               type: "text",
-              text: "Extract the following information from this document and return ONLY a valid JSON object with this format: {\"name\": string, \"salary\": number, \"deductions\": number}. No additional text."
+              text: "Extract the following information from this income tax document or payslip and return ONLY a valid JSON object with this format: {\"name\": string, \"totalIncome\": number, \"totalRelief\": number, \"totalRebate\": number, \"salary\": number, \"deductions\": number}. For income tax documents: totalIncome = total annual income, totalRelief = total tax relief, totalRebate = tax rebate received. For payslips: calculate monthly values into annual values (multiply by 12). No additional text."
             },
             {
               type: "image_url",
@@ -46,11 +46,21 @@ export const processDocumentWithGroq = async (file) => {
     
     try {
       const parsedData = JSON.parse(responseText);
-      return parsedData;
+      return {
+        name: parsedData.name || null,
+        annualIncome: parsedData.totalIncome || (parsedData.salary ? parsedData.salary * 12 : null),
+        annualExpenses: parsedData.totalRelief || (parsedData.deductions ? parsedData.deductions * 12 : null),
+        zakatPaid: parsedData.totalRebate || null,  // Changed from totalIncomeTax to totalRebate
+        salary: parsedData.salary || null,
+        deductions: parsedData.deductions || null
+      };
     } catch (parseError) {
       console.error('Failed to parse JSON response:', responseText);
       return {
         name: null,
+        annualIncome: null,
+        annualExpenses: null,
+        zakatPaid: null,
         salary: null,
         deductions: null
       };

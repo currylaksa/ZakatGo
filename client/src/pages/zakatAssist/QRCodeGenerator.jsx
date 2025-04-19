@@ -159,7 +159,7 @@ const QRCodeGenerator = ({ applicantData }) => {
   if (isLoading) {
     return (
       <div className="text-center p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Step 3: Generating Your QR Code</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Step 4: Generating Your QR Code</h2>
          <div className="flex justify-center items-center space-x-2 text-gray-600">
              <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -173,7 +173,7 @@ const QRCodeGenerator = ({ applicantData }) => {
 
   return (
     <div className="max-w-3xl mx-auto text-center p-4">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Step 3: Your Zakat Assistance QR Code</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Step 4: Your Zakat Assistance QR Code</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 mb-6">
         <h3 className="text-lg font-semibold text-green-700 mb-3">Application Approved!</h3>
         <p className="text-gray-600 mb-5">Use this QR code at partner stores for Zakat-funded purchases.</p>

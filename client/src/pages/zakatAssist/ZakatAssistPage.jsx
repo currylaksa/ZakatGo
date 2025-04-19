@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApplicationForm from './ApplicationForm';
 import StatusUpdate from './StatusUpdate';
 import QRCodeGenerator from './QRCodeGenerator';
+import ApprovalReportPage from './ApprovalReportPage';
 
 const ZakatAssistPage = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [applicationData, setApplicationData] = useState(null);
   // Simulate status: 'not_submitted', 'pending', 'approved', 'rejected'
   const [applicationStatus, setApplicationStatus] = useState('not_submitted');
   const [loadingStatus, setLoadingStatus] = useState(false);
 
-  // Steps definition - moved outside component body for better performance
+  // Steps definition - updated to 4 steps
   const steps = [
     { number: 1, label: "Application Form", icon: "📝", description: "Fill in your details and upload required documents" },
-    { number: 2, label: "Application Status", icon: "🔍", description: "Check your application review status" },
-    { number: 3, label: "QR Code", icon: "📱", description: "Receive your payment QR code" }
+    { number: 2, label: "Review Status", icon: "🔍", description: "Check your application review status" },
+    { number: 3, label: "Funding Details", icon: "📊", description: "View your approved assistance breakdown" },
+    { number: 4, label: "Payment Access", icon: "📱", description: "Receive your QR code for approved purchases" }
   ];
 
   // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = () => {
       const step = parseInt(window.location.hash.replace('#step', '')) || 1;
-      if (step >= 1 && step <= 3) {
+      if (step >= 1 && step <= 4) { // Updated to 4 steps
         setCurrentStep(step);
       }
     };
@@ -49,20 +53,31 @@ const ZakatAssistPage = () => {
 
     // Simulate backend processing and status update
     setTimeout(() => {
-      const isApproved = Math.random() > 0.3; // 70% chance of approval
-      setApplicationStatus(isApproved ? 'approved' : 'rejected');
+      setApplicationStatus('approved');
       setLoadingStatus(false);
+      
+      // Generate a mock application ID
+      const mockApplicationId = `ZKT-25-0419-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+      setApplicationData(prevData => ({
+        ...prevData,
+        id: mockApplicationId
+      }));
     }, 3000);
   };
 
   const handleSuccess = () => {
-    console.log("Application Approved, moving to Step 3");
-    setCurrentStep(3);
+    console.log("Application Approved, moving to Funding Details (Step 3)");
+    setCurrentStep(3); // Now moves to funding details instead of QR code
   };
 
   const handleRetry = () => {
     setCurrentStep(1);
     setApplicationStatus('not_submitted');
+  };
+  
+  // Proceed to QR code after viewing approval report
+  const proceedToQRCode = () => {
+    setCurrentStep(4);
   };
   
   // Calculate current progress percentage
@@ -102,7 +117,7 @@ const ZakatAssistPage = () => {
             </div>
             
             {/* Step Indicators */}
-            <div className="mt-8 grid grid-cols-3 gap-4">
+            <div className="mt-8 grid grid-cols-4 gap-2"> {/* Changed from grid-cols-3 to grid-cols-4 */}
               {steps.map((step) => {
                 // Determine if this step is active, completed, or upcoming
                 const isActive = step.number === currentStep;
@@ -113,28 +128,28 @@ const ZakatAssistPage = () => {
                   <div key={step.number} className="flex flex-col items-center group">
                     <div 
                       className={`
-                        w-14 h-14 rounded-full flex items-center justify-center mb-2 transition-all duration-300
+                        w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-all duration-300
                         ${isActive ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md' : 
                           isCompleted ? 'bg-green-100 text-green-700 border-2 border-green-500' : 
                           'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-500'}
                       `}
                     >
                       {isCompleted ? (
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
                         <span className="text-lg">{step.icon}</span>
                       )}
                     </div>
-                    <span className={`text-sm font-medium text-center ${
+                    <span className={`text-xs font-medium text-center ${
                       isActive ? 'text-green-700' : 
                       isCompleted ? 'text-green-600' : 
                       'text-gray-400 group-hover:text-gray-600'
                     }`}>
                       {step.label}
                     </span>
-                    <span className="text-xs text-center mt-1 text-gray-500 opacity-80 max-w-xs">
+                    <span className="text-xs text-center mt-1 text-gray-500 opacity-80 max-w-xs hidden md:block">
                       {step.description}
                     </span>
                   </div>
@@ -150,25 +165,65 @@ const ZakatAssistPage = () => {
             )}
             
             {currentStep === 2 && (
-              <StatusUpdate 
-                status={applicationStatus} 
-                onSuccess={handleSuccess} 
-                isLoading={loadingStatus}
-              />
+              <div>
+                <StatusUpdate 
+                  status={applicationStatus} 
+                  onSuccess={handleSuccess} 
+                  isLoading={loadingStatus}
+                />
+              </div>
             )}
             
             {currentStep === 3 && applicationStatus === 'approved' && (
+              <div className="max-w-3xl mx-auto">
+                <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-lg font-medium text-green-800">
+                        Your Application Has Been Approved!
+                      </p>
+                      <p className="text-sm text-green-700 mt-1">
+                        Application ID: {applicationData?.id || 'ZKT-25-0419-001'} | Approval Date: April 19, 2025
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-1 mb-6">
+                  <ApprovalReportPage hideHeader={true} />
+                </div>
+
+                <div className="flex justify-end mt-8">
+                  <button
+                    onClick={proceedToQRCode}
+                    className="px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center"
+                  >
+                    <span>Continue</span>
+                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {currentStep === 4 && applicationStatus === 'approved' && (
               <QRCodeGenerator applicantData={applicationData} />
             )}
             
-            {currentStep === 3 && applicationStatus !== 'approved' && (
+            {((currentStep === 3 || currentStep === 4) && applicationStatus !== 'approved') && (
               <div className="text-center p-8 bg-red-50 rounded-lg border border-red-200">
                 <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-full bg-red-100 animate-pulse">
                   <svg className="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-red-700 mb-2">Cannot Generate QR Code</h3>
+                <h3 className="text-xl font-semibold text-red-700 mb-2">Cannot Proceed</h3>
                 <p className="text-red-600 mb-6">Your application has not been approved. Please contact support for more information or try again.</p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button 
@@ -241,7 +296,7 @@ const ZakatAssistPage = () => {
           </div>
         </div>
         
-        {/* FAQ Accordion - New Addition */}
+        {/* FAQ Accordion */}
         <div className="mt-8 bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-6 bg-green-50 border-b border-green-100">
             <h3 className="text-lg font-semibold text-gray-800 flex items-center">
@@ -283,6 +338,17 @@ const ZakatAssistPage = () => {
               </summary>
               <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
                 The QR code remains valid for 30 days from the date of issuance. After expiration, you may need to submit a new application if you require further assistance.
+              </p>
+            </details>
+            <details className="p-6 group">
+              <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                <span>What are the asnaf categories for Zakat eligibility?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" width="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </summary>
+              <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
+                There are 8 asnaf categories eligible for Zakat: Fakir (The Poor), Miskin (The Needy), Amil (Zakat Administrators), Muallaf (New Converts to Islam), Riqab (To Free from Bondage), Gharimin (Those in Debt), Fi Sabilillah (In the Cause of Allah), and Ibnu Sabil (Wayfarers/Travelers).
               </p>
             </details>
           </div>

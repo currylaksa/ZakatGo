@@ -31,7 +31,7 @@ const PaymentConfirmation = ({ userData }) => {
         <div className="pt-4 border-t border-green-100 text-left space-y-2 text-sm">
           <h4 className="text-base font-medium text-gray-700 mb-2">Receipt Details:</h4>
           <p><strong className="text-gray-600">Transaction ID:</strong> <span className="text-gray-800 break-all">{transactionId}</span></p>
-          <p><strong className="text-gray-600">Amount Donated:</strong> <span className="text-gray-800 font-semibold">RM {Number(amount).toFixed(2)}</span></p>
+          <p><strong className="text-gray-600">Amount Donated:</strong> <span className="text-gray-800 font-semibold">RM {Number(amount).toFixed(6)}</span></p>
           <p><strong className="text-gray-600">Equivalent ETH:</strong> <span className="text-gray-800">{Number(ethAmount).toFixed(8)} ETH</span></p>
           {rmToEthRate > 0 && <p><strong className="text-gray-600">Rate Used:</strong> <span className="text-gray-800">1 RM ≈ {rmToEthRate.toPrecision(4)} ETH</span></p>}
           <p><strong className="text-gray-600">Date & Time:</strong> <span className="text-gray-800">{new Date(timestamp).toLocaleString()}</span></p>
