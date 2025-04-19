@@ -28,7 +28,7 @@ const ProfilePage = () => {
   const [impactScore, setImpactScore] = useState(235);
   const [showLocalSuggestions, setShowLocalSuggestions] = useState(false);
   const [showInRM, setShowInRM] = useState(false); // New state for currency toggle
-  const [ethToMYRRate] = useState(13333.33); // Current ETH to MYR conversion rate
+  const [ethToMYRRate] = useState(450); // Updated ETH to MYR conversion rate
   
   // Mock donor payment report data
   const [donorPaymentReport, setDonorPaymentReport] = useState({
@@ -488,9 +488,9 @@ const ProfilePage = () => {
                       {/* Fuqara segment (60%) */}
                       <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" strokeWidth="20" strokeDasharray="377" strokeDashoffset="0" transform="rotate(-90 50 50)" />
                       {/* Muallaf segment (25%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="20" strokeDasharray="157" strokeDashoffset="377" transform="rotate(-90 50 50)" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="20" strokeDasharray="150" strokeDashoffset="377" transform="rotate(-90 50 50)" />
                       {/* Ibn as-Sabil segment (15%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="20" strokeDasharray="94" strokeDashoffset="534" transform="rotate(-90 50 50)" />
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="20" strokeDasharray="378" strokeDashoffset="534" transform="rotate(-90 50 50)" />
                       {/* Inner circle for donut effect */}
                       <circle cx="50" cy="50" r="30" fill="white" />
                     </svg>
@@ -1193,7 +1193,7 @@ const RecentZakatTransactions = () => {
   const { zakatTransactions, getZakatTransactions, isLoading } = useContext(TransactionContext);
   const [walletAddress, setWalletAddress] = useState('');
   const [showInRM, setShowInRM] = useState(true);
-  const ethToMYRRate = 13333.33;
+  const ethToMYRRate = 450; // Updated ETH to MYR conversion rate
   
   useEffect(() => {
       // Get current wallet address when component mounts
@@ -1227,7 +1227,7 @@ const RecentZakatTransactions = () => {
 
   const convertEthToMYR = (ethAmount) => {
       const myrAmount = Number(ethAmount) * ethToMYRRate;
-      return myrAmount.toFixed(2);
+      return myrAmount.toFixed(6);
   };
   
   const filteredTransactions = zakatTransactions ? zakatTransactions.filter(
@@ -1278,13 +1278,13 @@ const RecentZakatTransactions = () => {
                     <div className="text-right">
                       <div className="font-bold text-sm">
                         {showInRM ? 
-                          `RM ${convertEthToMYR(tx.amount)}` : 
+                          `RM ${Number(tx.amount).toFixed(6)}` : 
                           `${Number(tx.amount).toFixed(6)} ETH`
                         }
                       </div>
                       <div className="text-xs text-gray-500">
                         {showInRM ? 
-                          `(${Number(tx.amount).toFixed(6)} ETH)` : 
+                          `(${convertEthToMYR(tx.amount)}ETH)` : 
                           `(~RM ${convertEthToMYR(tx.amount)})`
                         }
                       </div>
