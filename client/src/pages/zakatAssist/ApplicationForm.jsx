@@ -12,6 +12,7 @@ const ApplicationForm = ({ onSubmit }) => {
     monthlyIncome: '',
     dependents: '',
     reason: '',
+    asnafCategory: '', // Added asnaf category field
   });
   
   // Use refs for direct DOM access
@@ -23,12 +24,25 @@ const ApplicationForm = ({ onSubmit }) => {
   const monthlyIncomeRef = useRef(null);
   const dependentsRef = useRef(null);
   const reasonRef = useRef(null);
+  const asnafCategoryRef = useRef(null); // Added ref for asnaf category
   const fileInputRef = useRef(null);
   
   // UI state
   const [document, setDocument] = useState(null);
   const [documentName, setDocumentName] = useState('');
   const [errors, setErrors] = useState({});
+  
+  // Define asnaf categories
+  const asnafCategories = [
+    { id: 'fakir', name: 'Fakir (The Poor)', description: 'People who don\'t have any means to sustain themselves' },
+    { id: 'miskin', name: 'Miskin (The Needy)', description: 'People with some means but insufficient for their needs' },
+    { id: 'amil', name: 'Amil (Zakat Administrators)', description: 'People involved in collecting and distributing Zakat' },
+    { id: 'muallaf', name: 'Muallaf (New Converts to Islam)', description: 'People who have recently converted to Islam' },
+    { id: 'riqab', name: 'Riqab (To Free from Bondage)', description: 'People in situations of bondage or slavery' },
+    { id: 'gharimin', name: 'Gharimin (Those in Debt)', description: 'People burdened with debt for permissible purposes' },
+    { id: 'fisabilillah', name: 'Fi Sabilillah (In the Cause of Allah)', description: 'People working for Islamic causes' },
+    { id: 'ibnusabil', name: 'Ibnu Sabil (Wayfarers/Travelers)', description: 'Travelers in need of assistance' },
+  ];
   
   // This effect runs once after the component mounts
   // to set initial ref values from state (if any)
@@ -41,6 +55,7 @@ const ApplicationForm = ({ onSubmit }) => {
     if (monthlyIncomeRef.current) monthlyIncomeRef.current.value = formData.monthlyIncome;
     if (dependentsRef.current) dependentsRef.current.value = formData.dependents;
     if (reasonRef.current) reasonRef.current.value = formData.reason;
+    if (asnafCategoryRef.current) asnafCategoryRef.current.value = formData.asnafCategory; // Added this line
   }, []);
   
   // This function synchronizes the refs with our state before any render
@@ -55,6 +70,7 @@ const ApplicationForm = ({ onSubmit }) => {
       monthlyIncome: monthlyIncomeRef.current?.value || '',
       dependents: dependentsRef.current?.value || '',
       reason: reasonRef.current?.value || '',
+      asnafCategory: asnafCategoryRef.current?.value || '', // Added this line
     };
     setFormData(newFormData);
     return newFormData;
@@ -127,6 +143,7 @@ const ApplicationForm = ({ onSubmit }) => {
     if (monthlyIncomeRef.current) monthlyIncomeRef.current.value = formData.monthlyIncome;
     if (dependentsRef.current) dependentsRef.current.value = formData.dependents;
     if (reasonRef.current) reasonRef.current.value = formData.reason;
+    if (asnafCategoryRef.current) asnafCategoryRef.current.value = formData.asnafCategory; // Added this line
   }, [formData]);
 
   const validateForm = () => {
@@ -168,6 +185,8 @@ const ApplicationForm = ({ onSubmit }) => {
     }
     
     if (!currentFormData.reason.trim()) newErrors.reason = 'Reason for Assistance is required.';
+    
+    if (!currentFormData.asnafCategory) newErrors.asnafCategory = 'Please select an Asnaf Category.'; // Added this line
     
     if (!document) newErrors.document = 'Proof of Income document is required.';
     
@@ -252,6 +271,9 @@ const ApplicationForm = ({ onSubmit }) => {
       case 'reason':
         currentValue = reasonRef.current?.value || '';
         break;
+      case 'asnafCategory': // Added this case
+        currentValue = asnafCategoryRef.current?.value || '';
+        break;
       default:
         break;
     }
@@ -312,6 +334,9 @@ const ApplicationForm = ({ onSubmit }) => {
         break;
       case 'reason':
         if (!currentFormData.reason.trim()) fieldError = 'Reason for Assistance is required.';
+        break;
+      case 'asnafCategory': // Added this case
+        if (!currentFormData.asnafCategory) fieldError = 'Please select an Asnaf Category.';
         break;
       default:
         break;
@@ -434,6 +459,37 @@ const ApplicationForm = ({ onSubmit }) => {
             step="1"
           />
         </div>
+
+        <FormField 
+          id="asnafCategory" 
+          name="asnafCategory" 
+          label="Asnaf Category" 
+          error={errors.asnafCategory} 
+          required
+        >
+          <select
+            id="asnafCategory"
+            name="asnafCategory"
+            ref={asnafCategoryRef}
+            onFocus={() => clearError('asnafCategory')}
+            onChange={() => handleInputChange('asnafCategory')}
+            onBlur={() => handleBlur('asnafCategory')}
+            defaultValue={formData.asnafCategory}
+            className={`w-full px-4 py-2 border ${errors.asnafCategory ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
+          >
+            <option value="">-- Select Asnaf Category --</option>
+            {asnafCategories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {asnafCategoryRef.current?.value && (
+            <p className="mt-1 text-xs text-gray-600">
+              {asnafCategories.find(c => c.id === asnafCategoryRef.current.value)?.description || ''}
+            </p>
+          )}
+        </FormField>
 
         <FormField id="reason" name="reason" label="Reason for Assistance" required error={errors.reason}>
           <textarea

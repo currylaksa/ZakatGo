@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApplicationForm from './ApplicationForm';
 import StatusUpdate from './StatusUpdate';
 import QRCodeGenerator from './QRCodeGenerator';
 
 const ZakatAssistPage = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [applicationData, setApplicationData] = useState(null);
   // Simulate status: 'not_submitted', 'pending', 'approved', 'rejected'
@@ -51,6 +53,13 @@ const ZakatAssistPage = () => {
     setTimeout(() => {
       setApplicationStatus('approved');
       setLoadingStatus(false);
+      
+      // Generate a mock application ID
+      const mockApplicationId = `ZKT-25-0419-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+      setApplicationData(prevData => ({
+        ...prevData,
+        id: mockApplicationId
+      }));
     }, 3000);
   };
 
@@ -62,6 +71,15 @@ const ZakatAssistPage = () => {
   const handleRetry = () => {
     setCurrentStep(1);
     setApplicationStatus('not_submitted');
+  };
+  
+  // View detailed approval report
+  const viewApprovalReport = () => {
+    if (applicationData && applicationData.id) {
+      navigate(`/zakat-assist/approval/${applicationData.id}`);
+    } else {
+      console.error("No application ID available");
+    }
   };
   
   // Calculate current progress percentage
@@ -149,15 +167,42 @@ const ZakatAssistPage = () => {
             )}
             
             {currentStep === 2 && (
-              <StatusUpdate 
-                status={applicationStatus} 
-                onSuccess={handleSuccess} 
-                isLoading={loadingStatus}
-              />
+              <div>
+                <StatusUpdate 
+                  status={applicationStatus} 
+                  onSuccess={handleSuccess} 
+                  isLoading={loadingStatus}
+                />
+                
+                {/* Add button to view detailed approval report when approved */}
+                {applicationStatus === 'approved' && (
+                  <div className="mt-6 text-center">
+                    <button
+                      onClick={viewApprovalReport}
+                      className="px-6 py-2 bg-green-100 text-green-700 font-medium rounded-md border border-green-200 hover:bg-green-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                    >
+                      View Detailed Approval Report
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
             
             {currentStep === 3 && applicationStatus === 'approved' && (
-              <QRCodeGenerator applicantData={applicationData} />
+              <div>
+                <QRCodeGenerator applicantData={applicationData} />
+                
+                {/* Add button to view detailed approval report in QR code step too */}
+                <div className="mt-8 text-center border-t border-gray-100 pt-6">
+                  <p className="text-gray-600 mb-3">Need to check your approval details?</p>
+                  <button
+                    onClick={viewApprovalReport}
+                    className="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                  >
+                    View Full Approval Report
+                  </button>
+                </div>
+              </div>
             )}
             
             {currentStep === 3 && applicationStatus !== 'approved' && (
@@ -282,6 +327,17 @@ const ZakatAssistPage = () => {
               </summary>
               <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
                 The QR code remains valid for 30 days from the date of issuance. After expiration, you may need to submit a new application if you require further assistance.
+              </p>
+            </details>
+            <details className="p-6 group">
+              <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                <span>What are the asnaf categories for Zakat eligibility?</span>
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="24" width="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </summary>
+              <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
+                There are 8 asnaf categories eligible for Zakat: Fakir (The Poor), Miskin (The Needy), Amil (Zakat Administrators), Muallaf (New Converts to Islam), Riqab (To Free from Bondage), Gharimin (Those in Debt), Fi Sabilillah (In the Cause of Allah), and Ibnu Sabil (Wayfarers/Travelers).
               </p>
             </details>
           </div>
