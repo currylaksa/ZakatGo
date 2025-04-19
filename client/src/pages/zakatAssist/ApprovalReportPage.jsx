@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const ApprovalReportPage = () => {
+const ApprovalReportPage = ({hideHeader = false}) => {
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -14,31 +14,30 @@ const ApprovalReportPage = () => {
     asnafCategory: "fakir",
     approvedAmount: 2500,
     disbursementDate: "April 25, 2025",
-    disbursementMethod: "Bank Transfer",
-    bankAccountNumber: "****4389",
+    disbursementMethod: "QR Code Access",
     purpose: "Basic Necessities & Housing Assistance",
     
-    // Detailed breakdown of the approved amount
+    // Detailed breakdown of the suggested spending allocation
     approvalBreakdown: [
       { category: "Food & Groceries", amount: 800, period: "Monthly", description: "Basic food and household necessities" },
-      { category: "Housing Rent Assistance", amount: 950, period: "Monthly", description: "Partial rent assistance for family dwelling" },
+      { category: "Housing Rent", amount: 950, period: "Monthly", description: "Assistance for family dwelling" },
       { category: "Utilities", amount: 350, period: "Monthly", description: "Water, electricity, and gas bills" },
       { category: "Medical Expenses", amount: 400, period: "Monthly", description: "Medications and clinic visits" },
     ],
     
-    // Rules and conditions for using the disbursed funds
+    // Usage guidelines for the disbursed funds
     usageGuidelines: [
-      "Funds must be used strictly for the categories specified in the approval",
-      "Recipients are required to keep receipts of major expenses for verification if needed",
-      "Any change in financial circumstances should be reported immediately",
+      "This spending breakdown is a recommendation to help you manage your assistance funds",
+      "You have flexibility to adjust spending based on your most urgent needs",
+      "Any change in financial circumstances should be reported for potential additional support",
       "Support is reviewed every 6 months and may be adjusted based on circumstances"
     ],
     
     // Next steps for the applicant
     nextSteps: [
-      "Verify your bank account details for the upcoming transfer",
+      "Proceed to get your QR code on the next screen",
       "Attend a brief orientation session (online) on April 22, 2025",
-      "Download the ZakatGo app to track your disbursements",
+      "Download the ZakatGo app to track your spending and available balance",
       "Contact your assigned case officer for any questions or concerns"
     ],
     
@@ -98,23 +97,26 @@ const ApprovalReportPage = () => {
   
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <svg className="h-8 w-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-lg font-medium text-green-800">
-              Your Zakat Application Has Been Approved!
-            </p>
-            <p className="text-sm text-green-700 mt-1">
-              Application ID: {approvalData.applicationId} | Approval Date: {approvalData.approvalDate}
-            </p>
+      {/* Approval notification - Only show when not embedded in the step flow */}
+      {!hideHeader && (
+        <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-8 w-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-lg font-medium text-green-800">
+                Your Zakat Application Has Been Approved!
+              </p>
+              <p className="text-sm text-green-700 mt-1">
+                Application ID: {approvalData.applicationId} | Approval Date: {approvalData.approvalDate}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Zakat Assistance Approval Report</h1>
       
@@ -135,8 +137,8 @@ const ApprovalReportPage = () => {
               <p className="font-medium">{approvalData.approvalDate}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Disbursement Date</p>
-              <p className="font-medium">{approvalData.disbursementDate}</p>
+              <p className="text-sm text-gray-500">Disbursement Method</p>
+              <p className="font-medium">{approvalData.disbursementMethod}</p>
             </div>
           </div>
         </div>
@@ -164,16 +166,17 @@ const ApprovalReportPage = () => {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <h3 className="text-lg font-medium text-gray-800 mb-2">Total Approved Amount:</h3>
             <p className="text-3xl font-bold text-green-600">{formatCurrency(totalApproved)}</p>
-            <p className="text-gray-600 mt-1">To be disbursed via {approvalData.disbursementMethod} to account ending in {approvalData.bankAccountNumber}</p>
+            <p className="text-gray-600 mt-1">Available through your QR code at partner stores</p>
           </div>
           
-          <h3 className="text-lg font-medium text-gray-800 mb-3">Breakdown of Assistance:</h3>
+          <h3 className="text-lg font-medium text-gray-800 mb-3">Suggested Spending Allocation:</h3>
+          <p className="text-gray-600 mb-4 italic">This breakdown is a guideline to help you manage your funds. You have flexibility to adjust based on your needs.</p>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Suggested Amount</th>
                   <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
                   <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                 </tr>
@@ -200,7 +203,7 @@ const ApprovalReportPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
-            <h2 className="text-xl font-semibold text-gray-800">Usage Guidelines</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Usage Recommendations</h2>
           </div>
           <div className="p-6">
             <ul className="list-disc pl-5 space-y-2">
