@@ -30,6 +30,24 @@ const ProfilePage = () => {
   const [showInRM, setShowInRM] = useState(false); // New state for currency toggle
   const [ethToMYRRate] = useState(13333.33); // Current ETH to MYR conversion rate
   
+  // Mock donor payment report data
+  const [donorPaymentReport, setDonorPaymentReport] = useState({
+    totalZakatAmount: 1245.00,
+    paymentDate: 'April 15, 2025',
+    paymentReference: 'ZKT-25-0415-D789',
+    paymentMethod: 'Bank Transfer',
+    selectedCategories: [
+      { name: 'Fuqara (The Poor)', percentage: 60, color: 'bg-green-500', amount: 747.00 },
+      { name: 'Muallaf (New Muslims/Friends)', percentage: 25, color: 'bg-blue-500', amount: 311.25 },
+      { name: 'Ibn as-Sabil (Wayfarers)', percentage: 15, color: 'bg-purple-500', amount: 186.75 }
+    ],
+    certificate: {
+      number: 'ZKTC-2025-004893',
+      issuedDate: 'April 16, 2025',
+      taxYear: '2025'
+    }
+  });
+  
   // Mock applicant spending data
   const [spendingCategories, setSpendingCategories] = useState([
     { id: 1, name: 'Food & Groceries', percentage: 35, color: 'bg-green-500', spent: 315 },
@@ -274,6 +292,12 @@ const ProfilePage = () => {
     setProfileView(view);
   };
 
+  // Helper function to download payment report as PDF
+  const downloadPaymentReport = () => {
+    // In a real implementation, this would generate a PDF file
+    alert('Downloading Zakat Payment Report as PDF...');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Title and Description */}
@@ -412,6 +436,140 @@ const ProfilePage = () => {
                   </div>
                 </>
               )}
+            </div>
+            
+            {/* Payment Report Section for Donors */}
+            <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h2 className="text-base font-bold">Zakat Payment Report</h2>
+                </div>
+                
+                <button 
+                  onClick={downloadPaymentReport}
+                  className="text-sm text-green-600 hover:text-green-700 transition-colors flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF
+                </button>
+              </div>
+              
+              {/* Payment Summary */}
+              <div className="bg-green-50 p-4 rounded-xl mb-5">
+                <div className="flex flex-wrap items-center justify-between">
+                  <div className="mb-2 md:mb-0">
+                    <div className="text-sm text-gray-600">Total Zakat Payment</div>
+                    <div className="text-2xl font-bold text-green-700">RM {donorPaymentReport.totalZakatAmount.toFixed(2)}</div>
+                  </div>
+                  
+                  <div className="text-right mb-2 md:mb-0 md:mr-4">
+                    <div className="text-sm text-gray-600">Payment Date</div>
+                    <div className="font-medium">{donorPaymentReport.paymentDate}</div>
+                  </div>
+                  
+                  <div className="text-right">
+                    <div className="text-sm text-gray-600">Reference</div>
+                    <div className="font-medium">{donorPaymentReport.paymentReference}</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Distribution Chart and Details */}
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Chart */}
+                <div className="flex flex-col items-center md:w-1/2">
+                  <div className="relative w-48 h-48">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      {/* Fuqara segment (60%) */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" strokeWidth="20" strokeDasharray="377" strokeDashoffset="0" transform="rotate(-90 50 50)" />
+                      {/* Muallaf segment (25%) */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="20" strokeDasharray="157" strokeDashoffset="377" transform="rotate(-90 50 50)" />
+                      {/* Ibn as-Sabil segment (15%) */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="20" strokeDasharray="94" strokeDashoffset="534" transform="rotate(-90 50 50)" />
+                      {/* Inner circle for donut effect */}
+                      <circle cx="50" cy="50" r="30" fill="white" />
+                    </svg>
+                    
+                    {/* Center text showing total */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <div className="text-xs text-gray-500">Total Amount</div>
+                      <div className="text-lg font-bold">RM {donorPaymentReport.totalZakatAmount.toFixed(2)}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mt-3">
+                    <div className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                      <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Tax-Deductible
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Certificate #{donorPaymentReport.certificate.number}</p>
+                  </div>
+                </div>
+                
+                {/* Distribution Details */}
+                <div className="md:w-1/2">
+                  <h3 className="text-sm font-medium text-gray-700 mb-3">Zakat Distribution</h3>
+                  
+                  <div className="space-y-3">
+                    {donorPaymentReport.selectedCategories.map((category, index) => (
+                      <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center">
+                            <div className={`w-3 h-3 rounded-full mr-2 ${category.color}`}></div>
+                            <div className="text-sm font-medium">{category.name}</div>
+                          </div>
+                          <div className="text-sm font-bold">RM {category.amount.toFixed(2)}</div>
+                        </div>
+                        
+                        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${category.color}`}
+                            style={{ width: `${category.percentage}%` }}
+                          ></div>
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 mt-1 text-right">{category.percentage}% of total donation</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 text-sm">
+                    <p className="text-gray-600">Your zakat contribution is divided among your selected categories according to the percentages you specified during donation.</p>
+                    <a href="#" className="text-green-600 hover:text-green-700 font-medium mt-2 inline-block">
+                      Learn more about zakat categories →
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Impact Preview */}
+              <div className="border-t border-gray-200 mt-6 pt-6">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Your Impact Preview</h3>
+                
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="bg-green-50 rounded-lg p-3">
+                    <div className="text-2xl text-green-700 font-bold">12</div>
+                    <div className="text-xs text-gray-600">Families Helped</div>
+                  </div>
+                  
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="text-2xl text-blue-700 font-bold">3</div>
+                    <div className="text-xs text-gray-600">New Muslims Supported</div>
+                  </div>
+                  
+                  <div className="bg-purple-50 rounded-lg p-3">
+                    <div className="text-2xl text-purple-700 font-bold">5</div>
+                    <div className="text-xs text-gray-600">Travelers Assisted</div>
+                  </div>
+                </div>
+              </div>
             </div>
             
             {/* Quick Action Cards - Redesigned */}
@@ -658,72 +816,6 @@ const ProfilePage = () => {
                       <p className="text-sm text-gray-500">Current</p>
                     </div>
                   </div>
-                </div>
-              </div>
-              
-              {/* Recent Donations Section - Enhanced UI */}
-              <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h2 className="text-base font-bold">Recent Donations</h2>
-                  </div>
-                  
-                  <Link to="/donation-history" className="text-sm text-green-600 hover:text-green-700 transition-colors">
-                    View All
-                  </Link>
-                </div>
-                
-                <div className="space-y-3">
-                  {recentDonations.map(donation => (
-                    <div key={donation.id} className="bg-gray-50 p-4 rounded-xl">
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="flex items-center mb-1">
-                            <span className={`inline-block w-2 h-2 rounded-full ${
-                              donation.type === 'Zakat' ? 'bg-green-500' :
-                              donation.type === 'Sadaqah' ? 'bg-blue-500' : 'bg-purple-500'
-                            } mr-2`}></span>
-                            <span className="font-medium text-sm">{donation.recipient}</span>
-                          </div>
-                          <div className="flex items-center text-xs text-gray-500">
-                            <span className="mr-2">{donation.type}</span>
-                            <span>{donation.date}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="text-right">
-                          <div className="font-bold text-sm">
-                            {showInRM ? donation.amount : (
-                              parseFloat(donation.amount.replace(/[^\d.]/g, '')) / ethToMYRRate
-                            ).toFixed(4) + ' ETH'}
-                          </div>
-                          <div className="flex items-center text-xs text-gray-500 justify-end">
-                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${
-                              donation.status === 'Completed' ? 'bg-green-500' : 'bg-yellow-500'
-                            } mr-1`}></span>
-                            <span>{donation.status}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-2 flex items-center text-xs text-gray-500">
-                        <span className="font-mono">{formatTxHash(donation.txHash)}</span>
-                        <a 
-                          href={`https://sepolia.etherscan.io/tx/${donation.txHash}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="ml-1 text-gray-400 hover:text-gray-600"
-                        >
-                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
 
