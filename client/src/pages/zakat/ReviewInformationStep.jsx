@@ -118,24 +118,44 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     return isValid;
   };
 
-  // Save data to Firebase
+  // Update the saveToFirebase function
   const saveToFirebase = async (userData) => {
     try {
+      // Only attempt to save if we have a name (used as the document ID)
       if (userData.personalInfo?.name) {
-        const userRef = doc(db, "users", userData.personalInfo.name);
-        await setDoc(userRef, {
-          personalInfo: userData.personalInfo,
+        console.log("Attempting to save user data to Firebase...");
+        
+        // Create a more reliable document ID by removing spaces and using lowercase
+        const docId = userData.personalInfo.name.toLowerCase().replace(/\s+/g, '_');
+        
+        // Create a clean data object
+        const dataToSave = {
+          personalInfo: {
+            name: userData.personalInfo.name,
+            annualIncome: userData.personalInfo.annualIncome || 0,
+            annualExpenses: userData.personalInfo.annualExpenses || 0,
+            zakatPaid: userData.personalInfo.zakatPaid || 0,
+            assets: userData.personalInfo.assets || 0
+          },
           zakatAmount: userData.zakatAmount || 0,
-          timestamp: new Date()
-        }, { merge: true });
-        console.log("User data saved to Firebase");
+          lastUpdated: new Date().toISOString()
+        };
+        
+        // Use collection "zakatCalculations" instead of "users" which might be restricted
+        const userRef = doc(db, "zakatCalculations", docId);
+        await setDoc(userRef, dataToSave, { merge: true });
+        console.log("User data saved to Firebase successfully");
+        return true;
       }
+      return false;
     } catch (error) {
       console.error("Error saving to Firebase:", error);
+      // Don't throw the error - just log it and continue
+      return false;
     }
   };
 
-  // Handle form submission
+  // Update the handleSubmit function
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -155,22 +175,27 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       const processedData = {
         name: formData.name,
         annualIncome: Number(formData.annualIncome),
-        annualExpenses: Number(formData.annualExpenses), // No longer optional
+        annualExpenses: Number(formData.annualExpenses),
         zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
-        assets: formData.assets === '' ? 0 : Number(formData.assets) // Made optional
+        assets: formData.assets === '' ? 0 : Number(formData.assets)
       };
       
-      // Update user data
+      // Update user data in local state (this will always work)
       updateUserData({ personalInfo: processedData });
       
-      // Save to Firebase
-      saveToFirebase({ personalInfo: processedData });
-      
-      // Simulate processing delay for better UX
-      setTimeout(() => {
-        setIsLoading(false);
-        nextStep();
-      }, 600);
+      // Try to save to Firebase, but don't block if it fails
+      saveToFirebase({ personalInfo: processedData })
+        .catch(error => {
+          // Just log the error but continue with the flow
+          console.log("Note: Could not save data to cloud storage, continuing locally");
+        })
+        .finally(() => {
+          // Always continue to next step after a delay
+          setTimeout(() => {
+            setIsLoading(false);
+            nextStep();
+          }, 600);
+        });
     }
   };
 
