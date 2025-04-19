@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { doc, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,6 +11,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
   // Initialize form with data from prior steps
   const [formData, setFormData] = useState({
     name: userData.documentData?.name || userData.personalInfo?.name || '',
+    annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
+    annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
+    zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
     annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
     annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
     zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
@@ -25,6 +30,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
       annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
       zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
+      annualIncome: userData.documentData?.annualIncome || userData.personalInfo?.annualIncome || '',
+      annualExpenses: userData.documentData?.annualExpenses || userData.personalInfo?.annualExpenses || '',
+      zakatPaid: userData.documentData?.zakatPaid || userData.personalInfo?.zakatPaid || '',
       assets: userData.documentData?.assets || userData.personalInfo?.assets || ''
     });
   }, [userData.documentData, userData.personalInfo]);
@@ -37,6 +45,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     let processedValue;
     if (name === 'name') {
       processedValue = value;
+    } else if (name === 'annualExpenses' && value === '') {
+      processedValue = '';
+    } else if (name === 'zakatPaid' && value === '') {
     } else if (name === 'annualExpenses' && value === '') {
       processedValue = '';
     } else if (name === 'zakatPaid' && value === '') {
@@ -74,6 +85,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
         }
         break;
       case 'annualIncome':
+      case 'annualIncome':
         if (value === '' || isNaN(value) || value <= 0) {
           error = 'Valid Annual Income is required';
         }
@@ -81,14 +93,24 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       case 'annualExpenses':
         if (value !== '' && (isNaN(value) || value < 0)) {
           error = 'Annual Expenses must be a valid number (0 or more)';
+          error = 'Valid Annual Income is required';
+        }
+        break;
+      case 'annualExpenses':
+        if (value === '' || isNaN(value) || value < 0) {
+          error = 'Valid Annual Expenses are required (0 or more)';
         }
         break;
       case 'zakatPaid':
+      case 'zakatPaid':
         if (value !== '' && (isNaN(value) || value < 0)) {
+          error = 'Zakat/Fitrah already paid must be a valid number (0 or more)';
           error = 'Zakat/Fitrah already paid must be a valid number (0 or more)';
         }
         break;
       case 'assets':
+        if (value !== '' && (isNaN(value) || value < 0)) {
+          error = 'Assets Value must be a valid number (0 or more)';
         if (value !== '' && (isNaN(value) || value < 0)) {
           error = 'Assets Value must be a valid number (0 or more)';
         }
@@ -103,6 +125,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
 
   // Validate all form fields
   const validateForm = () => {
+    const fields = ['name', 'annualIncome', 'annualExpenses', 'zakatPaid', 'assets'];
     const fields = ['name', 'annualIncome', 'annualExpenses', 'zakatPaid', 'assets'];
     const newErrors = {};
     let isValid = true;
@@ -141,6 +164,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     }
   };
 
+  // Save data to Firebase
+  const saveToFirebase = async (userData) => {
+    try {
+      if (userData.personalInfo?.name) {
+        const userRef = doc(db, "users", userData.personalInfo.name);
+        await setDoc(userRef, {
+          personalInfo: userData.personalInfo,
+          zakatAmount: userData.zakatAmount || 0,
+          timestamp: new Date()
+        }, { merge: true });
+        console.log("User data saved to Firebase");
+      }
+    } catch (error) {
+      console.error("Error saving to Firebase:", error);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -148,6 +188,9 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
     // Mark all fields as touched
     setTouched({
       name: true,
+      annualIncome: true,
+      annualExpenses: true,
+      zakatPaid: true,
       annualIncome: true,
       annualExpenses: true,
       zakatPaid: true,
@@ -165,10 +208,17 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
         zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
         assets: formData.assets === '' ? 0 : Number(formData.assets) // Made optional
 >>>>>>> 599958b (update reviewinformation)
+        annualIncome: Number(formData.annualIncome),
+        annualExpenses: Number(formData.annualExpenses), // No longer optional
+        zakatPaid: formData.zakatPaid === '' ? 0 : Number(formData.zakatPaid),
+        assets: formData.assets === '' ? 0 : Number(formData.assets) // Made optional
       };
       
       // Update user data
       updateUserData({ personalInfo: processedData });
+      
+      // Save to Firebase
+      saveToFirebase({ personalInfo: processedData });
       
       // Save to Firebase
       saveToFirebase({ personalInfo: processedData });
@@ -220,7 +270,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-blue-800">Document Data Extracted</h3>
+            <h3 className="text-sm font-medium text-blue-800">Document Data Extracted</h3>
             <div className="text-sm text-blue-700">
+              <p>We've extracted information from your document. Please review and adjust if needed:</p>
+              <ul className="list-disc pl-5 mt-1 text-xs space-y-1">
+                {userData.documentData?.name && (
+                  <li><strong>Name:</strong> {userData.documentData.name}</li>
+                )}
+                {userData.documentData?.annualIncome && (
+                  <li><strong>Annual Income:</strong> RM {parseFloat(userData.documentData.annualIncome).toFixed(2)}</li>
+                )}
+                {userData.documentData?.annualExpenses && (
+                  <li><strong>Necessary Expenses:</strong> RM {parseFloat(userData.documentData.annualExpenses).toFixed(2)}</li>
+                )}
+                {userData.documentData?.zakatPaid && (
+                  <li><strong>Tax Rebate:</strong> RM {parseFloat(userData.documentData.zakatPaid).toFixed(2)}</li>
+                )}
+              </ul>
               <p>We've extracted information from your document. Please review and adjust if needed:</p>
               <ul className="list-disc pl-5 mt-1 text-xs space-y-1">
                 {userData.documentData?.name && (
@@ -308,10 +374,49 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           </div>
 
           {/* Annual Expenses Field */}
+          {/* Annual Income Field */}
+          <div>
+            <label htmlFor="annualIncome" className="block text-sm font-medium text-gray-700 mb-1">
+              Annual Income (RM)
+              <span className="text-red-500 text-xs ml-1">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-500">RM</span>
+              </div>
+              <input
+                type="number"
+                id="annualIncome"
+                name="annualIncome"
+                value={formData.annualIncome}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={getInputClassName('annualIncome')}
+                placeholder="e.g., 60000"
+                min="0"
+                step="any"
+                style={{ paddingLeft: '3rem' }}
+                aria-invalid={errors.annualIncome && touched.annualIncome ? 'true' : 'false'}
+                required
+              />
+            </div>
+            {touched.annualIncome && errors.annualIncome && (
+              <p className="mt-1 text-sm text-red-600" id="annualIncome-error">{errors.annualIncome}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Annual income after EPF contributions and tax reliefs
+            </p>
+          </div>
+
+          {/* Annual Expenses Field */}
           <div>
             <label htmlFor="annualExpenses" className="block text-sm font-medium text-gray-700 mb-1">
               Necessary Annual Expenses (RM)
               <span className="text-gray-500 text-xs ml-1">(Optional)</span>
+            </label>
+            <label htmlFor="annualExpenses" className="block text-sm font-medium text-gray-700 mb-1">
+              Necessary Annual Expenses (RM)
+              <span className="text-red-500 text-xs ml-1">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -322,14 +427,21 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 id="annualExpenses"
                 name="annualExpenses"
                 value={formData.annualExpenses}
+                id="annualExpenses"
+                name="annualExpenses"
+                value={formData.annualExpenses}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={getInputClassName('annualExpenses')}
                 placeholder="e.g., 25000 (leave empty if none)"
+                className={getInputClassName('annualExpenses')}
+                placeholder="e.g., 25000"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
                 aria-invalid={errors.annualExpenses && touched.annualExpenses ? 'true' : 'false'}
+                aria-invalid={errors.annualExpenses && touched.annualExpenses ? 'true' : 'false'}
+                required
               />
             </div>
             {touched.annualExpenses && errors.annualExpenses && (
@@ -341,7 +453,10 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           </div>
 
           {/* Already Paid Zakat Field - Updated to mention rebate */}
+          {/* Already Paid Zakat Field - Updated to mention rebate */}
           <div>
+            <label htmlFor="zakatPaid" className="block text-sm font-medium text-gray-700 mb-1">
+              Zakat/Fitrah Already Paid (RM)
             <label htmlFor="zakatPaid" className="block text-sm font-medium text-gray-700 mb-1">
               Zakat/Fitrah Already Paid (RM)
               <span className="text-gray-500 text-xs ml-1">(Optional)</span>
@@ -355,20 +470,28 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
                 id="zakatPaid"
                 name="zakatPaid"
                 value={formData.zakatPaid}
+                id="zakatPaid"
+                name="zakatPaid"
+                value={formData.zakatPaid}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                className={getInputClassName('zakatPaid')}
                 className={getInputClassName('zakatPaid')}
                 placeholder="e.g., 500 (leave empty if none)"
                 min="0"
                 step="any"
                 style={{ paddingLeft: '3rem' }}
                 aria-invalid={errors.zakatPaid && touched.zakatPaid ? 'true' : 'false'}
+                aria-invalid={errors.zakatPaid && touched.zakatPaid ? 'true' : 'false'}
               />
             </div>
             {touched.zakatPaid && errors.zakatPaid && (
               <p className="mt-1 text-sm text-red-600" id="zakatPaid-error">{errors.zakatPaid}</p>
+            {touched.zakatPaid && errors.zakatPaid && (
+              <p className="mt-1 text-sm text-red-600" id="zakatPaid-error">{errors.zakatPaid}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
+              Your tax rebate amount has been pre-filled. This can be considered as zakat already paid.
               Your tax rebate amount has been pre-filled. This can be considered as zakat already paid.
             </p>
           </div>
@@ -377,6 +500,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div className="md:col-span-2">
             <label htmlFor="assets" className="block text-sm font-medium text-gray-700 mb-1">
               Total Zakatable Assets Value (RM)
+              <span className="text-gray-500 text-xs ml-1">(Optional)</span>
               <span className="text-gray-500 text-xs ml-1">(Optional)</span>
             </label>
             <div className="relative">
