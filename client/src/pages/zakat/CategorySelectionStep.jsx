@@ -52,7 +52,7 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
   return (
     <div className="max-w-3xl mx-auto space-y-6 bg-white rounded-lg p-6 shadow-sm">
       <div className="border-b pb-4">
-        <h2 className="text-2xl font-bold text-gray-800">Choose Zakat Categories</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Choose Asnaf</h2>
         <p className="text-gray-500 mt-1">Step 4 of 5: Select recipients for your contribution</p>
       </div>
 
