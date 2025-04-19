@@ -9,7 +9,7 @@ const ApprovalReportPage = ({hideHeader = false}) => {
   // For demo purposes, we're using mock data for the Fakir category
   const mockApprovalData = {
     applicationId: "ZKT-25-0419-001",
-    applicantName: "Ahmad bin Abdullah",
+    applicantName: "Mohd Ali bin Mohd Noor",
     approvalDate: "April 19, 2025",
     asnafCategory: "fakir",
     approvedAmount: 2500,
