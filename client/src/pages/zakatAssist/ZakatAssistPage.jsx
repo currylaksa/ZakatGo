@@ -49,8 +49,7 @@ const ZakatAssistPage = () => {
 
     // Simulate backend processing and status update
     setTimeout(() => {
-      const isApproved = Math.random() > 0.3; // 70% chance of approval
-      setApplicationStatus(isApproved ? 'approved' : 'rejected');
+      setApplicationStatus('approved');
       setLoadingStatus(false);
     }, 3000);
   };
