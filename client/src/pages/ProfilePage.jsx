@@ -982,17 +982,21 @@ const ProfilePage = () => {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex flex-col items-center md:w-1/2">
                   <div className="relative w-40 h-40">
-                    {/* Simple donut chart - visual representation of spending categories */}
+                    {/* Improved donut chart - visual representation of spending categories */}
                     <svg className="w-full h-full" viewBox="0 0 100 100">
-                      {/* Using conic-gradient would be better in real implementation */}
-                      {/* Food segment (35%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" strokeWidth="20" strokeDasharray="220" strokeDashoffset="0" transform="rotate(-90 50 50)" />
-                      {/* Housing segment (40%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="20" strokeDasharray="251" strokeDashoffset="220" transform="rotate(-90 50 50)" />
-                      {/* Utilities segment (15%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="20" strokeDasharray="94" strokeDashoffset="471" transform="rotate(-90 50 50)" />
-                      {/* Medical segment (10%) */}
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="20" strokeDasharray="63" strokeDashoffset="565" transform="rotate(-90 50 50)" />
+                      {/* Calculate the circumference of the circle: 2 * PI * radius */}
+                      {/* Full circle circumference = 2 * PI * 40 = ~251.33 */}
+                      {/* Food segment (35%) = 0.35 * 251.33 = ~87.96 */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10B981" strokeWidth="20" strokeDasharray="251.33" strokeDashoffset="0" transform="rotate(-90 50 50)" />
+                      {/* Housing segment (40%) = 0.4 * 251.33 = ~100.53 */}
+                      {/* Starting after Food segment (35%) = 0.35 * 251.33 = ~87.96 */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="20" strokeDasharray="100.53 150.8" strokeDashoffset="-87.96" transform="rotate(-90 50 50)" />
+                      {/* Utilities segment (15%) = 0.15 * 251.33 = ~37.7 */}
+                      {/* Starting after Food (35%) + Housing (40%) = 0.75 * 251.33 = ~188.5 */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8B5CF6" strokeWidth="20" strokeDasharray="37.7 213.63" strokeDashoffset="-188.5" transform="rotate(-90 50 50)" />
+                      {/* Medical segment (10%) = 0.1 * 251.33 = ~25.13 */}
+                      {/* Starting after Food (35%) + Housing (40%) + Utilities (15%) = 0.9 * 251.33 = ~226.2 */}
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="20" strokeDasharray="25.13 226.2" strokeDashoffset="-226.2" transform="rotate(-90 50 50)" />
                       {/* Inner circle for donut effect */}
                       <circle cx="50" cy="50" r="30" fill="white" />
                     </svg>
