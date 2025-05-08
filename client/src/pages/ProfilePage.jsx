@@ -135,15 +135,15 @@ const ProfilePage = () => {
 
       setIsLoading(true);
       
-      // Check if we're on Sepolia network
+      // Check if we're on Swan Saturn Testnet network
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      const sepoliaChainId = '0xaa36a7'; // Chain ID for Sepolia
+      const swanSaturnChainId = '0x7E8'; // Chain ID for Swan Saturn (2024 in hex)
       
-      if (chainId !== sepoliaChainId) {
+      if (chainId !== swanSaturnChainId) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: sepoliaChainId }],
+            params: [{ chainId: swanSaturnChainId }],
           });
         } catch (switchError) {
           // This error code indicates that the chain has not been added to MetaMask
@@ -152,23 +152,23 @@ const ProfilePage = () => {
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [{
-                  chainId: sepoliaChainId,
-                  chainName: 'Sepolia Test Network',
+                  chainId: swanSaturnChainId,
+                  chainName: 'Swan Saturn Testnet',
                   nativeCurrency: {
-                    name: 'Sepolia ETH',
-                    symbol: 'ETH',
+                    name: 'Swan Ethereum',
+                    symbol: 'sETH',
                     decimals: 18
                   },
-                  rpcUrls: ['https://sepolia.infura.io/v3/'],
-                  blockExplorerUrls: ['https://sepolia.etherscan.io']
+                  rpcUrls: ['http://185.199.53.44:8545'],
+                  blockExplorerUrls: ['http://185.19.53.44:4000']
                 }]
               });
             } catch (addError) {
-              console.error('Error adding Sepolia network:', addError);
+              console.error('Error adding Swan Saturn network:', addError);
               setNetworkError(true);
             }
           }
-          console.error('Error switching to Sepolia network:', switchError);
+          console.error('Error switching to Swan Saturn network:', switchError);
           setNetworkError(true);
         }
       }
@@ -202,15 +202,15 @@ const ProfilePage = () => {
       // Request account access
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       
-      // Check and switch to Sepolia network
+      // Check and switch to Swan Saturn network
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      const sepoliaChainId = '0xaa36a7'; // Chain ID for Sepolia
+      const swanSaturnChainId = '0x7E8'; // Chain ID for Swan Saturn (2024 in hex)
       
-      if (chainId !== sepoliaChainId) {
+      if (chainId !== swanSaturnChainId) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: sepoliaChainId }],
+            params: [{ chainId: swanSaturnChainId }],
           });
         } catch (switchError) {
           setNetworkError(true);
@@ -238,7 +238,7 @@ const ProfilePage = () => {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const network = await provider.getNetwork();
       
-      if (network.chainId !== BigInt(11155111)) {
+      if (network.chainId !== BigInt(2024)) {
         setWalletBalance("Wrong Network");
         setNetworkError(true);
         setIsBalanceLoading(false); 
@@ -354,7 +354,7 @@ const ProfilePage = () => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="text-sm font-medium">Sepolia ETH</span>
+                    <span className="text-sm font-medium">Swan sETH</span>
                   </div>
                   {networkError && (
                     <span className="text-xs bg-red-500 bg-opacity-20 px-2 py-0.5 rounded-full">
@@ -1270,8 +1270,12 @@ const RecentZakatTransactions = () => {
                   <div className="flex justify-between">
                     <div>
                       <div className="flex items-center mb-1">
-                        <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                        <span className="font-medium text-sm">Zakat Payment</span>
+                        <span className={`inline-block w-2 h-2 rounded-full ${
+                            tx.category === 'Food & Groceries' ? 'bg-green-500' :
+                            tx.category === 'Housing Rent' ? 'bg-blue-500' :
+                            tx.category === 'Utilities' ? 'bg-purple-500' : 'bg-yellow-500'
+                          } mr-2`}></span>
+                          <span className="font-medium text-sm">Zakat Payment</span>
                       </div>
                       <div className="flex items-center text-xs text-gray-500">
                         <span className="mr-2">To: {tx.addressTo.slice(0, 6)}...{tx.addressTo.slice(-4)}</span>
@@ -1298,12 +1302,12 @@ const RecentZakatTransactions = () => {
                   
                   <div className="mt-2 flex items-center text-xs text-gray-500">
                     <a 
-                      href={`https://sepolia.etherscan.io/tx/${tx.transactionHash || tx.addressFrom}`}
+                      href={`http://185.19.53.44:4000/tx/${tx.transactionHash || tx.addressFrom}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center hover:text-green-600 transition-colors"
                     >
-                      View on Etherscan
+                      View on Swan Saturn Explorer
                       <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
