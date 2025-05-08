@@ -11,10 +11,8 @@ module.exports = {
       ],
     },
     swanSaturn: {
-      url: "http://185.199.53.44:8545",
-      accounts: [
-        "d2e041aa677d63a1ccf82d8875989d5cf01e871cf9d27864d48b18fe02d72d27",
-      ],
+      url: "https://saturn-rpc.swanchain.io",
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
       chainId: 2024
     },
   },

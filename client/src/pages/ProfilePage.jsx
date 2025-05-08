@@ -1,37 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { HalfCircleBackground } from '../components';
 import { ethers } from 'ethers';
-import { useLanguage } from '../contexts/LanguageContext';
-import LanguageToggle from '../components/LanguageToggle';
 import { TransactionContext } from "../context/TransactionContext";
-
-// Import the Approval Report
-import ApprovalReportPage from './zakatAssist/ApprovalReportPage';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { language, t } = useLanguage();
   
   // Profile view toggle state (donor or applicant)
   const [profileView, setProfileView] = useState('donor'); // 'donor' or 'applicant'
   
-  const [isPremium] = useState(false); 
   const [walletAddress, setWalletAddress] = useState('');
   const [walletBalance, setWalletBalance] = useState(null);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState(false);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
-  const [zakatDue, setZakatDue] = useState(0);
-  const [totalDonations, setTotalDonations] = useState(0);
-  const [impactScore, setImpactScore] = useState(235);
+  
+  const [impactScore] = useState(235);
   const [showLocalSuggestions, setShowLocalSuggestions] = useState(false);
   const [showInRM, setShowInRM] = useState(false); // New state for currency toggle
   const [ethToMYRRate] = useState(450); // Updated ETH to MYR conversion rate
   
   // Mock donor payment report data
-  const [donorPaymentReport, setDonorPaymentReport] = useState({
+  const [donorPaymentReport] = useState({
     totalZakatAmount: 1245.00,
     paymentDate: 'April 15, 2025',
     paymentReference: 'ZKT-25-0415-D789',
@@ -48,24 +39,24 @@ const ProfilePage = () => {
     }
   });
   
-  // Mock applicant spending data
-  const [spendingCategories, setSpendingCategories] = useState([
+  // Mock data without the unused setters
+  const spendingCategories = [
     { id: 1, name: 'Food & Groceries', percentage: 35, color: 'bg-green-500', spent: 315 },
     { id: 2, name: 'Housing Rent', percentage: 40, color: 'bg-blue-500', spent: 360 },
     { id: 3, name: 'Utilities', percentage: 15, color: 'bg-purple-500', spent: 135 },
     { id: 4, name: 'Medical Expenses', percentage: 10, color: 'bg-yellow-500', spent: 90 },
-  ]);
+  ];
 
-  // Mock applicant transaction history
-  const [applicantTransactions, setApplicantTransactions] = useState([
+  // Mock data without the unused setters
+  const applicantTransactions = [
     { id: 1, merchant: 'Speed99 Mart', category: 'Food & Groceries', amount: 'RM125.50', date: '18 Apr 2025', items: ['Rice', 'Vegetables', 'Cooking Oil'] },
     { id: 2, merchant: 'Pharmacy Plus', category: 'Medical Expenses', amount: 'RM58.90', date: '17 Apr 2025', items: ['Medications', 'First Aid Supplies'] },
     { id: 3, merchant: 'Quick Shop', category: 'Food & Groceries', amount: 'RM82.25', date: '15 Apr 2025', items: ['Groceries', 'Household Items'] },
     { id: 4, merchant: 'Water & Power Co', category: 'Utilities', amount: 'RM135.00', date: '10 Apr 2025', items: ['Monthly Utility Bill'] },
-  ]);
+  ];
 
-  // Mock applicant details
-  const [applicantDetails, setApplicantDetails] = useState({
+  // Mock data without the unused setters
+  const applicantDetails = {
     id: 'ZKT-25-0419-001',
     name: 'Ahmad bin Abdullah',
     approvalDate: 'April 19, 2025',
@@ -73,27 +64,26 @@ const ProfilePage = () => {
     remaining: 1900,
     category: 'Fakir (The Poor)',
     validUntil: 'October 19, 2025',
-  });
+  };
   
-  const [nearbyDonationOpportunities, setNearbyDonationOpportunities] = useState([
+  // Mock data without the unused setters
+  const nearbyDonationOpportunities = [
     { id: 1, type: 'Mosque', name: 'Masjid Al-Hikmah', distance: '0.5km', goal: 'RM10,000', raised: 'RM7,500' },
     { id: 2, type: 'Food Bank', name: 'Community Food Relief', distance: '1.2km', goal: 'RM5,000', raised: 'RM2,750' },
     { id: 3, type: 'Education', name: 'Student Support Fund', distance: '2.3km', goal: 'RM8,000', raised: 'RM4,200' }
-  ]);
+  ];
 
-  const [zakatCategories, setZakatCategories] = useState([
+  // Mock data without the unused setters
+  const zakatCategories = [
     { id: 1, name: 'Fuqara (Poor)', percentage: 30, color: 'bg-green-500' },
     { id: 2, name: 'Masakin (Needy)', percentage: 25, color: 'bg-blue-500' },
     { id: 3, name: 'Amil Zakat (Admin)', percentage: 15, color: 'bg-purple-500' },
     { id: 4, name: 'Muallaf (Converts)', percentage: 10, color: 'bg-yellow-500' },
     { id: 5, name: 'Other Categories', percentage: 20, color: 'bg-red-500' }
-  ]);
+  ];
   
-  const [recentDonations, setRecentDonations] = useState([
-    { id: 1, type: 'Zakat', amount: 'RM500', date: '10 Apr', status: 'Completed', recipient: 'Orphanage Fund', txHash: '0x2a8d...e3f9' },
-    { id: 2, type: 'Sadaqah', amount: 'RM100', date: '25 Mar', status: 'Completed', recipient: 'Flood Relief', txHash: '0x7b3e...a2c1' },
-    { id: 3, type: 'Waqf', amount: 'RM250', date: '18 Mar', status: 'Completed', recipient: 'Education Fund', txHash: '0x5f1d...b7e8' }
-  ]);
+  // Remove unused state variable
+  // const [recentDonations, setRecentDonations] = useState([...]);
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -108,6 +98,7 @@ const ProfilePage = () => {
         window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
       }
     };
+  // Add the missing dependency for the ESLint react-hooks/exhaustive-deps rule
   }, []);
 
   const handleChainChanged = () => {
@@ -159,8 +150,8 @@ const ProfilePage = () => {
                     symbol: 'sETH',
                     decimals: 18
                   },
-                  rpcUrls: ['http://185.199.53.44:8545'],
-                  blockExplorerUrls: ['http://185.19.53.44:4000']
+                  rpcUrls: ['https://saturn-rpc.swanchain.io'],
+                  blockExplorerUrls: ['https://saturn-explorer.swanchain.io']
                 }]
               });
             } catch (addError) {
@@ -410,7 +401,7 @@ const ProfilePage = () => {
                         <div className="flex items-center text-xs opacity-80 mt-0.5">
                           <span className="font-mono">{formatAddress(walletAddress)}</span>
                           <a 
-                            href={`https://sepolia.etherscan.io/address/${walletAddress}`} 
+                            href={`https://saturn-explorer.swanchain.io/address/${walletAddress}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="ml-1 opacity-80 hover:opacity-100"
@@ -768,7 +759,7 @@ const ProfilePage = () => {
             <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
                 <div className="flex items-center mb-4">
                   <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <h2 className="text-base font-bold">Donation Summary</h2>
                 </div>
@@ -1197,6 +1188,7 @@ const RecentZakatTransactions = () => {
   const { zakatTransactions, getZakatTransactions, isLoading } = useContext(TransactionContext);
   const [walletAddress, setWalletAddress] = useState('');
   const [showInRM, setShowInRM] = useState(true);
+  const [debugInfo, setDebugInfo] = useState(null);
   const ethToMYRRate = 450; // Updated ETH to MYR conversion rate
   
   useEffect(() => {
@@ -1206,7 +1198,9 @@ const RecentZakatTransactions = () => {
               try {
                   const accounts = await window.ethereum.request({ method: 'eth_accounts' });
                   if (accounts.length > 0) {
-                      setWalletAddress(accounts[0].toLowerCase());
+                      const userAddress = accounts[0].toLowerCase();
+                      setWalletAddress(userAddress);
+                      console.log("Wallet address set:", userAddress);
                   }
               } catch (error) {
                   console.error("Error getting wallet address:", error);
@@ -1220,23 +1214,58 @@ const RecentZakatTransactions = () => {
   useEffect(() => {
       const fetchZakatTransactions = async () => {
           try {
+              console.log("Fetching Zakat transactions...");
               await getZakatTransactions();
           } catch (error) {
               console.error("Error fetching Zakat transactions:", error);
+              setDebugInfo({
+                  error: String(error),
+                  errorType: error.name || 'Unknown Error'
+              });
           }
       };
       
       fetchZakatTransactions();
   }, [getZakatTransactions]);
 
+  // Log whenever zakatTransactions changes
+  useEffect(() => {
+      console.log("Zakat transactions updated:", zakatTransactions);
+      if (zakatTransactions && zakatTransactions.length > 0) {
+          console.log("Sample transaction:", zakatTransactions[0]);
+      }
+      
+      // Set debug info with transaction data
+      if (zakatTransactions) {
+          setDebugInfo(prev => ({
+              ...prev,
+              transactionsCount: zakatTransactions.length,
+              hasWalletAddress: Boolean(walletAddress),
+              walletAddressLength: walletAddress?.length
+          }));
+      }
+  }, [zakatTransactions, walletAddress]);
+
   const convertEthToMYR = (ethAmount) => {
       const myrAmount = Number(ethAmount) * ethToMYRRate;
       return myrAmount.toFixed(6);
   };
   
-  const filteredTransactions = zakatTransactions ? zakatTransactions.filter(
-      tx => walletAddress && tx.addressFrom.toLowerCase() === walletAddress
-  ) : [];
+  // Modified filtering logic to be more forgiving with case sensitivity
+  const filteredTransactions = zakatTransactions ? zakatTransactions.filter(tx => {
+      if (!walletAddress || !tx.addressFrom) return false;
+      
+      // Compare in lowercase to avoid case sensitivity issues
+      const fromAddressLower = tx.addressFrom.toLowerCase();
+      const walletAddressLower = walletAddress.toLowerCase();
+      
+      return fromAddressLower === walletAddressLower;
+  }) : [];
+  
+  // Log filtered transactions for debugging
+  useEffect(() => {
+      console.log("Filtered transactions:", filteredTransactions);
+  }, [filteredTransactions]);
 
   return (
       <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
@@ -1246,13 +1275,13 @@ const RecentZakatTransactions = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <h2 className="text-base font-bold">My Zakat Transactions</h2>
-              </div>
-              
-              <button 
-                onClick={() => setShowInRM(!showInRM)}
-                className="text-xs bg-gray-100 hover:bg-gray-200 transition-all rounded-full py-1 px-2 flex items-center text-gray-700"
-              >
-                <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                </div>
+                
+                <button 
+                  onClick={() => setShowInRM(!showInRM)}
+                  className="text-xs bg-gray-100 hover:bg-gray-200 transition-all rounded-full py-1 px-2 flex items-center text-gray-700"
+                >
+                  <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
                 {showInRM ? "Show in ETH" : "Show in RM"}
@@ -1263,7 +1292,7 @@ const RecentZakatTransactions = () => {
             <div className="py-4 text-center">
               <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-green-500 border-t-transparent"></div>
             </div>
-          ) : walletAddress && filteredTransactions.length > 0 ? (
+          ) : walletAddress && filteredTransactions && filteredTransactions.length > 0 ? (
             <div className="space-y-3">
               {filteredTransactions.map((tx, index) => (
                 <div key={index} className="bg-gray-50 p-4 rounded-xl">
@@ -1271,47 +1300,60 @@ const RecentZakatTransactions = () => {
                     <div>
                       <div className="flex items-center mb-1">
                         <span className={`inline-block w-2 h-2 rounded-full ${
-                            tx.category === 'Food & Groceries' ? 'bg-green-500' :
-                            tx.category === 'Housing Rent' ? 'bg-blue-500' :
-                            tx.category === 'Utilities' ? 'bg-purple-500' : 'bg-yellow-500'
+                            tx.keyword === 'food' ? 'bg-green-500' :
+                            tx.keyword === 'housing' ? 'bg-blue-500' :
+                            tx.keyword === 'utilities' ? 'bg-purple-500' : 'bg-yellow-500'
                           } mr-2`}></span>
                           <span className="font-medium text-sm">Zakat Payment</span>
                       </div>
                       <div className="flex items-center text-xs text-gray-500">
-                        <span className="mr-2">To: {tx.addressTo.slice(0, 6)}...{tx.addressTo.slice(-4)}</span>
+                        <span className="mr-2">To: {tx.addressTo ? `${tx.addressTo.slice(0, 6)}...${tx.addressTo.slice(-4)}` : 'Unknown'}</span>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">{tx.message}</div>
+                      <div className="text-xs text-gray-500 mt-1">{tx.message || 'No message'}</div>
                     </div>
                     
                     <div className="text-right">
                       <div className="font-bold text-sm">
                         {showInRM ? 
-                          `RM ${Number(tx.amount).toFixed(6)}` : 
-                          `${Number(tx.amount).toFixed(6)} ETH`
+                          `RM ${Number(tx.amount || 0).toFixed(6)}` : 
+                          `${Number(tx.amount || 0).toFixed(6)} ETH`
                         }
                       </div>
                       <div className="text-xs text-gray-500">
                         {showInRM ? 
-                          `(${convertEthToMYR(tx.amount)}ETH)` : 
-                          `(~RM ${convertEthToMYR(tx.amount)})`
+                          `(${tx.amount || 0} ETH)` : 
+                          `(~RM ${convertEthToMYR(tx.amount || 0)})`
                         }
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">{tx.timestamp}</div>
+                      <div className="text-xs text-gray-500 mt-1">{tx.timestamp || 'Unknown date'}</div>
                     </div>
                   </div>
                   
-                  <div className="mt-2 flex items-center text-xs text-gray-500">
+                  <div className="mt-2 flex flex-col text-xs text-gray-500">
                     <a 
-                      href={`http://185.19.53.44:4000/tx/${tx.transactionHash || tx.addressFrom}`}
+                      href={`https://saturn-explorer.swanchain.io/address/${tx.addressTo}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center hover:text-green-600 transition-colors"
+                      className="flex items-center hover:text-green-600 transition-colors mb-1"
                     >
-                      View on Swan Saturn Explorer
+                      View Recipient on Saturn Explorer
                       <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
+                    {tx.transactionHash && (
+                      <a 
+                        href={`https://saturn-explorer.swanchain.io/tx/${tx.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center hover:text-green-600 transition-colors"
+                      >
+                        View Transaction on Saturn Explorer
+                        <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1332,6 +1374,16 @@ const RecentZakatTransactions = () => {
               </svg>
               <p className="text-sm font-medium mb-1">No transactions found</p>
               <p className="text-xs">Make your first Zakat payment to see your transactions</p>
+              
+              {/* Debug information - only show during development */}
+              {debugInfo && (
+                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-left">
+                  <p className="text-xs font-medium mb-1">Debug Information:</p>
+                  <pre className="text-xs overflow-auto max-h-32">
+                    {JSON.stringify(debugInfo, null, 2)}
+                  </pre>
+                </div>
+              )}
             </div>
           )}
       </div>
