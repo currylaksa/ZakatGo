@@ -5,13 +5,18 @@ import { contractABI, contractAddress } from "../utils/constants";
 
 export const TransactionContext = React.createContext();
 
-const { ethereum } = window;
-const SENDER_ADDRESS = import.meta.env.VITE_SENDER_ADDRESS;
-const RECEIVER_ADDRESS = import.meta.env.VITE_RECEIVER_ADDRESS;
-const LOAN_AMOUNT = import.meta.env.VITE_LOAN_AMOUNT;
+// Safe access to window.ethereum to avoid SSR issues
+const getEthereum = () => {
+  if (typeof window !== 'undefined') {
+    return window.ethereum;
+  }
+  return undefined;
+};
 
+// Move environment variables into the component
 const createEthereumContract = async () => {
   try {
+    const ethereum = getEthereum();
     if (!ethereum) return alert("Please install MetaMask!");
 
     const provider = new ethers.BrowserProvider(ethereum);
@@ -35,6 +40,11 @@ const createEthereumContract = async () => {
 };
 
 export const TransactionsProvider = ({ children }) => {
+  // Access environment variables inside the component
+  const SENDER_ADDRESS = import.meta.env.VITE_SENDER_ADDRESS;
+  const RECEIVER_ADDRESS = import.meta.env.VITE_RECEIVER_ADDRESS;
+  const LOAN_AMOUNT = import.meta.env.VITE_LOAN_AMOUNT;
+  
   const [formData, setformData] = useState({
     addressTo: "",
     amount: "",
@@ -44,7 +54,7 @@ export const TransactionsProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [transactionCount, setTransactionCount] = useState(
-    localStorage.getItem("transactionCount"),
+    typeof localStorage !== "undefined" ? localStorage.getItem("transactionCount") : null
   );
   const [transactions, setTransactions] = useState([]);
   const [zakatTransactions, setZakatTransactions] = useState([]);
@@ -55,6 +65,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const getAllTransactions = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) return alert("Please install MetaMask!");
 
       const contract = await createEthereumContract();
@@ -100,73 +111,75 @@ export const TransactionsProvider = ({ children }) => {
 
   const getZakatTransactions = async () => {
     try {
-        if (!ethereum) return alert("Please install MetaMask!");
+      const ethereum = getEthereum();
+      if (!ethereum) return alert("Please install MetaMask!");
 
-        const contract = await createEthereumContract();
-        if (!contract) return;
-        if (typeof contract.getZakatTransactions !== "function") {
-            console.error("getZakatTransactions method not found on contract");
-            console.log("Available methods:", Object.keys(contract));
-            
-            // Fallback to getAllTransactions if getZakatTransactions doesn't exist
-            const allTransactions = await contract.getAllTransactions();
-            if (allTransactions && allTransactions.length > 0) {
-                console.log("Using getAllTransactions as fallback");
-                const structuredTransactions = allTransactions.map((transaction) => ({
-                    addressTo: transaction.receiver,
-                    addressFrom: transaction.sender,
-                    timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
-                    message: transaction.message,
-                    amount: ethers.formatEther(transaction.amount),
-                    keyword: transaction.keyword,
-                    transactionHash: transaction.transactionHash || null
-                }));
-                
-                setZakatTransactions(structuredTransactions);
-                return;
-            }
-            
-            return;
-        }
+      const contract = await createEthereumContract();
+      if (!contract) return;
+      if (typeof contract.getZakatTransactions !== "function") {
+          console.error("getZakatTransactions method not found on contract");
+          console.log("Available methods:", Object.keys(contract));
+          
+          // Fallback to getAllTransactions if getZakatTransactions doesn't exist
+          const allTransactions = await contract.getAllTransactions();
+          if (allTransactions && allTransactions.length > 0) {
+              console.log("Using getAllTransactions as fallback");
+              const structuredTransactions = allTransactions.map((transaction) => ({
+                  addressTo: transaction.receiver,
+                  addressFrom: transaction.sender,
+                  timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
+                  message: transaction.message,
+                  amount: ethers.formatEther(transaction.amount),
+                  keyword: transaction.keyword,
+                  transactionHash: transaction.transactionHash || null
+              }));
+              
+              setZakatTransactions(structuredTransactions);
+              return;
+          }
+          
+          return;
+      }
 
-        console.log("Fetching Zakat transactions...");
-        
-        const availableTransactions = await contract.getZakatTransactions();
-        
-        if (!availableTransactions || availableTransactions.length === 0) {
-            console.log("No Zakat transactions found");
-            setZakatTransactions([]);
-            return;
-        }
+      console.log("Fetching Zakat transactions...");
+      
+      const availableTransactions = await contract.getZakatTransactions();
+      
+      if (!availableTransactions || availableTransactions.length === 0) {
+          console.log("No Zakat transactions found");
+          setZakatTransactions([]);
+          return;
+      }
 
-        console.log("Raw Zakat transactions:", availableTransactions);
-        
-        const structuredTransactions = availableTransactions.map((transaction) => ({
-            addressTo: transaction.receiver,
-            addressFrom: transaction.sender,
-            timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
-            message: transaction.message,
-            amount: ethers.formatEther(transaction.amount),
-            keyword: transaction.keyword,
-            transactionHash: transaction.transactionHash || null
-        }));
+      console.log("Raw Zakat transactions:", availableTransactions);
+      
+      const structuredTransactions = availableTransactions.map((transaction) => ({
+          addressTo: transaction.receiver,
+          addressFrom: transaction.sender,
+          timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
+          message: transaction.message,
+          amount: ethers.formatEther(transaction.amount),
+          keyword: transaction.keyword,
+          transactionHash: transaction.transactionHash || null
+      }));
 
-        console.log("Structured Zakat transactions:", structuredTransactions);
-        setZakatTransactions(structuredTransactions);
+      console.log("Structured Zakat transactions:", structuredTransactions);
+      setZakatTransactions(structuredTransactions);
     } catch (error) {
-        console.error("Error getting Zakat transactions:", error);
-        // Log more details about the error
-        console.log("Error details:", {
-            message: error.message,
-            code: error.code,
-            data: error.data
-        });
-        setZakatTransactions([]);
+      console.error("Error getting Zakat transactions:", error);
+      // Log more details about the error
+      console.log("Error details:", {
+          message: error.message,
+          code: error.code,
+          data: error.data
+      });
+      setZakatTransactions([]);
     }
   };
 
   const checkIfWalletIsConnect = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) {
         console.log("No MetaMask detected");
         return;
@@ -187,6 +200,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const checkIfTransactionsExists = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) return alert("Please install MetaMask!");
 
       const contract = await createEthereumContract();
@@ -207,6 +221,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const connectWallet = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) return alert("Please install MetaMask.");
 
       const accounts = await ethereum.request({
@@ -224,6 +239,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const sendTransaction = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) return alert("Please install MetaMask.");
 
       const { addressTo, amount, keyword, message } = formData;
@@ -287,6 +303,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const fundLoan = async () => {
     try {
+      const ethereum = getEthereum();
       if (!ethereum) return alert("Please install MetaMask.");
 
       setIsLoading(true);

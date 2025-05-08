@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar, Footer, Transactions, Services, ThemeSwitcher } from "./components";
 import { 
@@ -92,6 +92,30 @@ const AppContent = () => {
 };
 
 const App = () => {
+  // Add state to handle SSR
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  // Only execute useEffect in browser environment
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
+  // Basic rendering placeholder for SSR
+  if (!isBrowser) {
+    return (
+      <LanguageProvider>
+        <ThemeProvider>
+          <div className="min-h-screen bg-neutral">
+            <div className="flex items-center justify-center h-screen">
+              <p>Loading ZakatGo...</p>
+            </div>
+          </div>
+        </ThemeProvider>
+      </LanguageProvider>
+    );
+  }
+
+  // Normal rendering with Router for browser environment
   return (
     <LanguageProvider>
       <ThemeProvider>
