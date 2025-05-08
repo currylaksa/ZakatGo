@@ -106,11 +106,30 @@ export const TransactionsProvider = ({ children }) => {
         if (!contract) return;
         if (typeof contract.getZakatTransactions !== "function") {
             console.error("getZakatTransactions method not found on contract");
+            console.log("Available methods:", Object.keys(contract));
+            
+            // Fallback to getAllTransactions if getZakatTransactions doesn't exist
+            const allTransactions = await contract.getAllTransactions();
+            if (allTransactions && allTransactions.length > 0) {
+                console.log("Using getAllTransactions as fallback");
+                const structuredTransactions = allTransactions.map((transaction) => ({
+                    addressTo: transaction.receiver,
+                    addressFrom: transaction.sender,
+                    timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
+                    message: transaction.message,
+                    amount: ethers.formatEther(transaction.amount),
+                    keyword: transaction.keyword,
+                    transactionHash: transaction.transactionHash || null
+                }));
+                
+                setZakatTransactions(structuredTransactions);
+                return;
+            }
+            
             return;
         }
 
         console.log("Fetching Zakat transactions...");
-        console.log("Available contract methods:", Object.keys(contract));
         
         const availableTransactions = await contract.getZakatTransactions();
         
@@ -120,19 +139,28 @@ export const TransactionsProvider = ({ children }) => {
             return;
         }
 
+        console.log("Raw Zakat transactions:", availableTransactions);
+        
         const structuredTransactions = availableTransactions.map((transaction) => ({
             addressTo: transaction.receiver,
             addressFrom: transaction.sender,
             timestamp: new Date(Number(transaction.timestamp) * 1000).toLocaleString(),
             message: transaction.message,
             amount: ethers.formatEther(transaction.amount),
-            keyword: transaction.keyword
+            keyword: transaction.keyword,
+            transactionHash: transaction.transactionHash || null
         }));
 
+        console.log("Structured Zakat transactions:", structuredTransactions);
         setZakatTransactions(structuredTransactions);
     } catch (error) {
         console.error("Error getting Zakat transactions:", error);
-        console.log("Contract methods available:", contract ? Object.keys(contract) : 'No contract');
+        // Log more details about the error
+        console.log("Error details:", {
+            message: error.message,
+            code: error.code,
+            data: error.data
+        });
         setZakatTransactions([]);
     }
   };
