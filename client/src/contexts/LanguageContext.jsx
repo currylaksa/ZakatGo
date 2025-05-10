@@ -5,17 +5,11 @@ const LanguageContext = createContext();
 
 export const useLanguage = () => useContext(LanguageContext);
 
-// Safe check for browser environment
-const isBrowser = typeof window !== 'undefined';
-
 export const LanguageProvider = ({ children }) => {
-  // Initialize from localStorage or default to 'en', with SSR safety check
+  // Initialize from localStorage or default to 'en'
   const [language, setLanguage] = useState(() => {
-    if (isBrowser) {
-      const savedLanguage = localStorage.getItem('language');
-      return savedLanguage || 'en';
-    }
-    return 'en'; // Default for SSR
+    const savedLanguage = localStorage.getItem('language');
+    return savedLanguage || 'en';
   });
 
   // Create translations object based on current language
@@ -23,13 +17,11 @@ export const LanguageProvider = ({ children }) => {
     return translations[language] || translations.en;
   }, [language]);
 
-  // Save to localStorage whenever language changes - only in browser
+  // Save to localStorage whenever language changes
   useEffect(() => {
-    if (isBrowser) {
-      localStorage.setItem('language', language);
-      // Add a data attribute to the HTML element for potential CSS targeting
-      document.documentElement.setAttribute('data-language', language);
-    }
+    localStorage.setItem('language', language);
+    // Add a data attribute to the HTML element for potential CSS targeting
+    document.documentElement.setAttribute('data-language', language);
   }, [language]);
 
   const toggleLanguage = () => {
@@ -48,4 +40,4 @@ export const LanguageProvider = ({ children }) => {
       {children}
     </LanguageContext.Provider>
   );
-};
+}; 
