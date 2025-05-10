@@ -31,10 +31,7 @@ const Footer = () => {
         {/* Team Acknowledgment */}
         <div className="mb-4">
           <p className="text-sm text-blue-200">
-            Developed with passion for UM Hackathon 2025 by Team Oversized Minions:
-          </p>
-          <p className="text-md font-semibold text-white mt-1">
-            {teamMembers.join(' | ')}
+            Developed with passion for UTM by Team Oversized Minions.
           </p>
         </div>
 
