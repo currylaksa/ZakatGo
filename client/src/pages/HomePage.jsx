@@ -88,7 +88,7 @@ const Homepage = () => {
 
   // Navigation functions based on the prototype
   const handleCalculateClick = () => {
-    window.location.href = '/calculator';
+    window.location.href = '/zakat-payment';
   };
 
   const handleCampaignsClick = () => {
