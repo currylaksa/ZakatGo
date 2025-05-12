@@ -1,5 +1,3 @@
-import abi from "./Transactions.json"; // Assuming you might have a local JSON file, though we'll embed the ABI directly for now.
-
 // New ABI from smart_contract/artifacts/contracts/Transactions.sol/Transactions.json
 export const contractABI = [
     {
