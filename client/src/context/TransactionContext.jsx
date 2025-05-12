@@ -228,39 +228,20 @@ export const TransactionsProvider = ({ children }) => {
 
       const { addressTo, amount, keyword, message } = formData;
 
-      // Log the amount received from the form
-      console.log("Original amount value:", amount);
-      
       const transactionsContract = await createEthereumContract();
       if (!transactionsContract) return;
-      
-      // CRITICAL FIX: Instead of using parseEther which might interpret scientific notation or do conversions,
-      // we'll manually calculate the Wei value for exact precision
-      // For 1.5 ETH, we want exactly 1.5 * 10^18 Wei
-      
-      // Parse the amount with fixed decimal precision
-      const ethAmountDecimal = parseFloat(parseFloat(amount).toFixed(6));
-      console.log("ETH amount as decimal:", ethAmountDecimal);
-      
-      // Convert to BigInt wei value (1 ETH = 10^18 wei)
-      const weiValue = BigInt(Math.floor(ethAmountDecimal * 1e18));
-      console.log("Wei value for transaction:", weiValue.toString());
-      
+      const parsedAmount = ethers.parseEther(amount);
       await ethereum.request({
         method: "eth_sendTransaction",
         params: [
           {
             from: currentAccount,
             to: addressTo,
-            gas: "0x5208", // 21000 gas
-            value: "0x" + weiValue.toString(16), // Convert to hex string
+            gas: "0x5208",
+            value: parsedAmount.toString(),
           },
         ],
       });
-      
-      // For the contract, use ethers.parseUnits for exact precision
-      const parsedAmount = ethers.parseUnits(ethAmountDecimal.toString(), 18);
-      console.log("Contract parsed amount:", parsedAmount.toString());
       
       const transactionHash = await transactionsContract.addToBlockchain(
         addressTo,

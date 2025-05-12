@@ -7,8 +7,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
   const [depositAmount, setDepositAmount] = useState(initialDepositAmount);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  // Change rmToEthRate to a fixed, smaller number for easier understanding (1 RM = 1.5 ETH)
-  const rmToEthRate = 1.5; 
+  const rmToEthRate = 450; // Updated conversion rate: 1 RM = 450 ETH
   const [ethAmount, setEthAmount] = useState(depositAmount * rmToEthRate);
   const { 
     currentAccount, 
@@ -28,8 +27,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
      } else {
          setError('');
      }
-     // Apply consistent formatting for the displayed ETH amount 
-     setEthAmount(parseFloat((amount * rmToEthRate).toFixed(6)));
+     setEthAmount(amount * rmToEthRate);
   }, [depositAmount, rmToEthRate]);
 
    useEffect(() => {
@@ -46,13 +44,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
 
   const handleDepositChange = (e) => {
     const value = e.target.value;
-    // Calculate ETH value directly here to ensure consistency
-    const ethValue = (Number(value) * rmToEthRate).toFixed(6);
-    
-    // Pass the ETH value directly as a string to avoid precision issues
-    handleChange({ target: { value: ethValue }}, 'amount');
-    
-    // Update local state for the RM value
+    handleChange({ target: { value: e.target.value }}, 'amount');
     setDepositAmount(value === '' ? '' : Number(value));
   };
 
@@ -73,16 +65,17 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         return;
       }
 
-      // CRITICAL FIX: For RM 1, we should send exactly 1.5 ETH
-      // We need to use a plain string with the correct number to avoid math errors
-      const ethValue = (finalDepositAmount * rmToEthRate).toFixed(6);
-      console.log('RM Amount:', finalDepositAmount);
-      console.log('Conversion rate:', rmToEthRate);
-      console.log('ETH Amount (calculated):', ethValue);
+      // Let's set a fixed small amount that will definitely work
+      // For testing purposes, we'll use a hardcoded minimum value
+      // This ensures we're sending a valid string to ethers.parseEther
+      
+      // For very small amounts, use a minimum value like "0.0001"
+      // const formattedEthAmount = "0.000001";
+      const formattedEthAmount = (finalDepositAmount * rmToEthRate).toString();
 
       // Set form data for transaction
       handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
-      handleChange({ target: { value: ethValue }}, 'amount');
+      handleChange({ target: { value: formattedEthAmount }}, 'amount');
       handleChange({ target: { value: 'ZAKAT' }}, 'keyword');
       handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
 
@@ -95,7 +88,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
       const transactionDetails = {
         transactionId: '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''),
         amount: finalDepositAmount,
-        ethAmount: ethValue,
+        ethAmount: formattedEthAmount,
         rmToEthRate: rmToEthRate,
         timestamp: new Date().toISOString(),
         status: 'Confirmed',
