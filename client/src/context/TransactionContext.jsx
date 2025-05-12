@@ -242,12 +242,11 @@ export const TransactionsProvider = ({ children }) => {
           },
         ],
       });
-      
       const transactionHash = await transactionsContract.addToBlockchain(
         addressTo,
         parsedAmount,
         message,
-        keyword
+        keyword,
       );
 
       setIsLoading(true);
@@ -293,12 +292,11 @@ export const TransactionsProvider = ({ children }) => {
           },
         ],
       });
-      // This one is actually correct with 4 parameters, so we don't need to change it
       const transactionHash = await transactionsContract.addToBlockchain(
         addressTo,
         parsedAmount,
         "Loan Funding", 
-        "loan"
+        "loan", 
       );
 
       console.log(`Loading - ${transactionHash.hash}`);
