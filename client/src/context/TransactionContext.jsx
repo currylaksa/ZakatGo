@@ -6,30 +6,68 @@ import { contractABI, contractAddress } from "../utils/constants";
 export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
-const SENDER_ADDRESS = import.meta.env.VITE_SENDER_ADDRESS;
-const RECEIVER_ADDRESS = import.meta.env.VITE_RECEIVER_ADDRESS;
-const LOAN_AMOUNT = import.meta.env.VITE_LOAN_AMOUNT;
+
+// Define FIXED_FINAL_RECEIVER_ADDRESS here
+const FIXED_FINAL_RECEIVER_ADDRESS = "0x227fff9c413Ff12fB82448e75B37876B584186FC";
 
 const createEthereumContract = async () => {
   try {
-    if (!ethereum) return alert("Please install MetaMask!");
+    if (!ethereum) {
+      alert("Please install MetaMask!");
+      console.error("createEthereumContract: MetaMask not found.");
+      return null;
+    }
+
+    // Explicitly log the values from constants.js as they are seen by this function
+    console.log("createEthereumContract: contractAddress from import:", contractAddress);
+    console.log("createEthereumContract: contractABI from import (first few entries):", contractABI ? JSON.stringify(contractABI.slice(0, 2), null, 2) : "ABI is null/undefined");
+    console.log("createEthereumContract: contractABI length:", contractABI ? contractABI.length : "ABI is null/undefined");
+
+    if (!contractAddress || typeof contractAddress !== 'string' || !contractAddress.startsWith('0x')) {
+        console.error("createEthereumContract: Invalid contractAddress:", contractAddress);
+        alert("Contract address is invalid. Please check configuration.");
+        return null;
+    }
+
+    if (!contractABI || !Array.isArray(contractABI) || contractABI.length === 0) {
+        console.error("createEthereumContract: Invalid or empty contractABI:", contractABI);
+        alert("Contract ABI is invalid or empty. Please check constants.js.");
+        return null;
+    }
 
     const provider = new ethers.BrowserProvider(ethereum);
     const signer = await provider.getSigner();
     const transactionsContract = new ethers.Contract(
-      contractAddress,
-      contractABI,
+      contractAddress, // Using the imported variable directly
+      contractABI,     // Using the imported variable directly
       signer
     );
-    console.log("Contract methods:", Object.keys(transactionsContract));
-    
-    if (!transactionsContract.getZakatTransactions) {
-      console.error("getZakatTransactions not found in contract ABI");
+
+    console.log("createEthereumContract: transactionsContract object created.");
+    // Check for specific functions that should exist
+    console.log("createEthereumContract: typeof transactionsContract.addToBlockchain:", typeof transactionsContract.addToBlockchain);
+    console.log("createEthereumContract: typeof transactionsContract.getAllTransactionCount:", typeof transactionsContract.getAllTransactionCount);
+    console.log("createEthereumContract: typeof transactionsContract.getZakatTransactions:", typeof transactionsContract.getZakatTransactions);
+    console.log("createEthereumContract: typeof transactionsContract.FIXED_RECEIVER (view method):", typeof transactionsContract.FIXED_RECEIVER);
+
+    // Log all keys found on the contract instance AND its interface
+    console.log("createEthereumContract: All keys on contract instance:", Object.keys(transactionsContract));
+    if (transactionsContract.interface) {
+        console.log("createEthereumContract: Interface fragments (should show your methods):");
+        transactionsContract.interface.forEachFunction((funcFragment) => {
+            console.log(`  - ${funcFragment.name}(${funcFragment.inputs.map(i => i.type).join(',')})`);
+        });
+        transactionsContract.interface.forEachEvent((eventFragment) => {
+            console.log(`  - event ${eventFragment.name}(${eventFragment.inputs.map(i => i.type).join(',')})`);
+        });
     }
 
     return transactionsContract;
   } catch (error) {
-    console.error("Error creating contract:", error);
+    console.error("Error creating Ethereum contract instance in createEthereumContract:", error);
+    if (error.message && error.message.includes("Invalid ABI")) {
+        alert("The contract ABI is invalid. Please check constants.js.");
+    }
     return null;
   }
 };
@@ -224,42 +262,59 @@ export const TransactionsProvider = ({ children }) => {
 
   const sendTransaction = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) {
+        alert("Please install MetaMask!");
+        return;
+      }
 
       const { addressTo, amount, keyword, message } = formData;
+      
+      if (!amount || parseFloat(amount) <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
 
       const transactionsContract = await createEthereumContract();
-      if (!transactionsContract) return;
-      const parsedAmount = ethers.parseEther(amount);
-      await ethereum.request({
-        method: "eth_sendTransaction",
-        params: [
-          {
-            from: currentAccount,
-            to: addressTo,
-            gas: "0x5208",
-            value: parsedAmount.toString(),
-          },
-        ],
-      });
-      const transactionHash = await transactionsContract.addToBlockchain(
-        addressTo,
+      if (!transactionsContract) {
+        throw new Error("Failed to initialize smart contract connection.");
+      }
+
+      const parsedAmount = ethers.parseUnits(amount.toString(), 18); 
+      
+      console.log("Frontend: formData.amount:", amount);
+      console.log("Frontend: parsedAmount (for contract 'amount' arg AND for 'value' option):", parsedAmount.toString());
+
+      console.log(
+        `Attempting to call addToBlockchain on contract ${contractAddress}. ` +
+        `sETH will be sent to the contract and then forwarded to ${FIXED_FINAL_RECEIVER_ADDRESS}.`
+      );
+      
+      const transactionResponse = await transactionsContract.addToBlockchain(
+        addressTo, 
         parsedAmount,
         message,
         keyword,
+        {
+          value: parsedAmount,
+          gasLimit: 300000 // Manually set gas limit
+        }
       );
 
       setIsLoading(true);
-      console.log(`Loading - ${transactionHash.hash}`);
-      await transactionHash.wait();
-      console.log(`Success - ${transactionHash.hash}`);
+      console.log(`Transaction sent to smart contract, waiting for confirmation... Hash: ${transactionResponse.hash}`);
+      await transactionResponse.wait();
+      console.log(`Transaction confirmed: ${transactionResponse.hash}`);
       setIsLoading(false);
-      const transactionsCount =
-        await transactionsContract.getAllTransactionCount();
+
+      // Update transaction count in state and localStorage
+      const transactionsCount = await transactionsContract.getAllTransactionCount();
       setTransactionCount(transactionsCount.toString());
-      await getZakatTransactions();
+      window.localStorage.setItem("transactionCount", transactionsCount.toString());
+
+      // Optionally, refresh the transaction list
+      await getAllTransactions();
     } catch (error) {
-      console.error("Transaction error:", error);
+      console.error("Transaction error:", error); // Matched user's error line for context
       setIsLoading(false);
       throw error;
     }
