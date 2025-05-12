@@ -5,9 +5,12 @@ import App from "./App";
 import { TransactionsProvider } from "./context/TransactionContext";
 import "./index.css";
 
-const root = createRoot(document.getElementById("root"));
-root.render(
-  <TransactionsProvider>
-    <App />
-  </TransactionsProvider>,
-);
+// Only run in browser environment
+if (typeof document !== 'undefined') {
+  const root = createRoot(document.getElementById("root"));
+  root.render(
+    <TransactionsProvider>
+      <App />
+    </TransactionsProvider>
+  );
+}
