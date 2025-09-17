@@ -88,7 +88,7 @@ const Homepage = () => {
 
   // Navigation functions based on the prototype
   const handleCalculateClick = () => {
-    window.location.href = '/calculator';
+    window.location.href = '/zakat-payment';
   };
 
   const handleCampaignsClick = () => {
@@ -140,11 +140,10 @@ const Homepage = () => {
               <div className="text-center mb-6">
                 <h3 className="text-xl font-semibold">Quick Access</h3>
                 <p className="text-blue-200 text-sm mt-2">Choose how you want to interact with ZakatGo</p>
-              </div>
-              <div className="space-y-4"> 
-                <Button onClick={handleCalculateClick} className="w-full">Calculate My Zakat</Button>
-                <Button onClick={handleCampaignsClick} type="secondary" className="w-full">View Donation Campaigns</Button>
-                <Button onClick={handleAssistanceClick} type="warning" className="w-full">Apply for Zakat Assistance</Button>
+              </div>              <div className="space-y-4"> 
+                <Button onClick={handleCalculateClick} className="w-full py-4 flex items-center justify-center">Calculate My Zakat</Button>
+                <Button onClick={handleCampaignsClick} type="secondary" className="w-full py-4 flex items-center justify-center">View Donation Campaigns</Button>
+                <Button onClick={handleAssistanceClick} type="warning" className="w-full py-4 flex items-center justify-center">Apply for Zakat Assistance</Button>
               </div>
             </div>
           </div>
@@ -604,11 +603,10 @@ const Homepage = () => {
       <section className="py-16 px-4 text-center">
         <div className="container mx-auto max-w-4xl bg-gradient-to-r from-blue-800 to-blue-900 rounded-2xl p-12 shadow-xl">
           <h2 className="text-3xl font-bold mb-4 text-white">Ready to Revolutionize Your Zakat Experience?</h2>
-          <p className="text-lg text-blue-100 mb-8">Join ZakatGo for transparent, efficient, and accessible Islamic charitable giving</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button onClick={handleCalculateClick} className="bg-green-600 hover:bg-green-700">Calculate My Zakat</Button>
-            <Button onClick={handleCampaignsClick} type="secondary" className="w-full">View Donation Campaigns</Button>
-            <Button onClick={handleAssistanceClick} type="warning">Apply for Assistance</Button>
+          <p className="text-lg text-blue-100 mb-8">Join ZakatGo for transparent, efficient, and accessible Islamic charitable giving</p>          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+            <Button onClick={handleCalculateClick} className="bg-green-600 hover:bg-green-700 w-full py-4 flex items-center justify-center">Calculate My Zakat</Button>
+            <Button onClick={handleCampaignsClick} type="secondary" className="w-full py-4 flex items-center justify-center">View Donation Campaigns</Button>
+            <Button onClick={handleAssistanceClick} type="warning" className="w-full py-4 flex items-center justify-center">Apply for Assistance</Button>
           </div>
         </div>
       </section>
