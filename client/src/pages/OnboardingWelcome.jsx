@@ -46,7 +46,7 @@ const OnboardingWelcome = () => {
           </button>
 
           <button className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium">
-            <FaFacebook className="text-blue-600 mr-3" />
+            <FaFacebook className="text-[#871f39] mr-3" />
             Continue with Facebook
           </button>
 

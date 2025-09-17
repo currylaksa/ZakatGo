@@ -66,15 +66,15 @@ const HelpPage = () => {
       title: 'General Information',
       questions: [
         {
-          question: 'What is ZakatGo?',
-          answer: 'ZakatGo is a one-stop Zakat payment platform with blockchain & AI integration. Our platform simplifies and streamlines the Zakat payment process through features like AI-powered Zakat auto-calculation, blockchain integration for transparency, and user-friendly interfaces for both banked and unbanked users.'
+          question: 'What is Zakat UTM?',
+          answer: 'Zakat UTM is a one-stop Zakat payment platform with blockchain & AI integration. Our platform simplifies and streamlines the Zakat payment process through features like AI-powered Zakat auto-calculation, blockchain integration for transparency, and user-friendly interfaces for both banked and unbanked users.'
         },
         {
-          question: 'How does ZakatGo ensure Shariah compliance?',
-          answer: 'ZakatGo ensures Shariah compliance through smart contracts and blockchain integration that follow Islamic principles for Zakat distribution. Our calculations and distribution methods are reviewed by Shariah advisors to maintain full compliance with Islamic principles.'
+          question: 'How does Zakat UTM ensure Shariah compliance?',
+          answer: 'Zakat UTM ensures Shariah compliance through smart contracts and blockchain integration that follow Islamic principles for Zakat distribution. Our calculations and distribution methods are reviewed by Shariah advisors to maintain full compliance with Islamic principles.'
         },
         {
-          question: 'Is my data secure on ZakatGo?',
+          question: 'Is my data secure on Zakat UTM?',
           answer: 'Yes, your data is secure. We use encryption and follow industry best practices for data security. Your personal information is only used for Zakat calculation and is never shared with third parties without your consent.'
         },
       ]
@@ -102,8 +102,8 @@ const HelpPage = () => {
       title: 'Blockchain & Payments',
       questions: [
         {
-          question: 'How do blockchain payments work on ZakatGo?',
-          answer: 'ZakatGo uses Ethereum blockchain for secure and transparent transactions. When you pay Zakat, your funds are deposited in Malaysian Ringgit (RM), converted to ETH, and then distributed through blockchain technology. This ensures your donation is traceable and transparently managed.'
+          question: 'How do blockchain payments work on Zakat UTM?',
+          answer: 'Zakat UTM uses Ethereum blockchain for secure and transparent transactions. When you pay Zakat, your funds are deposited in Malaysian Ringgit (RM), converted to ETH, and then distributed through blockchain technology. This ensures your donation is traceable and transparently managed.'
         },
         {
           question: 'Can I pay Zakat using traditional methods?',
@@ -124,8 +124,8 @@ const HelpPage = () => {
           answer: 'The 8 Zakat categories are: Fuqara (the poor), Masakin (the needy), Amil Zakat (Zakat administrators), Muallaf (converts to Islam), Riqab (freeing from bondage), Gharimin (those in debt), Fi Sabilillah (in the cause of Allah), and Ibn as-Sabil (travelers in need). You can select which categories you would like your Zakat to support.'
         },
         {
-          question: 'How does ZakatGo verify NGO campaigns?',
-          answer: 'ZakatGo thoroughly verifies all NGO campaigns on our platform to ensure legitimacy. We require official registration documents, check their track record, and regularly monitor campaign activities to maintain trust and transparency.'
+          question: 'How does Zakat UTM verify NGO campaigns?',
+          answer: 'Zakat UTM thoroughly verifies all NGO campaigns on our platform to ensure legitimacy. We require official registration documents, check their track record, and regularly monitor campaign activities to maintain trust and transparency.'
         },
         {
           question: 'What is the geofencing-based Sadaqah suggestion feature?',
@@ -138,8 +138,8 @@ const HelpPage = () => {
       title: 'Features for Unbanked Users',
       questions: [
         {
-          question: 'How can I use ZakatGo if I don\'t have a bank account?',
-          answer: 'ZakatGo is designed to be inclusive for unbanked users. You can use QR codes with your National ID (MyKad) to make and track donations at participating physical locations like Speed99 stores.'
+          question: 'How can I use Zakat UTM if I don\'t have a bank account?',
+          answer: 'Zakat UTM is designed to be inclusive for unbanked users. You can use QR codes with your National ID (MyKad) to make and track donations at participating physical locations like Speed99 stores.'
         },
         {
           question: 'How does the QR code donation tracking work?',
@@ -152,7 +152,7 @@ const HelpPage = () => {
       title: 'Support & Contact',
       questions: [
         {
-          question: 'How can I contact ZakatGo support?',
+          question: 'How can I contact Zakat UTM support?',
           answer: 'You can reach our support team by email at support@zakatgo.com, through the contact form on this page, or by phone at +60 3-1234 5678 during business hours (9 AM - 5 PM, Monday-Friday).'
         },
         {
@@ -178,8 +178,8 @@ const HelpPage = () => {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-green-600 mb-2">ZakatGo Help Center</h1>
-          <p className="text-xl text-gray-600">Find answers to common questions about ZakatGo</p>
+          <h1 className="text-3xl font-bold text-green-600 mb-2">Zakat UTM Help Center</h1>
+          <p className="text-xl text-gray-600">Find answers to common questions about Zakat UTM</p>
         </div>
 
         {/* Search Bar */}

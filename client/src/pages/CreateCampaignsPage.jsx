@@ -106,8 +106,8 @@ const CreateCampaignPage = () => {
 
                      <form onSubmit={handleCreateCampaignSubmit} className="space-y-6">
                          {/* --- NGO Verification Section --- */}
-                          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                             <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center"><HiOutlineOfficeBuilding className="mr-2" /> 1. NGO Verification Details</h3>
+                          <div className="p-4 bg-[#fbe9ed] rounded-lg border border-[#f4ccd6]">
+                             <h3 className="text-lg font-semibold text-[#5f0220] mb-4 flex items-center"><HiOutlineOfficeBuilding className="mr-2" /> 1. NGO Verification Details</h3>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                  {/* Fields: ngoName, ngoRegNumber, contactPerson, contactEmail, contactPhone, ngoWebsite */}
                                  <div><label htmlFor="ngoName" className="block text-sm font-medium text-gray-700 mb-1">Official NGO Name*</label><input id="ngoName" type="text" name="ngoName" value={newCampaign.ngoName} onChange={handleInputChange} placeholder="Full registered name" className="w-full p-2 border border-gray-300 rounded-md focus:ring-secondary focus:border-secondary" required /></div>

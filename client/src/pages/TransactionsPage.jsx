@@ -25,8 +25,8 @@ const TransactionsPage = () => {
   const getTypeIcon = (type) => {
     if (type === 'loan') {
       return (
-        <div className="bg-blue-100 rounded-full p-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-[#fbe9ed] rounded-full p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#a62b45]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
         </div>
@@ -54,7 +54,7 @@ const TransactionsPage = () => {
               </svg>
               <span className="text-gray-700">August 2023</span>
             </div>
-            <button className="text-blue-700">Change</button>
+            <button className="text-[#6f162e]">Change</button>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ const TransactionsPage = () => {
             <div className="text-center">
               <p className="text-gray-500 mb-1">Total Repaid</p>
               <p className="text-xl font-bold mb-1">RM 936</p>
-              <p className="text-blue-700 text-sm">3 payments</p>
+              <p className="text-[#6f162e] text-sm">3 payments</p>
             </div>
             
             <div className="text-center">
@@ -117,7 +117,7 @@ const TransactionsPage = () => {
         {/* View All Button */}
         <button 
           onClick={() => {/* Navigate to all transactions */}}
-          className="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 px-4 rounded-full font-medium flex items-center justify-center"
+          className="w-full bg-[#6f162e] hover:bg-[#5f0220] text-white py-3 px-4 rounded-full font-medium flex items-center justify-center"
         >
           View All Transactions
           <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

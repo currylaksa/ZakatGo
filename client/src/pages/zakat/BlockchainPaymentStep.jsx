@@ -128,7 +128,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         {initialDepositAmount > 0 && (
              <p className="text-sm text-gray-600">
                  Your calculated Zakat amount is: <span className="font-semibold text-green-700">RM {initialDepositAmount.toFixed(2)}</span>
-                 <span className="ml-2 text-blue-600 text-xs">(You can donate as little as RM 0.01 or less)</span>
+                 <span className="ml-2 text-[#871f39] text-xs">(You can donate as little as RM 0.01 or less)</span>
              </p>
          )}
 

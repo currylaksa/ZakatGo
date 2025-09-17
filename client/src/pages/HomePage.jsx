@@ -6,8 +6,8 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 const Button = ({ children, onClick, type = 'primary', className = '' }) => {
   const baseStyle = "px-6 py-3 rounded-md font-semibold text-white transition duration-300 ease-in-out shadow-md hover:shadow-lg";
   const primaryStyle = "bg-green-600 hover:bg-green-700"; // Primary green for main actions
-  const secondaryStyle = "bg-blue-600 hover:bg-blue-700"; // Blue for secondary actions
-  const outlineStyle = "bg-transparent border-2 border-blue-800 text-blue-800 hover:bg-blue-50";
+  const secondaryStyle = "bg-[#871f39] hover:bg-[#6f162e]"; // Blue for secondary actions
+  const outlineStyle = "bg-transparent border-2 border-[#5f0220] text-[#5f0220] hover:bg-[#fbe9ed]";
   const warningStyle = "bg-yellow-500 hover:bg-yellow-600"; // For assistance requests
   
   let styleClass = primaryStyle;
@@ -29,7 +29,7 @@ const Button = ({ children, onClick, type = 'primary', className = '' }) => {
 const FeatureCard = ({ icon, title, description }) => (
   <div className="bg-white p-8 rounded-xl shadow-md text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-t-4 border-green-600">
     <div className="text-4xl text-green-600 mb-4">{icon}</div>
-    <h3 className="text-xl font-bold mb-3 text-blue-900">{title}</h3>
+    <h3 className="text-xl font-bold mb-3 text-[#400017]">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </div>
 );
@@ -42,7 +42,7 @@ const TestimonialCard = ({ name, role, content, avatar }) => (
         {avatar || name.charAt(0)}
       </div>
       <div>
-        <h4 className="font-semibold text-blue-900">{name}</h4>
+        <h4 className="font-semibold text-[#400017]">{name}</h4>
         <p className="text-sm text-gray-500">{role}</p>
       </div>
     </div>
@@ -62,7 +62,7 @@ const StatDisplay = ({ value, label }) => (
 const CategoryCard = ({ icon, name }) => (
   <div className="bg-white p-4 rounded-lg shadow text-center hover:shadow-md transition-all cursor-pointer border-l-4 border-green-600">
     <div className="text-2xl text-green-600 mb-2">{icon}</div>
-    <h4 className="font-medium text-blue-900">{name}</h4>
+    <h4 className="font-medium text-[#400017]">{name}</h4>
   </div>
 );
 
@@ -116,7 +116,7 @@ const Homepage = () => {
             <div className="text-3xl mr-3">🎁</div>
             <div>
               <h3 className="font-bold text-lg">Referral Rewards for Good Deeds - Coming Soon!</h3>
-              <p className="text-sm text-purple-100">Invite friends to ZakatGo and earn rewards for spreading the word about charitable giving!</p>
+              <p className="text-sm text-purple-100">Invite friends to Zakat UTM and earn rewards for spreading the word about charitable giving!</p>
             </div>
           </div>
           <Button 
@@ -129,17 +129,17 @@ const Homepage = () => {
       </section>
       
       {/* Hero Section - Updated to focus on core value proposition */}
-      <section className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20 px-4">
+      <section className="bg-gradient-to-r from-[#5f0220] to-[#ff4e50] text-white py-20 px-4">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 mb-10 md:mb-0">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">ZakatGo: One-Stop Zakat Platform</h1>
-            <p className="text-lg md:text-xl mb-8 text-blue-100">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Llama Model Integration.</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">Zakat UTM: One-Stop Zakat Platform</h1>
+            <p className="text-lg md:text-xl mb-8 text-[#fbe9ed]">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Llama Model Integration.</p>
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-white border-opacity-20">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-semibold">Quick Access</h3>
-                <p className="text-blue-200 text-sm mt-2">Choose how you want to interact with ZakatGo</p>
+                <p className="text-[#f4ccd6] text-sm mt-2">Choose how you want to interact with ZakatGo</p>
               </div>
               <div className="space-y-4"> 
                 <Button onClick={handleCalculateClick} className="w-full">Calculate My Zakat</Button>
@@ -155,16 +155,16 @@ const Homepage = () => {
       <section className="py-16 px-4 container mx-auto">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
-            <h2 className="text-3xl font-bold mb-6 text-blue-900">Bringing Technology to Islamic Finance</h2>
+            <h2 className="text-3xl font-bold mb-6 text-[#400017]">Bringing Technology to Islamic Finance</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              ZakatGo addresses the key challenges in the traditional Zakat system: lack of transparency, inefficiency in distribution, and limited accessibility.
+              Zakat UTM addresses the key challenges in the traditional Zakat system: lack of transparency, inefficiency in distribution, and limited accessibility.
             </p>
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our platform leverages blockchain technology for secure and transparent transactions, while AI automates Zakat calculations based on uploaded documents like payslips.
             </p>
             <div className="flex items-center space-x-4">
               <div className="w-12 h-1 bg-green-600 rounded"></div>
-              <p className="text-blue-800 font-semibold">100% Shariah-Compliant</p>
+              <p className="text-[#5f0220] font-semibold">100% Shariah-Compliant</p>
             </div>
           </div>
           <div className="md:w-1/2 flex justify-center">
@@ -179,10 +179,10 @@ const Homepage = () => {
       </section>
 
       {/* Key Features Section - Aligned with specific features in proposal */}
-      <section className="bg-blue-50 py-16 px-4">
+      <section className="bg-[#fbe9ed] py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-blue-900">Key Features</h2>
+            <h2 className="text-3xl font-bold mb-4 text-[#400017]">Key Features</h2>
             <p className="max-w-2xl mx-auto text-gray-600">Our platform offers innovative solutions designed to make your Zakat payments more transparent, efficient, and accessible.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -228,13 +228,13 @@ const Homepage = () => {
               <div className="bg-purple-100 p-3 rounded-full text-purple-600 mr-4">
                 <span className="text-3xl">🎁</span>
               </div>
-              <h3 className="text-2xl font-bold text-blue-900">Referral Rewards for Good Deeds</h3>
+              <h3 className="text-2xl font-bold text-[#400017]">Referral Rewards for Good Deeds</h3>
             </div>
             <p className="text-gray-600 mb-6">
               Spread the word about charitable giving and get recognized for your positive impact!
             </p>
             <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500 mb-6">
-              <h4 className="font-medium text-blue-900 mb-2">How It Will Work:</h4>
+              <h4 className="font-medium text-[#400017] mb-2">How It Will Work:</h4>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
                   <div className="mr-2 text-purple-500">✓</div>
@@ -251,7 +251,7 @@ const Homepage = () => {
               </ul>
             </div>
           </div>
-          <div className="lg:w-1/2 bg-gradient-to-r from-purple-500 to-indigo-600 p-8 lg:p-12 text-white">
+          <div className="lg:w-1/2 bg-gradient-to-r from-[#5f0220] to-[#8e44ad] p-8 lg:p-12 text-white">
             <div className="max-w-md mx-auto">
               <h4 className="text-xl font-semibold mb-6">Preview of Rewards Dashboard:</h4>
               <div className="bg-white bg-opacity-10 rounded-lg p-6 backdrop-blur-sm border border-white border-opacity-20">
@@ -293,7 +293,7 @@ const Homepage = () => {
       {/* Zakat Categories Section - New section to highlight Islamic aspects */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900">Zakat Distribution Categories</h2>
+          <h2 className="text-3xl font-bold mb-4 text-[#400017]">Zakat Distribution Categories</h2>
           <p className="max-w-2xl mx-auto text-gray-600">Choose how your Zakat will be distributed among these Shariah-defined categories</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -311,31 +311,31 @@ const Homepage = () => {
       {/* How It Works Section - Aligned with system flow */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900">How ZakatGo Works</h2>
+          <h2 className="text-3xl font-bold mb-4 text-[#400017]">How Zakat UTM Works</h2>
           <p className="max-w-2xl mx-auto text-gray-600">A simple, secure process to manage your Zakat payments</p>
         </div>
         <div className="flex flex-col md:flex-row justify-center items-center md:space-x-8">
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">1</div>
-            <h3 className="text-xl font-semibold mb-2 text-blue-900">Upload Document</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#400017]">Upload Document</h3>
             <p className="text-gray-600">Upload your payslip or financial document</p>
           </div>
           <div className="hidden md:block text-green-400 text-4xl">→</div>
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">2</div>
-            <h3 className="text-xl font-semibold mb-2 text-blue-900">AI Processing</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#400017]">AI Processing</h3>
             <p className="text-gray-600">Our AI automatically calculates your Zakat obligation</p>
           </div>
           <div className="hidden md:block text-green-400 text-4xl">→</div>
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">3</div>
-            <h3 className="text-xl font-semibold mb-2 text-blue-900">Choose Categories</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#400017]">Choose Categories</h3>
             <p className="text-gray-600">Select which Zakat categories you want to support</p>
           </div>
           <div className="hidden md:block text-green-400 text-4xl">→</div>
           <div className="bg-white p-6 rounded-xl shadow-md text-center w-full md:w-1/4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">4</div>
-            <h3 className="text-xl font-semibold mb-2 text-blue-900">Blockchain Payment</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#400017]">Blockchain Payment</h3>
             <p className="text-gray-600">Pay securely using ETH and track your contribution</p>
           </div>
         </div>
@@ -344,7 +344,7 @@ const Homepage = () => {
       {/* New Section: Apply for Zakat Assistance - MODIFIED SECTION */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900 flex items-center justify-center">
+          <h2 className="text-3xl font-bold mb-4 text-[#400017] flex items-center justify-center">
             <span className="mr-3 text-4xl">💰</span> Need Financial Help?
           </h2>
           <p className="max-w-lg mx-auto text-gray-600 mb-8">Apply for Zakat assistance with dignity</p>
@@ -352,7 +352,7 @@ const Homepage = () => {
         <div className="bg-white p-8 rounded-xl shadow-lg max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="md:w-1/2">
-              <h3 className="text-2xl font-semibold mb-6 text-blue-900">Zakat Assistance System</h3>
+              <h3 className="text-2xl font-semibold mb-6 text-[#400017]">Zakat Assistance System</h3>
               <div className="space-y-4 md:space-y-6">
                 {/* Enhanced step-by-step process with icons and better visuals */}
                 <div className="flex items-start">
@@ -360,7 +360,7 @@ const Homepage = () => {
                     <span className="text-2xl">📝</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Apply</h4>
+                    <h4 className="font-medium text-[#400017] mb-1">Apply</h4>
                     <p className="text-sm text-gray-600">Complete form & upload documents</p>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ const Homepage = () => {
                     <span className="text-2xl">✅</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Verification</h4>
+                    <h4 className="font-medium text-[#400017] mb-1">Verification</h4>
                     <p className="text-sm text-gray-600">Eligibility check based on Shariah guidelines</p>
                   </div>
                 </div>
@@ -380,7 +380,7 @@ const Homepage = () => {
                     <span className="text-2xl">🔔</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Status</h4>
+                    <h4 className="font-medium text-[#400017] mb-1">Status</h4>
                     <p className="text-sm text-gray-600">Get notifications via SMS or app</p>
                   </div>
                 </div>
@@ -390,7 +390,7 @@ const Homepage = () => {
                     <span className="text-2xl">📱</span>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-1">QR Code</h4>
+                    <h4 className="font-medium text-[#400017] mb-1">QR Code</h4>
                     <p className="text-sm text-gray-600">Redeem assistance at partner locations</p>
                   </div>
                 </div>
@@ -410,7 +410,7 @@ const Homepage = () => {
                   <div className="bg-yellow-100 p-2 rounded-full text-yellow-600 mr-3">
                     <span className="text-2xl">📱</span>
                   </div>
-                  <h4 className="font-semibold text-blue-900">QR Code</h4>
+                  <h4 className="font-semibold text-[#400017]">QR Code</h4>
                 </div>
                 <p className="text-xs text-gray-600 mb-3">Receive help with dignity at partner stores</p>
                 <div className="bg-white p-3 rounded-lg flex items-center justify-center">
@@ -427,16 +427,16 @@ const Homepage = () => {
       </section>
 
             {/* Impact Dashboard Preview with actual charts */}
-            <section className="bg-blue-50 py-16 px-4">
+            <section className="bg-[#fbe9ed] py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-blue-900">Track Your Impact</h2>
+            <h2 className="text-3xl font-bold mb-4 text-[#400017]">Track Your Impact</h2>
             <p className="max-w-2xl mx-auto text-gray-600">Our transparent dashboard lets you see exactly how your contributions are making a difference</p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-blue-900">Distribution By Category</h3>
+                <h3 className="text-xl font-semibold mb-4 text-[#400017]">Distribution By Category</h3>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -461,7 +461,7 @@ const Homepage = () => {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-blue-900">Beneficiaries Reached</h3>
+                <h3 className="text-xl font-semibold mb-4 text-[#400017]">Beneficiaries Reached</h3>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
@@ -487,20 +487,20 @@ const Homepage = () => {
       </section>
 
       {/* NGO Campaign Section - New section based on proposal */}
-      <section className="bg-blue-50 py-16 px-4">
+      <section className="bg-[#fbe9ed] py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-blue-900">NGO Campaigns</h2>
+            <h2 className="text-3xl font-bold mb-4 text-[#400017]">NGO Campaigns</h2>
             <p className="max-w-2xl mx-auto text-gray-600">Support verified NGO campaigns or create your own if you represent an organization</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Sample Campaign Cards */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="h-48 bg-blue-200 flex items-center justify-center">
+              <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
                 <span className="text-4xl">🏥</span>
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-xl mb-2 text-blue-900">Medical Aid for Refugees</h3>
+                <h3 className="font-bold text-xl mb-2 text-[#400017]">Medical Aid for Refugees</h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                   <div className="bg-green-600 h-2.5 rounded-full" style={{width: '70%'}}></div>
                 </div>
@@ -512,11 +512,11 @@ const Homepage = () => {
             </div>
             
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="h-48 bg-blue-200 flex items-center justify-center">
+              <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
                 <span className="text-4xl">🍲</span>
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-xl mb-2 text-blue-900">Food Bank Initiative</h3>
+                <h3 className="font-bold text-xl mb-2 text-[#400017]">Food Bank Initiative</h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                   <div className="bg-green-600 h-2.5 rounded-full" style={{width: '45%'}}></div>
                 </div>
@@ -528,11 +528,11 @@ const Homepage = () => {
             </div>
             
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="h-48 bg-blue-200 flex items-center justify-center">
+              <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
                 <span className="text-4xl">🏫</span>
               </div>
               <div className="p-6">
-                <h3 className="font-bold text-xl mb-2 text-blue-900">Education for Orphans</h3>
+                <h3 className="font-bold text-xl mb-2 text-[#400017]">Education for Orphans</h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                   <div className="bg-green-600 h-2.5 rounded-full" style={{width: '85%'}}></div>
                 </div>
@@ -552,11 +552,11 @@ const Homepage = () => {
       {/* Geofencing-Based Sadaqah Section - New section based on proposal */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-blue-900">Nearby Sadaqah Opportunities</h2>
+          <h2 className="text-3xl font-bold mb-4 text-[#400017]">Nearby Sadaqah Opportunities</h2>
           <p className="max-w-2xl mx-auto text-gray-600">Discover verified local causes near you through our geofencing technology</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-lg">
-          <div className="h-64 bg-blue-100 mb-6 rounded-lg flex items-center justify-center relative">
+          <div className="h-64 bg-[#fbe9ed] mb-6 rounded-lg flex items-center justify-center relative">
             <img src={mapImage} alt="Location Map" className="w-full h-full object-cover rounded-lg" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -566,7 +566,7 @@ const Homepage = () => {
                   <span className="text-xl">🕌</span>
                 </div>
                 <div>
-                  <h4 className="font-medium text-blue-900">Al-Amin Mosque</h4>
+                  <h4 className="font-medium text-[#400017]">Al-Amin Mosque</h4>
                   <p className="text-sm text-gray-600">0.5 km away</p>
                 </div>
               </div>
@@ -577,7 +577,7 @@ const Homepage = () => {
                   <span className="text-xl">🍲</span>
                 </div>
                 <div>
-                  <h4 className="font-medium text-blue-900">Community Kitchen</h4>
+                  <h4 className="font-medium text-[#400017]">Community Kitchen</h4>
                   <p className="text-sm text-gray-600">1.2 km away</p>
                 </div>
               </div>
@@ -588,7 +588,7 @@ const Homepage = () => {
                   <span className="text-xl">📚</span>
                 </div>
                 <div>
-                  <h4 className="font-medium text-blue-900">Islamic Learning Center</h4>
+                  <h4 className="font-medium text-[#400017]">Islamic Learning Center</h4>
                   <p className="text-sm text-gray-600">2.3 km away</p>
                 </div>
               </div>
@@ -602,9 +602,9 @@ const Homepage = () => {
 
       {/* Call to Action Section */}
       <section className="py-16 px-4 text-center">
-        <div className="container mx-auto max-w-4xl bg-gradient-to-r from-blue-800 to-blue-900 rounded-2xl p-12 shadow-xl">
+        <div className="container mx-auto max-w-4xl bg-gradient-to-r from-[#5f0220] to-[#400017] rounded-2xl p-12 shadow-xl">
           <h2 className="text-3xl font-bold mb-4 text-white">Ready to Revolutionize Your Zakat Experience?</h2>
-          <p className="text-lg text-blue-100 mb-8">Join ZakatGo for transparent, efficient, and accessible Islamic charitable giving</p>
+          <p className="text-lg text-[#fbe9ed] mb-8">Join Zakat UTM for transparent, efficient, and accessible Islamic charitable giving</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button onClick={handleCalculateClick} className="bg-green-600 hover:bg-green-700">Calculate My Zakat</Button>
             <Button onClick={handleCampaignsClick} type="secondary" className="w-full">View Donation Campaigns</Button>

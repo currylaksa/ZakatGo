@@ -145,7 +145,7 @@ const ApprovalReportPage = ({hideHeader = false}) => {
       </div>
       
       <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div className="bg-blue-50 px-6 py-4 border-b border-blue-100">
+        <div className="bg-[#fbe9ed] px-6 py-4 border-b border-[#fbe9ed]">
           <div className="flex items-center">
             <span className="text-4xl mr-4">{categoryDetails.icon}</span>
             <div>
@@ -235,8 +235,8 @@ const ApprovalReportPage = ({hideHeader = false}) => {
         <div className="p-6">
           <div className="flex flex-col sm:flex-row sm:items-center">
             <div className="mb-4 sm:mb-0 sm:mr-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-2xl text-blue-700">
+              <div className="w-16 h-16 bg-[#fbe9ed] rounded-full flex items-center justify-center">
+                <span className="text-2xl text-[#6f162e]">
                   {approvalData.supportContact.name.split(' ').map(name => name[0]).join('')}
                 </span>
               </div>
@@ -268,9 +268,9 @@ const ApprovalReportPage = ({hideHeader = false}) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {approvalData.relevantPrograms.map((program, index) => (
               <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer">
-                <h3 className="font-medium text-blue-700">{program.name}</h3>
+                <h3 className="font-medium text-[#6f162e]">{program.name}</h3>
                 <p className="text-sm text-gray-600 mt-1">{program.description}</p>
-                <button className="mt-3 text-sm text-blue-600 hover:underline">Learn more</button>
+                <button className="mt-3 text-sm text-[#871f39] hover:underline">Learn more</button>
               </div>
             ))}
           </div>
@@ -286,7 +286,7 @@ const ApprovalReportPage = ({hideHeader = false}) => {
         </button>
         <button
           onClick={() => window.print()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center"
+          className="px-4 py-2 bg-[#871f39] text-white rounded-md hover:bg-[#6f162e] transition flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />

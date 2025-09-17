@@ -78,13 +78,13 @@ npm run dev
 # Create a .env file in the relevant directories based on .env.example if provided.
 ```
 
-## 👥 Team Oversized Minions
+<!-- ## 👥 Team Oversized Minions
 
 - [Chan Qing Yee](https://www.linkedin.com/in/chanqingyee)
 - [Cheng See Chee](https://www.linkedin.com/in/cheng-see-chee-990781256/)
 - [Ong Jia Yu](https://www.linkedin.com/in/jia-yu-ong-2b115b257/)
 - [Tham Ren Sheng](http://www.linkedin.com/in/ren-sheng-tham-245649258)
-- [Tai Hui Shan](https://www.linkedin.com/in/hui-shan-tai-1986b023b)
+- [Tai Hui Shan](https://www.linkedin.com/in/hui-shan-tai-1986b023b) -->
 
 ## 🙏 Acknowledgements
 

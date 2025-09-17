@@ -211,7 +211,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       return `${baseClasses} border-green-300 focus:border-green-500 focus:ring-green-200`;
     }
     
-    return `${baseClasses} border-gray-300 focus:border-blue-500 focus:ring-blue-200`;
+    return `${baseClasses} border-gray-300 focus:border-[#a62b45] focus:ring-[#f4ccd6]`;
   };
 
   return (

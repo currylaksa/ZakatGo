@@ -108,23 +108,23 @@ const UploadPayslipPage = () => {
         </div>
 
         {/* Document Type Instructions */}
-        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+        <div className="mb-6 p-4 bg-[#fbe9ed] rounded-lg border border-[#fbe9ed]">
           {documentType === 'payslip' && (
-            <div className="text-sm text-blue-800">
+            <div className="text-sm text-[#5f0220]">
               <p className="font-medium mb-2">Please upload your latest 3 months of payslips.</p>
               <p>Ensure all details are clearly visible, including your name, company name, salary, and date.</p>
             </div>
           )}
           
           {documentType === 'bank' && (
-            <div className="text-sm text-blue-800">
+            <div className="text-sm text-[#5f0220]">
               <p className="font-medium mb-2">Please upload your bank statements from the last 3 months.</p>
               <p>Ensure they show your regular income and spending patterns. Make sure your name and account details are visible.</p>
             </div>
           )}
           
           {documentType === 'receipts' && (
-            <div className="text-sm text-blue-800">
+            <div className="text-sm text-[#5f0220]">
               <p className="font-medium mb-2">Please upload receipts of your regular expenses and income.</p>
               <p>Include receipts for utilities, rent, business income, or any regular financial transactions from the last 3 months.</p>
             </div>

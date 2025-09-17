@@ -166,7 +166,7 @@ const DonationFormPage = () => {
             <div className="bg-white rounded-xl shadow-md p-6 mb-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full text-white ${campaign.type === 'zakat' ? 'bg-green-500' : campaign.type === 'waqf' ? 'bg-blue-500' : 'bg-purple-500'}`}>{getTypeLabel(campaign.type)}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full text-white ${campaign.type === 'zakat' ? 'bg-green-500' : campaign.type === 'waqf' ? 'bg-[#a62b45]' : 'bg-purple-500'}`}>{getTypeLabel(campaign.type)}</span>
                   <h3 className="text-lg font-semibold mt-2">{campaign.title}</h3>
                   <p className="text-sm text-gray-600 mt-1">{campaign.purpose}</p>
                 </div>
@@ -182,7 +182,7 @@ const DonationFormPage = () => {
                   <span>RM {campaign.raisedAmount} / RM {campaign.targetAmount}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div className={`h-2.5 rounded-full ${campaign.type === 'zakat' ? 'bg-green-500' : campaign.type === 'waqf' ? 'bg-blue-500' : 'bg-purple-500'}`} style={{ width: `${(parseInt(campaign.raisedAmount.replace(/,/g, '')) / parseInt(campaign.targetAmount.replace(/,/g, ''))) * 100}%` }}></div>
+                  <div className={`h-2.5 rounded-full ${campaign.type === 'zakat' ? 'bg-green-500' : campaign.type === 'waqf' ? 'bg-[#a62b45]' : 'bg-purple-500'}`} style={{ width: `${(parseInt(campaign.raisedAmount.replace(/,/g, '')) / parseInt(campaign.targetAmount.replace(/,/g, ''))) * 100}%` }}></div>
                 </div>
               </div>
             </div>

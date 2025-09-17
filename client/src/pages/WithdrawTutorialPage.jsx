@@ -89,7 +89,7 @@ const WithdrawTutorialPage = () => {
           <div className="space-y-8">
             {steps.map((step, index) => (
               <div key={index} className="flex items-start">
-                <div className="flex-shrink-0 bg-blue-100 rounded-full p-3 mr-4">
+                <div className="flex-shrink-0 bg-[#fbe9ed] rounded-full p-3 mr-4">
                   {step.icon}
                 </div>
                 <div>
@@ -102,9 +102,9 @@ const WithdrawTutorialPage = () => {
             ))}
           </div>
 
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+          <div className="mt-8 p-4 bg-[#fbe9ed] rounded-lg">
             <h4 className="font-semibold mb-2 flex items-center">
-              <svg className="w-5 h-5 mr-2 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg className="w-5 h-5 mr-2 text-[#a62b45]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Important Safety Tips
@@ -122,7 +122,7 @@ const WithdrawTutorialPage = () => {
           <div className="mt-6 flex justify-end">
             <Link 
               to="/profile"
-              className="text-blue-500 hover:text-blue-600 font-medium flex items-center"
+              className="text-[#a62b45] hover:text-[#871f39] font-medium flex items-center"
             >
               Back to Profile
               <svg className="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">

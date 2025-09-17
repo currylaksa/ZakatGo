@@ -14,6 +14,8 @@ const DonationSuccessPage = () => {
   
   useEffect(() => {
     // Extract donation data from route state
+    //should get from backend
+    
     if (location.state?.donation && location.state?.campaign) {
       setDonation(location.state.donation);
       setCampaign(location.state.campaign);
@@ -74,7 +76,7 @@ const DonationSuccessPage = () => {
           <div className="fixed inset-0 pointer-events-none z-10">
             {/* This would be replaced with a real confetti animation component */}
             <div className="animate-confetti-1 absolute top-0 left-1/4 w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="animate-confetti-2 absolute top-0 left-1/3 w-2 h-2 bg-blue-500 rounded-full"></div>
+            <div className="animate-confetti-2 absolute top-0 left-1/3 w-2 h-2 bg-[#a62b45] rounded-full"></div>
             <div className="animate-confetti-3 absolute top-0 left-1/2 w-4 h-4 bg-green-500 rounded-full"></div>
             <div className="animate-confetti-4 absolute top-0 left-2/3 w-3 h-3 bg-red-500 rounded-full"></div>
             <div className="animate-confetti-5 absolute top-0 left-3/4 w-2 h-2 bg-purple-500 rounded-full"></div>

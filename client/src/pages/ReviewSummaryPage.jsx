@@ -71,7 +71,7 @@ const ReviewSummaryPage = () => {
     return (
       <HalfCircleBackground title="Review Summary">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6f162e]"></div>
         </div>
       </HalfCircleBackground>
     );
@@ -160,7 +160,7 @@ const ReviewSummaryPage = () => {
         {/* Back Button */}
         <button 
           onClick={() => navigate(`/repay/${loanId}`)}
-          className="flex items-center text-blue-700 font-medium mt-4 mx-auto"
+          className="flex items-center text-[#6f162e] font-medium mt-4 mx-auto"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

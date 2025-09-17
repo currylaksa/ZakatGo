@@ -223,25 +223,63 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  const checkIfTransactionsExists = async () => {
+const checkIfTransactionsExists = async () => {
+  try {
+    if (!ethereum) return alert("Please install MetaMask!");
+
+    const contract = await createEthereumContract();
+    if (!contract) return;
+
+    console.log("Available contract methods:", Object.keys(contract));
+
+    // ✅ ADD ERROR HANDLING AND FALLBACK
     try {
-      if (!ethereum) return alert("Please install MetaMask!");
+      // Check if function exists
+      if (typeof contract.getAllTransactionCount !== 'function') {
+        console.warn("getAllTransactionCount function not found on contract");
+        console.log("Available functions:", 
+          Object.keys(contract).filter(key => typeof contract[key] === 'function')
+        );
+        return;
+      }
 
-      const contract = await createEthereumContract();
-      if (!contract) return;
-
-      console.log("Available contract methods:", Object.keys(contract));
-
+      // Try to call the function
       const count = await contract.getAllTransactionCount();
-
-      if (count) {
+      
+      if (count !== null && count !== undefined) {
         window.localStorage.setItem("transactionCount", count.toString());
         setTransactionCount(count.toString());
+        console.log("Transaction count retrieved:", count.toString());
+      } else {
+        console.warn("getAllTransactionCount returned null/undefined");
       }
-    } catch (error) {
-      console.log("Error checking transactions:", error?.message || error);
+    } catch (contractError) {
+      console.error("Error calling getAllTransactionCount:", contractError);
+      
+      // Check if it's a decoding error specifically
+      if (contractError.message?.includes("could not decode result data")) {
+        console.error("Smart contract function returned empty data (0x)");
+        console.error("Possible issues:");
+        console.error("1. Function doesn't exist in deployed contract");
+        console.error("2. Function reverts/fails");
+        console.error("3. Wrong contract address or network");
+        
+        // Try to get contract code to verify deployment
+        const provider = new ethers.BrowserProvider(ethereum);
+        const code = await provider.getCode(contractAddress);
+        if (code === '0x') {
+          console.error("❌ No contract found at address:", contractAddress);
+          alert("Contract not found at the specified address. Please check your configuration.");
+        } else {
+          console.log("✅ Contract exists at address:", contractAddress);
+          console.log("Contract code length:", code.length);
+        }
+      }
     }
-  };
+  } catch (error) {
+    console.log("Error checking transactions:", error?.message || error);
+  }
+};
 
   const connectWallet = async () => {
     try {
@@ -260,65 +298,95 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  const sendTransaction = async () => {
-    try {
-      if (!ethereum) {
-        alert("Please install MetaMask!");
-        return;
-      }
-
-      const { addressTo, amount, keyword, message } = formData;
-      
-      if (!amount || parseFloat(amount) <= 0) {
-        alert("Please enter a valid amount.");
-        return;
-      }
-
-      const transactionsContract = await createEthereumContract();
-      if (!transactionsContract) {
-        throw new Error("Failed to initialize smart contract connection.");
-      }
-
-      const parsedAmount = ethers.parseUnits(amount.toString(), 18); 
-      
-      console.log("Frontend: formData.amount:", amount);
-      console.log("Frontend: parsedAmount (for contract 'amount' arg AND for 'value' option):", parsedAmount.toString());
-
-      console.log(
-        `Attempting to call addToBlockchain on contract ${contractAddress}. ` +
-        `sETH will be sent to the contract and then forwarded to ${FIXED_FINAL_RECEIVER_ADDRESS}.`
-      );
-      
-      const transactionResponse = await transactionsContract.addToBlockchain(
-        addressTo, 
-        parsedAmount,
-        message,
-        keyword,
-        {
-          value: parsedAmount,
-          gasLimit: 300000 // Manually set gas limit
-        }
-      );
-
-      setIsLoading(true);
-      console.log(`Transaction sent to smart contract, waiting for confirmation... Hash: ${transactionResponse.hash}`);
-      await transactionResponse.wait();
-      console.log(`Transaction confirmed: ${transactionResponse.hash}`);
-      setIsLoading(false);
-
-      // Update transaction count in state and localStorage
-      const transactionsCount = await transactionsContract.getAllTransactionCount();
-      setTransactionCount(transactionsCount.toString());
-      window.localStorage.setItem("transactionCount", transactionsCount.toString());
-
-      // Optionally, refresh the transaction list
-      await getAllTransactions();
-    } catch (error) {
-      console.error("Transaction error:", error); // Matched user's error line for context
-      setIsLoading(false);
-      throw error;
+const sendTransaction = async () => {
+  try {
+    if (!ethereum) {
+      alert("Please install MetaMask!");
+      return;
     }
-  };
+
+    const { addressTo, amount, keyword, message } = formData;
+    
+    if (!amount || parseFloat(amount) <= 0) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    const transactionsContract = await createEthereumContract();
+    if (!transactionsContract) {
+      throw new Error("Failed to initialize smart contract connection.");
+    }
+
+    const parsedAmount = ethers.parseUnits(amount.toString(), 18); 
+    
+    console.log("Frontend: formData.amount:", amount);
+    console.log("Frontend: parsedAmount (for contract 'amount' arg AND for 'value' option):", parsedAmount.toString());
+
+    console.log(
+      `Attempting to call addToBlockchain on contract ${contractAddress}. ` +
+      `sETH will be sent to the contract and then forwarded to ${FIXED_FINAL_RECEIVER_ADDRESS}.`
+    );
+    
+    const transactionResponse = await transactionsContract.addToBlockchain(
+      addressTo, 
+      parsedAmount,
+      message,
+      keyword,
+      {
+        value: parsedAmount,
+        gasLimit: 300000
+      }
+    );
+
+    setIsLoading(true);
+    console.log(`Transaction sent to smart contract, waiting for confirmation... Hash: ${transactionResponse.hash}`);
+    await transactionResponse.wait();
+    console.log(`Transaction confirmed: ${transactionResponse.hash}`);
+    setIsLoading(false);
+
+    // ✅ ADD ERROR HANDLING HERE
+    try {
+      // Check if the function exists first
+      if (typeof transactionsContract.getAllTransactionCount === 'function') {
+        const transactionsCount = await transactionsContract.getAllTransactionCount();
+        
+        // Verify the result is valid
+        if (transactionsCount !== null && transactionsCount !== undefined) {
+          setTransactionCount(transactionsCount.toString());
+          window.localStorage.setItem("transactionCount", transactionsCount.toString());
+        } else {
+          console.warn("getAllTransactionCount returned null/undefined");
+          // Fallback: increment local count
+          const currentCount = parseInt(transactionCount || "0");
+          const newCount = currentCount + 1;
+          setTransactionCount(newCount.toString());
+          window.localStorage.setItem("transactionCount", newCount.toString());
+        }
+      } else {
+        console.warn("getAllTransactionCount function not found on contract");
+        // Fallback: increment local count
+        const currentCount = parseInt(transactionCount || "0");
+        const newCount = currentCount + 1;
+        setTransactionCount(newCount.toString());
+        window.localStorage.setItem("transactionCount", newCount.toString());
+      }
+    } catch (countError) {
+      console.error("Error getting transaction count:", countError);
+      // Fallback: increment local count
+      const currentCount = parseInt(transactionCount || "0");
+      const newCount = currentCount + 1;
+      setTransactionCount(newCount.toString());
+      window.localStorage.setItem("transactionCount", newCount.toString());
+    }
+
+    // Refresh the transaction list
+    await getAllTransactions();
+  } catch (error) {
+    console.error("Transaction error:", error);
+    setIsLoading(false);
+    throw error;
+  }
+};
 
   const fundLoan = async () => {
     try {

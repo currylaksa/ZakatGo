@@ -57,10 +57,10 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
       </div>
 
       {isEligibleForZakat ? (
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-          <h3 className="text-blue-800 font-medium flex items-center">
-            <span className="bg-blue-100 p-1 rounded-full mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-[#fbe9ed] p-4 rounded-lg border border-[#fbe9ed]">
+          <h3 className="text-[#5f0220] font-medium flex items-center">
+            <span className="bg-[#fbe9ed] p-1 rounded-full mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#871f39]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </span>
@@ -68,7 +68,7 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
           </h3>
           <p className="text-gray-700 mt-2">
             Select one or more categories (Asnaf) for your Zakat contribution of{' '}
-            <span className="font-bold text-blue-700">RM {userData.zakatAmount.toFixed(2)}</span>
+            <span className="font-bold text-[#6f162e]">RM {userData.zakatAmount.toFixed(2)}</span>
           </p>
         </div>
       ) : (
@@ -101,7 +101,7 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
         </div>
         <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-blue-600 transition-all duration-300 ease-out rounded-full"
+            className="h-full bg-[#871f39] transition-all duration-300 ease-out rounded-full"
             style={{ width: `${(selectedCount / totalCategories) * 100}%` }}
           ></div>
         </div>
@@ -115,7 +115,7 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
             className={`
               relative flex items-start p-4 rounded-lg cursor-pointer transition-all duration-200
               ${selectedCategoryIds.includes(category.id) 
-                ? 'bg-blue-50 border-2 border-blue-400 shadow-sm' 
+                ? 'bg-[#fbe9ed] border-2 border-[#c7435f] shadow-sm' 
                 : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'}
             `}
           >
@@ -125,7 +125,7 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
             </div>
             <div className="ml-3 flex items-center h-5">
               {selectedCategoryIds.includes(category.id) ? (
-                <div className="text-blue-600">
+                <div className="text-[#871f39]">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -159,10 +159,10 @@ const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData })
         <button
           onClick={handleContinue}
           className={`
-            px-5 py-2.5 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors
+            px-5 py-2.5 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a62b45] transition-colors
             ${selectedCategoryIds.length > 0 
-              ? 'bg-blue-600 text-white hover:bg-blue-700' 
-              : 'bg-blue-400 text-white cursor-not-allowed'}
+              ? 'bg-[#871f39] text-white hover:bg-[#6f162e]' 
+              : 'bg-[#c7435f] text-white cursor-not-allowed'}
           `}
           disabled={selectedCategoryIds.length === 0}
         >
