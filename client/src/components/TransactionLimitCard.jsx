@@ -1,4 +1,3 @@
-import React from 'react';
 
 /**
  * TransactionLimitCard component for displaying transaction limit information

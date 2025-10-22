@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 import { contractABI, contractAddress } from "../utils/constants";
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 export const TransactionContext = React.createContext();
 
@@ -9,6 +11,9 @@ const { ethereum } = window;
 
 // Define FIXED_FINAL_RECEIVER_ADDRESS here
 const FIXED_FINAL_RECEIVER_ADDRESS = "0x227fff9c413Ff12fB82448e75B37876B584186FC";
+// Define placeholders to satisfy linter and support fundLoan
+const RECEIVER_ADDRESS = FIXED_FINAL_RECEIVER_ADDRESS;
+const LOAN_AMOUNT = "0.01";
 
 const createEthereumContract = async () => {
   try {
@@ -457,6 +462,19 @@ const sendTransaction = async () => {
     console.log("Transactions updated:", transactions);
   }, [transactions]);
 
+  // Add a method to record metadata to Firebase without sending ETH
+  const recordZakatMetadata = async (metadata) => {
+    try {
+      const docRef = await addDoc(collection(db, 'blockchainUploads'), {
+        ...metadata,
+        createdAt: new Date().toISOString(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error('Error recording Zakat metadata:', error);
+      throw error;
+    }
+  };
   return (
     <TransactionContext.Provider
       value={{
@@ -471,6 +489,7 @@ const sendTransaction = async () => {
         fundLoan,
         zakatTransactions,
         getZakatTransactions,
+        recordZakatMetadata,
       }}
     >
       {children}

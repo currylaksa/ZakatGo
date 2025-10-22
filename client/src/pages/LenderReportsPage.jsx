@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { HalfCircleBackground } from '../components';
 import { Link } from 'react-router-dom';
 import Highcharts from 'highcharts';

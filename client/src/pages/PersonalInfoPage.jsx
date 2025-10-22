@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HiArrowLeft, HiCalendar } from 'react-icons/hi';
 
 const PersonalInfoPage = () => {

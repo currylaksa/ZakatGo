@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'; // Import motion from framer-motion for animations
 
 const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) => {

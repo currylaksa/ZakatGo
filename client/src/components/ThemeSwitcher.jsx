@@ -1,6 +1,4 @@
-import React from 'react';
 import { useTheme } from '../context/ThemeContext';
-import Button from './Button';
 
 /**
  * ThemeSwitcher component for testing different theme combinations

@@ -1,6 +1,5 @@
-import React from 'react';
 import logo from '../../images/zakat_utm.png';
-import { FaGithub } from 'react-icons/fa'; // Import GitHub icon
+// Import GitHub icon
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

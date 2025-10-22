@@ -1,4 +1,3 @@
-import React from 'react';
 import { HalfCircleBackground } from '../components';
 import { Link } from 'react-router-dom';
 

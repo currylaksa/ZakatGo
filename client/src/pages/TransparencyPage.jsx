@@ -1,4 +1,4 @@
-import React from 'react'; // Removed useState, useEffect
+// Removed useState, useEffect
 import { HalfCircleBackground } from '../components'; // Or your preferred layout component
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 

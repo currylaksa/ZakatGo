@@ -1,5 +1,3 @@
-import React from 'react';
-import Button from './Button';
 
 /**
  * ActionButtons component for main dashboard actions

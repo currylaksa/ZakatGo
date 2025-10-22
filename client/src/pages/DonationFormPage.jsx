@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { TransactionContext } from '../context/TransactionContext';
 import { HalfCircleBackground } from '../components';
-import { HiOutlineCalculator, HiOutlineCheckCircle, HiOutlineCurrencyDollar, HiOutlineUser, HiOutlineHeart, HiOutlineGift } from 'react-icons/hi';
+import { HiOutlineCalculator, HiOutlineHeart } from 'react-icons/hi';
 
 const DonationFormPage = () => {
   const { currentAccount, connectWallet } = useContext(TransactionContext);

@@ -1,5 +1,5 @@
 // src/components/ZakatCalculator.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Reusable Input component
 const InputField = ({ label, type = 'number', value, onChange, placeholder, helpText }) => (

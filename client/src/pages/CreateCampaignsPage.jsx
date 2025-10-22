@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TransactionContext } from '../context/TransactionContext'; // Assuming context is needed
 import { HalfCircleBackground } from '../components'; // Assuming layout component
 // Import icons
-import { FiUpload, FiCheckCircle, FiAlertCircle, FiPackage, FiDollarSign } from 'react-icons/fi';
+import { FiUpload, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 import { HiOutlineOfficeBuilding, HiOutlineNewspaper, HiArrowLeft } from 'react-icons/hi';
 
 // Available donation categories (Zakat-specific categories removed)

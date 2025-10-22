@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import qrCodeImage from './QRCode.png'; // Placeholder for QR code image
 
 const QRCodeGenerator = ({ applicantData }) => {

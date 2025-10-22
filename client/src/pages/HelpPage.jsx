@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon, ChevronDownIcon, MagnifyingGlassIcon as SearchIcon } from '@heroicons/react/20/solid'; 
 import { submitContactForm } from '../services/contactService';

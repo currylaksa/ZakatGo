@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ethers } from 'ethers';
 import { TransactionContext } from "../context/TransactionContext";
@@ -20,6 +20,14 @@ const ProfilePage = () => {
   const [showLocalSuggestions, setShowLocalSuggestions] = useState(false);
   const [showInRM, setShowInRM] = useState(false); // New state for currency toggle
   const [ethToMYRRate] = useState(450); // Updated ETH to MYR conversion rate
+  
+  // Default user profile (fallback)
+  const defaultProfile = {
+    name: 'Ali bin Ahmad',
+    faculty: 'Computing',
+    role: 'Senior Lecturer',
+    icPassport: '990522040507',
+  };
   
   // Mock donor payment report data
   const [donorPaymentReport] = useState({
@@ -327,6 +335,23 @@ const ProfilePage = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 pb-12">
+        
+        {/* User Profile Card */}
+        <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
+          <div className="flex items-center mb-4">
+            <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.12 17.804z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <h2 className="text-base font-bold">User Profile</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <p><span className="text-gray-600">Name:</span> <span className="text-gray-800">{defaultProfile.name}</span></p>
+            <p><span className="text-gray-600">Faculty:</span> <span className="text-gray-800">{defaultProfile.faculty}</span></p>
+            <p><span className="text-gray-600">Role:</span> <span className="text-gray-800">{defaultProfile.role}</span></p>
+            <p><span className="text-gray-600">IC/Passport:</span> <span className="text-gray-800">{defaultProfile.icPassport}</span></p>
+          </div>
+        </div>
         
         {profileView === 'donor' ? (
           // DONOR VIEW
@@ -1262,10 +1287,54 @@ const RecentZakatTransactions = () => {
       return fromAddressLower === walletAddressLower;
   }) : [];
   
+  // Dummy transactions for prototype/demo display
+  const dummyZakatTransactions = [
+    {
+      addressFrom: '0xDEMO000000000000000000000000000000000001',
+      addressTo: '0xD0N0R00000000000000000000000000000000001',
+      amount: '0.015',
+      keyword: 'food',
+      message: 'Zakat to Fuqara (Food & Groceries)',
+      timestamp: 'Apr 20, 2025, 10:15',
+      transactionHash: '0xdeadbeef00000000000000000000000000000001',
+    },
+    {
+      addressFrom: '0xDEMO000000000000000000000000000000000002',
+      addressTo: '0xD0N0R00000000000000000000000000000000002',
+      amount: '0.042',
+      keyword: 'housing',
+      message: 'Zakat support for Housing Rent',
+      timestamp: 'Apr 21, 2025, 14:08',
+      transactionHash: '0xdeadbeef00000000000000000000000000000002',
+    },
+    {
+      addressFrom: '0xDEMO000000000000000000000000000000000003',
+      addressTo: '0xD0N0R00000000000000000000000000000000003',
+      amount: '0.0085',
+      keyword: 'utilities',
+      message: 'Zakat contribution for Utilities',
+      timestamp: 'Apr 22, 2025, 09:32',
+      transactionHash: '0xdeadbeef00000000000000000000000000000003',
+    },
+    {
+      addressFrom: '0xDEMO000000000000000000000000000000000004',
+      addressTo: '0xD0N0R00000000000000000000000000000000004',
+      amount: '0.025',
+      keyword: 'education',
+      message: 'Zakat for education supplies',
+      timestamp: 'Apr 22, 2025, 16:47',
+      transactionHash: '0xdeadbeef00000000000000000000000000000004',
+    },
+  ];
+
+  const useDummyTransactions = !walletAddress || filteredTransactions.length === 0;
+  const displayTransactions = useDummyTransactions ? dummyZakatTransactions : filteredTransactions;
+  
   // Log filtered transactions for debugging
   useEffect(() => {
       console.log("Filtered transactions:", filteredTransactions);
-  }, [filteredTransactions]);
+      console.log("Using dummy transactions:", useDummyTransactions);
+  }, [filteredTransactions, useDummyTransactions]);
 
   return (
       <div className="bg-white rounded-xl p-6 mt-6 shadow-sm">
@@ -1292,9 +1361,9 @@ const RecentZakatTransactions = () => {
             <div className="py-4 text-center">
               <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-green-500 border-t-transparent"></div>
             </div>
-          ) : walletAddress && filteredTransactions && filteredTransactions.length > 0 ? (
+          ) : displayTransactions && displayTransactions.length > 0 ? (
             <div className="space-y-3">
-              {filteredTransactions.map((tx, index) => (
+              {displayTransactions.map((tx, index) => (
                 <div key={index} className="bg-gray-50 p-4 rounded-xl">
                   <div className="flex justify-between">
                     <div>

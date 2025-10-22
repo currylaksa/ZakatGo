@@ -1,5 +1,5 @@
 // src/components/BlockchainLedgerPage.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // --- Mock Transaction Data ---
 // In a real blockchain app, this data would be fetched from the blockchain.

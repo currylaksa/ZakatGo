@@ -16,6 +16,8 @@ export { default as ImpactDashboardPage  } from './ImpactDashboardPage';
 export { default as TransparencyPage } from './TransparencyPage';
 export { default as HelpPage } from './HelpPage';
 export { default as CreateCampaignsPage } from './CreateCampaignsPage';
+export { default as LoginPage } from './LoginPage';
+export { default as AdminZakatPage } from './AdminZakatPage';
 // Onboarding flow pages
 export { default as OnboardingWelcome } from './OnboardingWelcome';
 export { default as PersonalInfoPage } from './PersonalInfoPage';

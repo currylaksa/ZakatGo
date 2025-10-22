@@ -1,5 +1,4 @@
 import React from 'react';
-import theme from '../utils/theme';
 
 /**
  * Button component with different variants

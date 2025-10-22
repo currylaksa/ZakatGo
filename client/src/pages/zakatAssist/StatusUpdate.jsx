@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const StatusUpdate = ({ status: initialStatus, onSuccess, onRetry }) => {
   // Add local state to manage status transitions and retry functionality

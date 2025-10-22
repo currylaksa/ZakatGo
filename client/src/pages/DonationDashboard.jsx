@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { TransactionContext } from '../context/TransactionContext';
 import { HalfCircleBackground } from '../components'; // Assuming HalfCircleBackground is in components
 import { shortenAddress } from '../utils/shortenAddress'; // Import shortenAddress utility

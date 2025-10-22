@@ -24,7 +24,7 @@ export const processDocumentWithGroq = async (file) => {
           content: [
             {
               type: "text",
-              text: "Extract the following information from this income tax document or payslip and return ONLY a valid JSON object with this format: {\"name\": string, \"totalIncome\": number, \"totalRelief\": number, \"totalRebate\": number, \"salary\": number, \"deductions\": number}. For income tax documents: totalIncome = total annual income, totalRelief = total tax relief, totalRebate = tax rebate received. For payslips: calculate monthly values into annual values (multiply by 12). No additional text."
+              text: "Extract ONLY this JSON from the income tax document/payslip: {\"name\": string, \"basicSalary\": number, \"allowance\": number, \"bonus\": number}. Rules: 1) Values MUST be ANNUAL amounts in RM. If monthly amounts, multiply by 12. 2) If a field is missing, set it to 0. 3) Do NOT include any extra text."
             },
             {
               type: "image_url",
@@ -37,7 +37,7 @@ export const processDocumentWithGroq = async (file) => {
       ],
       model: "meta-llama/llama-4-scout-17b-16e-instruct",
       temperature: 0.1,
-      max_completion_tokens: 500,
+      max_completion_tokens: 300,
       top_p: 1,
       stream: false
     });
@@ -46,23 +46,27 @@ export const processDocumentWithGroq = async (file) => {
     
     try {
       const parsedData = JSON.parse(responseText);
+      const basicSalary = Number(parsedData.basicSalary) || 0;
+      const allowance = Number(parsedData.allowance) || 0;
+      const bonus = Number(parsedData.bonus) || 0;
+      const name = parsedData.name || null;
       return {
-        name: parsedData.name || null,
-        annualIncome: parsedData.totalIncome || (parsedData.salary ? parsedData.salary * 12 : null),
-        annualExpenses: parsedData.totalRelief || (parsedData.deductions ? parsedData.deductions * 12 : null),
-        zakatPaid: parsedData.totalRebate || null,  // Changed from totalIncomeTax to totalRebate
-        salary: parsedData.salary || null,
-        deductions: parsedData.deductions || null
+        name,
+        basicSalary,
+        allowance,
+        bonus,
+        annualIncome: basicSalary + allowance + bonus,
+        documentExtracted: true
       };
     } catch (parseError) {
       console.error('Failed to parse JSON response:', responseText);
       return {
         name: null,
-        annualIncome: null,
-        annualExpenses: null,
-        zakatPaid: null,
-        salary: null,
-        deductions: null
+        basicSalary: 0,
+        allowance: 0,
+        bonus: 0,
+        annualIncome: 0,
+        documentExtracted: false
       };
     }
 

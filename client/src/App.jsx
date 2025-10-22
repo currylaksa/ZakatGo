@@ -1,6 +1,5 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { Navbar, Footer, Transactions, Services, ThemeSwitcher } from "./components";
+import { Navbar, Footer, ThemeSwitcher } from "./components";
 import { 
   DonationDashboard,
   DonationFormPage,
@@ -19,6 +18,8 @@ import {
   TransparencyPage,
   HelpPage,
   CreateCampaignsPage,
+  LoginPage,
+  AdminZakatPage,
   // Onboarding pages
   OnboardingWelcome,
   PersonalInfoPage,
@@ -34,6 +35,7 @@ import {ZakatAssistPage} from "./pages/zakatAssist"
 import ApprovalReportPage from "./pages/zakatAssist/ApprovalReportPage"; // Import the new ApprovalReportPage
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from './contexts/LanguageContext';
+import ZakatExplorer from "./pages/zakat/ZakatExplorer";
 
 // Component to conditionally render Navbar based on route
 const AppContent = () => {
@@ -67,10 +69,13 @@ const AppContent = () => {
             <Route path="/dashboard" element={<ImpactDashboardPage />} />
             <Route path="/transparency" element={<TransparencyPage />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin/zakat" element={<AdminZakatPage />} />
             <Route path="/zakat-payment" element={<ZakatPaymentPage />} />
             <Route path="/zakat-assist" element={<ZakatAssistPage />} />
             <Route path="/zakat-assist/approval/:applicationId" element={<ApprovalReportPage />} /> {/* Add new route for approval reports */}
             <Route path="/create-campaigns" element={<CreateCampaignsPage />} />
+            <Route path="/zakat/explorer/:txId" element={<ZakatExplorer />} />
             {/* Onboarding routes */}
             <Route path="/onboarding" element={<Navigate to="/onboarding/welcome" replace />} />
             <Route path="/onboarding/welcome" element={<OnboardingWelcome />} />

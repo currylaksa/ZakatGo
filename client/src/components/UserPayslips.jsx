@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getUserPayslips } from '../services/payslipService';
 
 const UserPayslips = ({ userId }) => {

@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from 'react';
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { useState, useMemo } from 'react';
 
 const CategorySelectionStep = ({ nextStep, prevStep, userData, updateUserData }) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState(

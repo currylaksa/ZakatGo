@@ -1,118 +1,126 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { TransactionContext } from '../../context/TransactionContext';
-import { savePayslipAfterPayment } from '../../services/payslipService'; // Import the service
+// import { savePayslipAfterPayment } from '../../services/payslipService';
 
 const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData }) => {
-  const initialDepositAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0;
+  const initialDepositAmount = 0; // Force 0 ETH flow
   const [depositAmount, setDepositAmount] = useState(initialDepositAmount);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
-  const rmToEthRate = 450; // Updated conversion rate: 1 RM = 450 ETH
-  const [ethAmount, setEthAmount] = useState(depositAmount * rmToEthRate);
+  const rmToEthRate = 0; // No ETH conversion; ETH is 0
+  const [ethAmount, setEthAmount] = useState(0);
   const { 
     currentAccount, 
     connectWallet, 
     sendTransaction, 
     isLoading, 
     handleChange,
-    getZakatTransactions
+    getZakatTransactions,
+    recordZakatMetadata,
   } = useContext(TransactionContext);
   const [saveStatus, setSaveStatus] = useState(''); // Add a state for save status
 
+  // Helper to hex encode ArrayBuffer
+  const toHex = (buffer) => '0x' + Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
   useEffect(() => {
-     const amount = Number(depositAmount) || 0;
-     // Allow for extremely small amounts
-     if (amount < 0.000001) {
-         setError('Please enter a positive amount.');
-     } else {
-         setError('');
-     }
-     setEthAmount(amount * rmToEthRate);
-  }, [depositAmount, rmToEthRate]);
+     const amount = 0;
+     setError('');
+     setEthAmount(0);
+  }, []);
 
-   useEffect(() => {
-     const newInitialAmount = userData.zakatAmount > 0 ? userData.zakatAmount : 0;
-     setDepositAmount(newInitialAmount);
-   }, [userData.zakatAmount]);
+  useEffect(() => {
+    setDepositAmount(0);
+  }, [userData.zakatAmount]);
 
-   useEffect(() => {
+  useEffect(() => {
     handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
-    handleChange({ target: { value: ethAmount.toString() }}, 'amount');
-    handleChange({ target: { value: 'ZAKAT' }}, 'keyword');
-    handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
-   }, []);
-
-  const handleDepositChange = (e) => {
-    const value = e.target.value;
-    handleChange({ target: { value: e.target.value }}, 'amount');
-    setDepositAmount(value === '' ? '' : Number(value));
-  };
+    handleChange({ target: { value: '0' }}, 'amount');
+    handleChange({ target: { value: 'ZAKAT_METADATA' }}, 'keyword');
+    handleChange({ target: { value: `Store Zakat metadata for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
+  }, []);
 
   const processPayment = async () => {
-    const finalDepositAmount = Number(depositAmount) || 0;
-
-    if (finalDepositAmount < 0.000001) {
-      setError('Please enter a valid amount to donate.');
-      return;
-    }
-    
     try {
       setError('');
       setIsProcessing(true);
 
-      if (!currentAccount) {
-        await connectWallet();
-        return;
+      // Compute summary values from userData
+      const grossIncome = Number(userData?.calculation?.grossIncome || 0);
+      const allowedExpenses = Number(userData?.calculation?.allowedExpenses || 0);
+      const netZakatableIncome = Number(userData?.calculation?.netZakatableIncome || Math.max(0, grossIncome - allowedExpenses));
+      const nisabValue = Number(userData?.calculation?.nisabRM || 0);
+      const isWajib = Boolean(userData?.calculation?.isWajib || (netZakatableIncome >= nisabValue));
+      const zakatAnnual = Number(userData?.calculation?.zakatAnnual || (isWajib ? netZakatableIncome * 0.025 : 0));
+      const zakatMonthly = Number(userData?.calculation?.zakatMonthly || (zakatAnnual / 12));
+      const zakatCategory = 'Income Zakat';
+      const timestamp = new Date().toISOString();
+
+      const displayName = (userData?.personalInfo?.name || userData?.documentData?.name || 'Ali bin Ahmad').trim();
+      const faculty = (userData?.personalInfo?.faculty || 'Computing');
+      let userIDHash = '0x';
+      let taxDataHash = '0x';
+      try {
+        const enc = new TextEncoder();
+        const idBuffer = await crypto.subtle.digest('SHA-256', enc.encode(displayName || 'anonymous'));
+        userIDHash = '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');// toHex(idBuffer);
+        const taxPayload = JSON.stringify({ name: displayName, faculty, grossIncome, allowedExpenses, netZakatableIncome, nisabValue });
+        const taxBuffer = await crypto.subtle.digest('SHA-256', enc.encode(taxPayload));
+        taxDataHash = toHex(taxBuffer);
+      } catch (e) {
+        console.warn('Hashing failed, using placeholder values.', e);
+        userIDHash = '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+        taxDataHash = '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
       }
 
-      // Let's set a fixed small amount that will definitely work
-      // For testing purposes, we'll use a hardcoded minimum value
-      // This ensures we're sending a valid string to ethers.parseEther
-      
-      // For very small amounts, use a minimum value like "0.0001"
-      // const formattedEthAmount = "0.000001";
-      const formattedEthAmount = (finalDepositAmount * rmToEthRate).toString();
-
-      // Set form data for transaction
-      handleChange({ target: { value: import.meta.env.VITE_RECEIVER_ADDRESS }}, 'addressTo');
-      handleChange({ target: { value: formattedEthAmount }}, 'amount');
-      handleChange({ target: { value: 'ZAKAT' }}, 'keyword');
-      handleChange({ target: { value: `Zakat payment for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
-
-      // Execute transaction
-      await sendTransaction();
-      
-      // Wait for transaction to be mined
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const transactionDetails = {
-        transactionId: '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''),
-        amount: finalDepositAmount,
-        ethAmount: formattedEthAmount,
-        rmToEthRate: rmToEthRate,
-        timestamp: new Date().toISOString(),
-        status: 'Confirmed',
-        categories: userData.selectedCategories.map(c => c.name).join(', '),
-        walletAddress: currentAccount
+      const metadata = {
+        userIDHash,
+        taxDataHash, // stored in Firebase
+        timestamp,
+        grossIncome,
+        allowedExpenses,
+        netZakatableIncome,
+        nisabValue,
+        isWajib,
+        zakatAnnual,
+        zakatMonthly,
+        zakatCategory,
+        status: 'Uploaded',
+        name: displayName,
+        faculty,
       };
 
-      updateUserData({ transactionDetails });
+      // Store metadata to Firebase via context (private network simulation)
+      let docId = null;
       try {
-        setSaveStatus('Saving payment record...');
-        await savePayslipAfterPayment(userData);
-        setSaveStatus('Payment record saved successfully!');
+        setSaveStatus('Uploading metadata to private network...');
+        docId = await recordZakatMetadata(metadata);
+        setSaveStatus('Metadata uploaded successfully!');
       } catch (firestoreError) {
-        console.error("Error saving payslip data to Firestore:", firestoreError);
-        setSaveStatus('Warning: Payment completed but record could not be saved.');
+        console.error('Error saving metadata to Firestore:', firestoreError);
+        setSaveStatus('Warning: Upload attempted but could not be saved.');
       }
-      
-      // Force refresh of Zakat transactions
-      await getZakatTransactions();
-      
+
+      const transactionDetails = {
+        transactionId: docId || ('0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')),
+        amount: 0,
+        ethAmount: '0',
+        rmToEthRate: 0,
+        timestamp,
+        status: 'Uploaded',
+        categories: userData.selectedCategories.map(c => c.name).join(', '),
+        walletAddress: currentAccount || null,
+      };
+
+      updateUserData({ transactionDetails, blockchainMetadata: metadata });
+
+      // Refresh any on-chain views (optional; no ETH sent)
+      try { await getZakatTransactions(); } catch (e) { /* no-op in store-only mode */ }
+
       nextStep();
     } catch (error) {
-      console.error('Payment error:', error);
-      setError('Transaction failed. Please try again.');
+      console.error('Store details error:', error);
+      setError('Upload failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -120,59 +128,42 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-700">Step 5: Payment Process</h2>
+      <h2 className="text-xl font-semibold text-gray-700">Step 5: Store Details</h2>
 
       <div className="p-6 border border-gray-200 rounded-lg bg-white space-y-5">
-        <h3 className="text-lg font-medium text-gray-800">Confirm Donation Amount</h3>
+        <h3 className="text-lg font-medium text-gray-800">Blockchain Metadata Summary</h3>
 
-        {initialDepositAmount > 0 && (
-             <p className="text-sm text-gray-600">
-                 Your calculated Zakat amount is: <span className="font-semibold text-green-700">RM {initialDepositAmount.toFixed(2)}</span>
-                 <span className="ml-2 text-[#871f39] text-xs">(You can donate as little as RM 0.01 or less)</span>
-             </p>
-         )}
-
-        <div>
-          <label htmlFor="depositAmount" className="block text-sm font-medium text-gray-700 mb-1">
-            Enter donation amount (RM):
-          </label>
-          <input
-            type="number"
-            id="depositAmount"
-            value={depositAmount}
-            onChange={handleDepositChange}
-            min="0.000001" 
-            step="any"
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${error ? 'border-red-500' : 'border-gray-300'}`}
-            placeholder="Enter amount (e.g., 0.01)"
-            aria-invalid={error ? "true" : "false"}
-            aria-describedby={error ? "deposit-error" : undefined}
-          />
-          {error && <p id="deposit-error" className="mt-1 text-xs text-red-600">{error}</p>}
+        <div className="p-4 bg-gray-50 rounded border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <p><span className="text-gray-600">name:</span> <span className="text-gray-800">{(userData?.personalInfo?.name || userData?.documentData?.name || 'Ali bin Ahmad')}</span></p>
+            <p><span className="text-gray-600">faculty:</span> <span className="text-gray-800">{(userData?.personalInfo?.faculty || 'Computing')}</span></p>
+            <p><span className="text-gray-600">userIDHash:</span> <span className="text-gray-800 break-all">{userData?.userIDHash}</span></p>
+            <p><span className="text-gray-600">taxDataHash:</span> <span className="text-gray-800 break-all">{userData?.taxDataHash}</span></p>
+            <p><span className="text-gray-600">timestamp:</span> <span className="text-gray-800">{new Date().toISOString()}</span></p>
+            <p><span className="text-gray-600">grossIncome:</span> <span className="text-gray-800">{Number(userData?.calculation?.grossIncome || 0).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">allowedExpenses:</span> <span className="text-gray-800">{Number(userData?.calculation?.allowedExpenses || 0).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">netZakatableIncome:</span> <span className="text-gray-800">{Number(userData?.calculation?.netZakatableIncome || Math.max(0, Number(userData?.calculation?.grossIncome || 0) - Number(userData?.calculation?.allowedExpenses || 0))).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">nisabValue:</span> <span className="text-gray-800">{Number(userData?.calculation?.nisabRM || 0).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">isWajib:</span> <span className="text-gray-800">{String(Boolean(userData?.calculation?.isWajib || (Number(userData?.calculation?.netZakatableIncome || 0) >= Number(userData?.calculation?.nisabRM || 0))))}</span></p>
+            <p><span className="text-gray-600">zakatAnnual:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatAnnual || 0).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">zakatMonthly:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatMonthly || 0).toFixed(2)}</span></p>
+            <p><span className="text-gray-600">zakatCategory:</span> <span className="text-gray-800">Income Zakat</span></p>
+            <p><span className="text-gray-600">status:</span> <span className="text-gray-800">Uploaded</span></p>
+          </div>
         </div>
 
-        {/* Conversion Info */}
         <div className="p-3 bg-gray-50 rounded border border-gray-100">
-          <p className="text-sm text-gray-600">Equivalent amount in Ethereum (ETH):</p>
-          <p className="text-lg font-semibold text-indigo-700">{ethAmount.toFixed(8)} ETH</p>
-          <p className="text-xs text-gray-500">(Rate: 1 RM ≈ {rmToEthRate.toPrecision(2)} ETH - illustrative rate)</p>
+          <p className="text-sm text-gray-600">Ethereum (ETH) to send:</p>
+          <p className="text-lg font-semibold text-indigo-700">0.00000000 ETH</p>
+          <p className="text-xs text-gray-500">No Ethereum will be sent. Data will be stored in a private network.</p>
         </div>
 
-         {/* Payment Method (Simplified) */}
-         <div>
-             <h4 className="text-sm font-medium text-gray-700 mb-2">Payment via Blockchain</h4>
-             <div className="flex items-center p-3 border border-green-200 bg-green-50 rounded">
-                {/* Placeholder for actual wallet connection/payment button */}
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                 </svg>
-                 <p className="text-sm text-green-800">Payment will be processed securely on the Ethereum blockchain.</p>
-                {/* In a real app: Add Connect Wallet button here */}
-             </div>
-         </div>
-
+        <div className="p-4 bg-green-50 rounded border border-green-200">
+          <p className="text-sm text-gray-800">
+            I agree for my salary to be deducted starting from November by RM50.00 per month to fulfill my obligatory zakat payment for the upcoming year, sincerely for the sake of Allah Ta’ala.
+          </p>
+        </div>
       </div>
-
 
       {/* Navigation Buttons */}
       <div className="flex justify-between pt-4">
@@ -185,7 +176,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         </button>
         <button
           onClick={processPayment}
-          disabled={isProcessing || isLoading || !!error || (Number(depositAmount) < 0.000001)}
+          disabled={isProcessing || isLoading}
           className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 flex items-center justify-center"
         >
           {isProcessing || isLoading ? (
@@ -194,18 +185,13 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Processing Payment...
+              Uploading Metadata...
             </>
           ) : (
-            !currentAccount ? 'Connect Wallet' : 'Complete Payment'
+            'Confirm & Store'
           )}
         </button>
       </div>
-       <p className="text-xs text-gray-500 text-center mt-4">
-        {currentAccount ? 
-          `Connected: ${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}` : 
-          'Please connect your MetaMask wallet to make a payment'}
-      </p>
       {saveStatus && (
         <div className={`text-sm text-center mt-2 ${
           saveStatus.includes('Warning') ? 'text-yellow-600' : 'text-green-600'

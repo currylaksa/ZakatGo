@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { AiFillPlayCircle } from "react-icons/ai";
+import { useContext, useRef } from "react";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import { Loader } from "./";

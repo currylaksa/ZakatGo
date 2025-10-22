@@ -1,5 +1,5 @@
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../config/firebase';
 
 /**
@@ -30,7 +30,11 @@ export const uploadPayslip = async (file, extractedData, userId = null) => {
       const timestamp = new Date().getTime();
       const fileName = `payslips/${userId || 'anonymous'}/${timestamp}_${file.name}`;
       const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, file);
+      const metadata = { contentType: file.type || 'application/octet-stream' };
+      const task = uploadBytesResumable(storageRef, file, metadata);
+      await new Promise((resolve, reject) => {
+        task.on('state_changed', null, reject, resolve);
+      });
       const downloadURL = await getDownloadURL(storageRef);
       await addDoc(collection(db, 'payslips'), {
         ...payslipData,

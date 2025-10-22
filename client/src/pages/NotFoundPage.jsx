@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HalfCircleBackground } from '../components';
 import { HiExclamationCircle } from 'react-icons/hi';

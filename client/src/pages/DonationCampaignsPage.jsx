@@ -1,15 +1,14 @@
 // pages/DonationCampaignsPage.jsx
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TransactionContext } from '../context/TransactionContext';
-import { HalfCircleBackground } from '../components';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
 // Import icons
-import { FiMapPin, FiFilter, FiList, FiUserCheck, FiShare2, FiEdit, FiSend, FiChevronDown, FiChevronUp, FiPackage, FiDollarSign, FiNavigation, FiGift } from 'react-icons/fi';
-import { HiOutlineLocationMarker, HiOutlineMap, HiOutlineAdjustments, HiOutlineNewspaper, HiOutlineLink, HiOutlineSparkles, HiOutlineHeart, HiOutlineCash, HiOutlineCalendar, HiOutlineChartBar, HiOutlineEye, HiOutlineUser, HiOutlineBadgeCheck, HiArrowLeft } from 'react-icons/hi';
+import { FiMapPin, FiList, FiUserCheck, FiShare2, FiEdit, FiPackage, FiDollarSign, FiGift } from 'react-icons/fi';
+import { HiOutlineLocationMarker, HiOutlineMap, HiOutlineNewspaper, HiOutlineSparkles, HiOutlineChartBar } from 'react-icons/hi';
 
 // --- Leaflet Icon Setup ---
 delete L.Icon.Default.prototype._getIconUrl;

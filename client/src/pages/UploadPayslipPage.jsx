@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiArrowLeft, HiCheck, HiX, HiUpload, HiDocumentAdd } from 'react-icons/hi';
 

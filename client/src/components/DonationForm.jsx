@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { HiOutlineGift } from 'react-icons/hi';
 
 const DonationForm = ({ campaignType, onSubmit, initialAmount = '' }) => {

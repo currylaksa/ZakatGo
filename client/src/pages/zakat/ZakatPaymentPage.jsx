@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DocumentUploadStep from './DocumentUploadStep';
 import ReviewInformationStep from './ReviewInformationStep';
@@ -6,10 +6,13 @@ import ZakatCalculationStep from './ZakatCalculationStep';
 import CategorySelectionStep from './CategorySelectionStep';
 import BlockchainPaymentStep from './BlockchainPaymentStep';
 import PaymentConfirmation from './PaymentConfirmation';
+import dummyUserData from '../../data/dummyZakatUserData';
 
 const ZakatPaymentPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [userData, setUserData] = useState({
+  const DEV_DIRECT_TO_STEP5 = true; // Toggle to false to restore normal flow
+
+  const [currentStep, setCurrentStep] = useState(DEV_DIRECT_TO_STEP5 ? 5 : 1);
+  const [userData, setUserData] = useState(DEV_DIRECT_TO_STEP5 ? dummyUserData : {
     personalInfo: { name: '', salary: '', deductions: '', assets: '' },
     documentData: { name: '', salary: '', deductions: '', assets: '' },
     zakatAmount: 0,
@@ -18,13 +21,52 @@ const ZakatPaymentPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Jump directly via query params only when not in DEV_DIRECT_TO_STEP5 mode
+  useEffect(() => {
+    if (DEV_DIRECT_TO_STEP5) return;
+    const params = new URLSearchParams(window.location.search);
+    const stepParam = params.get('step') || params.get('startAt');
+    if (stepParam) {
+      const lower = stepParam.toLowerCase();
+      let target = 0;
+      if (['5', 'store', 'storedetails', 'blockchain', 'blockchainpayment'].includes(lower)) {
+        target = 5;
+      } else {
+        const num = parseInt(stepParam, 10);
+        if (!isNaN(num) && num >= 1 && num <= 6) target = num;
+      }
+      if (target) setCurrentStep(target);
+    }
+
+    const seed = params.get('seed');
+    if (seed !== null) {
+      setUserData(prev => ({
+        ...prev,
+        personalInfo: { ...prev.personalInfo, name: prev.personalInfo.name || 'Test User' },
+        calculation: {
+          grossIncome: 60000,
+          allowedExpenses: 18000,
+          netZakatableIncome: 42000,
+          nisabRM: 15000,
+          isWajib: true,
+          zakatAnnual: 1050,
+          zakatMonthly: 87.5,
+        },
+        selectedCategories: prev.selectedCategories?.length ? prev.selectedCategories : [
+          { name: 'Poor & Needy' },
+          { name: 'Education' }
+        ],
+      }));
+    }
+  }, []);
+
   // Define all steps
   const steps = [
     { id: 1, name: 'Document Upload', icon: 'document-upload' },
     { id: 2, name: 'Review Information', icon: 'review' },
     { id: 3, name: 'Zakat Calculation', icon: 'calculator' },
     { id: 4, name: 'Category Selection', icon: 'categories' },
-    { id: 5, name: 'Payment Process', icon: 'payment' },
+    { id: 5, name: 'Store Details', icon: 'payment' },
     { id: 6, name: 'Confirmation', icon: 'check-circle' }
   ];
 
@@ -33,18 +75,15 @@ const ZakatPaymentPage = () => {
     setTimeout(() => {
       setCurrentStep(prev => prev + 1);
       setIsLoading(false);
-      // Scroll to top when changing steps
       window.scrollTo(0, 0);
     }, 400);
   };
 
   const prevStep = () => {
     setCurrentStep(prev => prev - 1);
-    // Scroll to top when changing steps
     window.scrollTo(0, 0);
   };
 
-  // Deep merge for updating nested user data
   const updateUserData = (newData) => {
     setUserData(prevData => ({
       ...prevData,
@@ -60,7 +99,6 @@ const ZakatPaymentPage = () => {
     }));
   };
 
-  // Icon renderer for step indicator
   const renderIcon = (icon) => {
     switch (icon) {
       case 'document-upload':
