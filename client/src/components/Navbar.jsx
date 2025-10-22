@@ -5,7 +5,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 
 // ZakatGo logo imported
-import logo from "../../images/zakat_utm.png";
+import logo from "../../images/ZakatGoLogo.png";
 
 // --- NavbarItem Component ---
 // Handles navigation link clicks using react-router-dom
@@ -52,7 +52,7 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
 
       {/* Submenu */}
       {hasSubmenu && isOpen && (
-        <div className="absolute mt-2 bg-[#5f0220] rounded-md shadow-lg z-50 min-w-max py-2">
+        <div className="absolute mt-2 bg-blue-800 rounded-md shadow-lg z-50 min-w-max py-2">
           {children}
         </div>
       )}
@@ -72,7 +72,7 @@ const SubmenuItem = ({ title, to, onClick }) => {
 
   return (
     <a href={to} onClick={handleClick} className="no-underline block">
-      <div className="px-4 py-2 text-white hover:bg-[#6f162e] transition duration-200">
+      <div className="px-4 py-2 text-white hover:bg-blue-700 transition duration-200">
         {title}
       </div>
     </a>
@@ -96,7 +96,7 @@ const MobileNavItem = ({ title, to, onClick, hasSubmenu = false, submenuItems = 
   return (
     <div className="w-full">
       <div 
-        className="flex justify-between items-center w-full py-3 px-4 hover:bg-[#6f162e] rounded-md cursor-pointer transition-all duration-200"
+        className="flex justify-between items-center w-full py-3 px-4 hover:bg-blue-700 rounded-md cursor-pointer transition-all duration-200"
         onClick={handleClick}
       >
         <span className="text-white text-lg">{title}</span>
@@ -106,11 +106,11 @@ const MobileNavItem = ({ title, to, onClick, hasSubmenu = false, submenuItems = 
       </div>
       
       {hasSubmenu && isSubmenuOpen && (
-        <div className="ml-4 mt-1 mb-2 border-l-2 border-[#871f39] pl-2">
+        <div className="ml-4 mt-1 mb-2 border-l-2 border-blue-600 pl-2">
           {submenuItems.map((item, index) => (
             <div 
               key={index}
-              className="py-3 px-4 hover:bg-[#6f162e] rounded-md cursor-pointer transition-all duration-200"
+              className="py-3 px-4 hover:bg-blue-700 rounded-md cursor-pointer transition-all duration-200"
               onClick={() => {
                 if (onClick) onClick();
                 navigate(item.path);
@@ -155,14 +155,13 @@ const Navbar = () => {
 
   return (
     // --- Main Navigation Bar ---
-    <nav className="w-full flex md:justify-center justify-between items-center p-4 fixed top-0 left-0 z-50 bg-[#5f0220] shadow-md">
+    <nav className="w-full flex md:justify-center justify-between items-center p-4 fixed top-0 left-0 z-50 bg-blue-900 shadow-md">
 
       {/* --- Logo --- */}
       <div className="md:flex-[0.5] pr-4 md:pl-6">
         <Link to="/">
-          <img src={logo} alt="Zakat UTM Logo" className="w-36 md:w-40 cursor-pointer" />
+          <img src={logo} alt="ZakatGo Logo" className="w-36 md:w-40 cursor-pointer" />
         </Link>
-        
       </div>
 
       {/* --- Desktop Navigation Links --- */}
@@ -222,11 +221,10 @@ const Navbar = () => {
       {/* --- Mobile Menu Panel --- */}
       {toggleMenu && (
         <div className="z-50 fixed top-0 -right-2 p-0 w-[80vw] h-screen shadow-2xl
-          flex flex-col rounded-l-xl bg-[#73234B] text-white animate-slide-in">
+          flex flex-col rounded-l-xl bg-blue-900 text-white animate-slide-in">
           {/* Header with close button */}
-          <div className="w-full flex justify-between items-center p-4 border-b border-[#5f0220]">
+          <div className="w-full flex justify-between items-center p-4 border-b border-blue-800">
             <img src={logo} alt="ZakatGo Logo" className="w-28" />
-             <span className="sr-only">ZakatGo</span>
             <AiOutlineClose
               fontSize={24}
               onClick={handleCloseMenu}
@@ -249,7 +247,7 @@ const Navbar = () => {
           </div>
 
           {/* Login button at bottom */}
-          <div className="w-full p-4 border-t border-[#5f0220]">
+          <div className="w-full p-4 border-t border-blue-800">
             <button
               onClick={() => {
                 handleCloseMenu();

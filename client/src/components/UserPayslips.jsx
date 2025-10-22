@@ -75,7 +75,7 @@ const UserPayslips = ({ userId }) => {
                   href={payslip.fileUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-[#871f39] hover:text-[#5f0220] text-sm"
+                  className="text-blue-600 hover:text-blue-800 text-sm"
                 >
                   View
                 </a>

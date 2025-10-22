@@ -135,7 +135,7 @@ const ImpactDashboardPage = () => {
         {/* Header Section */}
         <div className="text-center mb-6 md:mb-8">
           <h1 className="text-2xl md:text-4xl font-bold mb-2 text-green-700">ZakatGo Impact Dashboard</h1>
-          <div className="h-1 w-24 bg-gradient-to-r from-green-500 to-[#a62b45] mx-auto rounded-full"></div>
+          <div className="h-1 w-24 bg-gradient-to-r from-green-500 to-blue-500 mx-auto rounded-full"></div>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm md:text-base">
             Visualizing the collective impact of ZakatGo donations across Malaysia.
             All transactions are verified on blockchain for complete transparency.
@@ -157,7 +157,7 @@ const ImpactDashboardPage = () => {
             Demographic Insights Dashboard for PPZ
           </h2>
           <p className="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm">
-            Comprehensive analysis of ZakatUTM user demographics to help Pusat Pungutan Zakat (PPZ) understand the zakat ecosystem better and identify potential collaboration opportunities.
+            Comprehensive analysis of ZakatGo user demographics to help Pusat Pungutan Zakat (PPZ) understand the zakat ecosystem better and identify potential collaboration opportunities.
           </p>
 
           {/* Demographic View Selector - Improved mobile layout */}
@@ -188,31 +188,31 @@ const ImpactDashboardPage = () => {
                 <div className="flex rounded-lg overflow-hidden border border-gray-300 min-w-max md:min-w-0">
                   <button 
                     onClick={() => setDetailView('age')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'age' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'age' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Age
                   </button>
                   <button 
                     onClick={() => setDetailView('income')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'income' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'income' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Income
                   </button>
                   <button 
                     onClick={() => setDetailView('occupation')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'occupation' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'occupation' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Occupation
                   </button>
                   <button 
                     onClick={() => setDetailView('awareness')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'awareness' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'awareness' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Zakat Awareness
                   </button>
                   <button 
                     onClick={() => setDetailView('payment')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'payment' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'payment' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Payment Habits
                   </button>
@@ -224,25 +224,25 @@ const ImpactDashboardPage = () => {
                 <div className="flex rounded-lg overflow-hidden border border-gray-300 min-w-max md:min-w-0">
                   <button 
                     onClick={() => setDetailView('category')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'category' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'category' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Categories
                   </button>
                   <button 
                     onClick={() => setDetailView('education')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'education' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'education' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Education
                   </button>
                   <button 
                     onClick={() => setDetailView('housing')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'housing' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'housing' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Housing
                   </button>
                   <button 
                     onClick={() => setDetailView('household')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'household' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'household' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     Household Size
                   </button>
@@ -363,7 +363,7 @@ const ImpactDashboardPage = () => {
                         <PolarGrid />
                         <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }} />
                         <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: isMobileView ? 9 : 11 }} />
-                        <Radar name="ZakatUTM users" dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.5} />
+                        <Radar name="ZakatGo Users" dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.5} />
                         <Radar name="Traditional Zakat" dataKey="B" stroke="#f97316" fill="#f97316" fillOpacity={0.5} />
                         <Legend wrapperStyle={{ fontSize: isMobileView ? 10 : 12 }} />
                         <Tooltip />
@@ -385,9 +385,9 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Age Distribution Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">Our platform is attracting a significant number of younger Muslims (25-44 age group) who represent 55% of zakat contributors.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can leverage ZakatUTM's digital platform to reach tech-savvy younger Muslims who may not engage with traditional zakat collection channels, while maintaining authoritative oversight of zakat collection.</p>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
+                          <p className="text-xs text-gray-700">PPZ can leverage ZakatGo's digital platform to reach tech-savvy younger Muslims who may not engage with traditional zakat collection channels, while maintaining authoritative oversight of zakat collection.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -415,7 +415,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -432,9 +432,9 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Income Bracket Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">The majority of our users (61%) fall within the RM5,000-15,000 monthly income bracket, representing a significant segment of zakat-eligible Muslims.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">These higher income brackets represent potential for increased zakat collection amounts. PPZ can tap into this demographic through ZakatUTM's digital platform while providing official calculation guidance and verification.</p>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
+                          <p className="text-xs text-gray-700">These higher income brackets represent potential for increased zakat collection amounts. PPZ can tap into this demographic through ZakatGo's digital platform while providing official calculation guidance and verification.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -462,7 +462,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -479,8 +479,8 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Occupation Distribution</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">Private sector employees (32%) and professionals (28%) form the largest segments of zakat contributors on our platform, offering PPZ access to corporate networks.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
                           <p className="text-xs text-gray-700">PPZ can launch targeted workplace zakat programs through ZakatGo, partnering with corporations to implement automatic monthly zakat deductions with official PPZ receipts and verification.</p>
                         </div>
                       </div>
@@ -509,7 +509,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -526,9 +526,9 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Zakat Knowledge & Awareness</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">While 53% of users are well-informed about zakat rules, 47% have limited to moderate understanding, presenting an educational opportunity for PPZ as Malaysia's zakat authority.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can integrate authoritative educational content into ZakatUTM's platform, establishing itself as the definitive voice on zakat matters while increasing confidence in zakat calculation accuracy.</p>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
+                          <p className="text-xs text-gray-700">PPZ can integrate authoritative educational content into ZakatGo's platform, establishing itself as the definitive voice on zakat matters while increasing confidence in zakat calculation accuracy.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -556,7 +556,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -573,9 +573,9 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Payment Habits & Preferences</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">42% of users prefer digital platforms for zakat payment, with 32% making regular monthly contributions rather than annual payments - a model that enhances collection predictability.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can integrate with ZakatUTM's recurring payment system to capture monthly zakat payments, improving cash flow predictability and potentially increasing total collection through the "pay as you earn" model.</p>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
+                          <p className="text-xs text-gray-700">PPZ can integrate with ZakatGo's recurring payment system to capture monthly zakat payments, improving cash flow predictability and potentially increasing total collection through the "pay as you earn" model.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -619,7 +619,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -642,8 +642,8 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Recipient Categories</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">Single parents (32%) and elderly individuals (24%) represent the largest groups receiving zakat assistance through our platform, highlighting targeted aid opportunities.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
                           <p className="text-xs text-gray-700">PPZ can develop specialized, high-impact programs through ZakatGo targeting the specific needs of single-parent households and elderly care, ensuring zakat funds address the most pressing community needs.</p>
                         </div>
                       </div>
@@ -672,7 +672,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -689,9 +689,9 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Education Level Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">58% of zakat recipients have secondary education or lower, highlighting education as a potential pathway out of poverty and a strategic area for sustainable zakat impact.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can Partner with Zakat UTM to establish educational scholarship programs targeting recipients with lower education levels, creating a sustainable impact model that addresses the root causes of poverty.</p>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
+                          <p className="text-xs text-gray-700">PPZ can partner with ZakatGo to establish educational scholarship programs targeting recipients with lower education levels, creating a sustainable impact model that addresses the root causes of poverty.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -719,7 +719,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -736,8 +736,8 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Housing Situation Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">59% of recipients are renting their homes, with only 7% owning paid-off homes, indicating housing stability as a significant concern for zakat recipients and a potential area for meaningful intervention.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
                           <p className="text-xs text-gray-700">PPZ can develop housing assistance programs through ZakatGo targeting rental subsidies, affordable housing initiatives, or home ownership pathways for zakat-eligible families to address housing insecurity.</p>
                         </div>
                       </div>
@@ -766,7 +766,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -783,8 +783,8 @@ const ImpactDashboardPage = () => {
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Household Size Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">68% of recipient households have 3-6 family members, with 13% having 7+ members, highlighting larger families as a significant zakat recipient demographic requiring tailored support programs.</p>
-                        <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                        <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200">
+                          <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
                           <p className="text-xs text-gray-700">PPZ can develop family-support packages through ZakatGo that scale benefits based on household size, ensuring adequate assistance for larger families while addressing their specific cost-of-living challenges.</p>
                         </div>
                       </div>
@@ -813,7 +813,7 @@ const ImpactDashboardPage = () => {
                           </tbody>
                         </table>
                         <div className="mt-3 text-xs">
-                          <div className="flex items-center gap-1 text-[#871f39]">
+                          <div className="flex items-center gap-1 text-blue-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -838,8 +838,8 @@ const ImpactDashboardPage = () => {
                     <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Collaboration Value Proposition</h4>
                     <p className="text-xs md:text-sm text-gray-700 mb-2">This analysis compares the profile of Muslims using digital zakat platforms like ZakatGo versus those using traditional collection channels.</p>
                     
-                    <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6] mb-3 md:mb-4">
-                      <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                    <div className="bg-blue-50 p-2 md:p-3 rounded border border-blue-200 mb-3 md:mb-4">
+                      <h5 className="text-xs md:text-sm font-medium text-blue-700 mb-1">Strategic Opportunity for PPZ</h5>
                       <p className="text-xs text-gray-700">By collaborating with ZakatGo, PPZ can access a complementary demographic that may not be fully engaged through traditional channels, particularly younger, tech-savvy, higher-income Muslims - significantly expanding PPZ's overall reach.</p>
                     </div>
                     
@@ -848,7 +848,7 @@ const ImpactDashboardPage = () => {
                         <thead className="bg-gray-100">
                           <tr>
                             <th className="px-2 md:px-3 py-2 text-left">Characteristic</th>
-                            <th className="px-2 md:px-3 py-2 text-center">ZakatUTM users</th>
+                            <th className="px-2 md:px-3 py-2 text-center">ZakatGo Users</th>
                             <th className="px-2 md:px-3 py-2 text-center">Traditional Channels</th>
                             <th className="px-2 md:px-3 py-2 text-left">Collaboration Benefit</th>
                           </tr>
@@ -893,20 +893,20 @@ const ImpactDashboardPage = () => {
                         </tbody>
                       </table>
                       <div className="mt-3 text-xs">
-                        <div className="flex items-center gap-1 text-[#871f39]">
+                        <div className="flex items-center gap-1 text-blue-600">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="font-medium">PPZ Benefit:</span>
                         </div>
-                        <p className="mt-1 pl-5 text-gray-700">This data demonstrates How Zakat UTM and PPZ can create a truly comprehensive zakat ecosystem - PPZ maintains its traditional authority and reach while expanding into digital channels through ZakatUTM's platform, potentially increasing total zakat collection.</p>
+                        <p className="mt-1 pl-5 text-gray-700">This data demonstrates how ZakatGo and PPZ can create a truly comprehensive zakat ecosystem - PPZ maintains its traditional authority and reach while expanding into digital channels through ZakatGo's platform, potentially increasing total zakat collection.</p>
                       </div>
                     </div>
                   </div>
                   
                   <div className="p-2 md:p-3 bg-green-50 rounded border border-green-200 mt-3 md:mt-4">
                     <h5 className="text-xs md:text-sm font-medium text-green-700 mb-1">Strategic Partnership Potential</h5>
-                    <p className="text-xs text-gray-700">A partnership between PPZ and ZakatGo creates a powerful dual-channel approach to zakat collection, combining PPZ's traditional authority with ZakatUTM's digital innovation to maximize zakat collection while ensuring full Shariah compliance and transparency.</p>
+                    <p className="text-xs text-gray-700">A partnership between PPZ and ZakatGo creates a powerful dual-channel approach to zakat collection, combining PPZ's traditional authority with ZakatGo's digital innovation to maximize zakat collection while ensuring full Shariah compliance and transparency.</p>
                   </div>
                 </div>
               )}
@@ -917,7 +917,7 @@ const ImpactDashboardPage = () => {
           <div className="mt-4 md:mt-5 p-3 md:p-5 bg-green-50 rounded-lg border border-green-200">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="mb-3 md:mb-0 md:mr-6 text-center md:text-left">
-                <h3 className="text-md md:text-lg font-semibold text-green-700 mb-1 md:mb-2">Partner with Zakat UTM</h3>
+                <h3 className="text-md md:text-lg font-semibold text-green-700 mb-1 md:mb-2">Partner with ZakatGo</h3>
                 <p className="text-xs md:text-sm text-gray-700">Our platform offers PPZ access to tech-savvy zakat payers and detailed demographic insights for targeted outreach. Together, we can modernize zakat collection while maintaining compliance and transparency.</p>
               </div>
               <button className="px-4 md:px-6 py-2 md:py-3 bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm font-medium rounded-lg transition-all duration-300 shadow hover:shadow-md flex items-center whitespace-nowrap">

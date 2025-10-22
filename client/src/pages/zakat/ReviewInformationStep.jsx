@@ -231,9 +231,22 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
 
   const getInputClassName = (fieldName) => {
     const baseClasses = "w-full px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 transition duration-150";
+<<<<<<< HEAD
     if (errors[fieldName] && touched[fieldName]) return `${baseClasses} border-red-300 text-red-800 focus:border-red-500 focus:ring-red-200`;
     if (touched[fieldName] && !errors[fieldName]) return `${baseClasses} border-green-300 focus:border-green-500 focus:ring-green-200`;
     return `${baseClasses} border-gray-300 focus:border-[#a62b45] focus:ring-[#f4ccd6]`;
+=======
+    
+    if (errors[fieldName] && touched[fieldName]) {
+      return `${baseClasses} border-red-300 text-red-800 focus:border-red-500 focus:ring-red-200`;
+    }
+    
+    if (touched[fieldName] && !errors[fieldName]) {
+      return `${baseClasses} border-green-300 focus:border-green-500 focus:ring-green-200`;
+    }
+    
+    return `${baseClasses} border-gray-300 focus:border-blue-500 focus:ring-blue-200`;
+>>>>>>> parent of 6f7213e (change to utm theme)
   };
 
   // Derived display values for summary

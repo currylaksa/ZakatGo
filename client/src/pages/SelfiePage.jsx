@@ -88,7 +88,7 @@ const SelfiePage = () => {
                       {/* ID Card on right side */}
                       <div className="absolute right-0 top-20 transform rotate-12">
                         <div className="w-14 h-10 bg-gray-200 border-2 border-gray-400 rounded flex items-center justify-center">
-                          <div className="w-10 h-6 bg-[#73234B]"></div>
+                          <div className="w-10 h-6 bg-blue-900"></div>
                         </div>
                       </div>
                       
@@ -101,7 +101,7 @@ const SelfiePage = () => {
                   <div className="absolute -bottom-4 -left-16 w-3 h-3 bg-purple-500 rounded-full"></div>
                   <div className="absolute -top-8 -right-12 w-4 h-4 bg-yellow-400 rounded-full"></div>
                   <div className="absolute bottom-10 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
-                  <div className="absolute -bottom-2 right-16 w-3 h-3 bg-[#c7435f] rounded-full"></div>
+                  <div className="absolute -bottom-2 right-16 w-3 h-3 bg-blue-400 rounded-full"></div>
                 </div>
               </div>
               

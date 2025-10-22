@@ -102,7 +102,7 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
   const getBorderColor = () => {
     if (isDragAccept) return 'border-green-500';
     if (isDragReject) return 'border-red-500';
-    if (isDragActive) return 'border-[#c7435f]';
+    if (isDragActive) return 'border-blue-400';
     return 'border-gray-300';
   };
 
@@ -190,7 +190,7 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
                   <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#a62b45] mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-8 h-8 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                 </svg>
               )}
@@ -215,7 +215,7 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
           <div className="p-4">
             {isProcessing && (
               <div className="space-y-3">
-                <div className="flex items-center text-sm text-[#6f162e]">
+                <div className="flex items-center text-sm text-blue-700">
                   <svg className="animate-spin mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -224,13 +224,13 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
                 </div>
                 
                 <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 text-xs flex rounded bg-[#fbe9ed]">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-100">
                     <div 
                       style={{ width: `${uploadProgress}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#a62b45] transition-all duration-300"
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 transition-all duration-300"
                     ></div>
                   </div>
-                  <div className="flex justify-between text-xs text-[#6f162e] mt-1">
+                  <div className="flex justify-between text-xs text-blue-700 mt-1">
                     <span>Reading document</span>
                     <span>{Math.round(uploadProgress)}%</span>
                   </div>
@@ -245,7 +245,7 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
                 </svg>
                 <h3 className="mt-2 text-lg font-medium text-gray-900">Document processed successfully!</h3>
                 <p className="mt-1 text-sm text-gray-500">We've extracted the information for your review.</p>
-                <p className="mt-3 text-sm text-[#871f39]">Redirecting to next step...</p>
+                <p className="mt-3 text-sm text-blue-600">Redirecting to next step...</p>
               </div>
             )}
           </div>

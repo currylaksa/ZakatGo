@@ -109,14 +109,14 @@ const ZakatCalculationStep = ({ nextStep, prevStep, userData, updateUserData }) 
 
       {/* Information Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-[#fbe9ed] p-4 rounded-lg border border-[#fbe9ed]">
-          <h4 className="font-medium text-[#5f0220] flex items-center">
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+          <h4 className="font-medium text-blue-800 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Why Pay Zakat?
           </h4>
-          <p className="text-sm text-[#6f162e] mt-2">
+          <p className="text-sm text-blue-700 mt-2">
             Zakat is one of the five pillars of Islam, purifying your wealth and helping those in need.
             Your contribution makes a real difference in the community.
           </p>

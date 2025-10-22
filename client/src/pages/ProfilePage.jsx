@@ -37,7 +37,7 @@ const ProfilePage = () => {
     paymentMethod: 'Bank Transfer',
     selectedCategories: [
       { name: 'Fuqara (The Poor)', percentage: 60, color: 'bg-green-500', amount: 747.00 },
-      { name: 'Muallaf (New Muslims/Friends)', percentage: 25, color: 'bg-[#a62b45]', amount: 311.25 },
+      { name: 'Muallaf (New Muslims/Friends)', percentage: 25, color: 'bg-blue-500', amount: 311.25 },
       { name: 'Ibn as-Sabil (Wayfarers)', percentage: 15, color: 'bg-purple-500', amount: 186.75 }
     ],
     certificate: {
@@ -50,7 +50,7 @@ const ProfilePage = () => {
   // Mock data without the unused setters
   const spendingCategories = [
     { id: 1, name: 'Food & Groceries', percentage: 35, color: 'bg-green-500', spent: 315 },
-    { id: 2, name: 'Housing Rent', percentage: 40, color: 'bg-[#a62b45]', spent: 360 },
+    { id: 2, name: 'Housing Rent', percentage: 40, color: 'bg-blue-500', spent: 360 },
     { id: 3, name: 'Utilities', percentage: 15, color: 'bg-purple-500', spent: 135 },
     { id: 4, name: 'Medical Expenses', percentage: 10, color: 'bg-yellow-500', spent: 90 },
   ];
@@ -84,7 +84,7 @@ const ProfilePage = () => {
   // Mock data without the unused setters
   const zakatCategories = [
     { id: 1, name: 'Fuqara (Poor)', percentage: 30, color: 'bg-green-500' },
-    { id: 2, name: 'Masakin (Needy)', percentage: 25, color: 'bg-[#a62b45]' },
+    { id: 2, name: 'Masakin (Needy)', percentage: 25, color: 'bg-blue-500' },
     { id: 3, name: 'Amil Zakat (Admin)', percentage: 15, color: 'bg-purple-500' },
     { id: 4, name: 'Muallaf (Converts)', percentage: 10, color: 'bg-yellow-500' },
     { id: 5, name: 'Other Categories', percentage: 20, color: 'bg-red-500' }
@@ -575,8 +575,8 @@ const ProfilePage = () => {
                     <div className="text-xs text-gray-600">Families Helped</div>
                   </div>
                   
-                  <div className="bg-[#fbe9ed] rounded-lg p-3">
-                    <div className="text-2xl text-[#6f162e] font-bold">3</div>
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="text-2xl text-blue-700 font-bold">3</div>
                     <div className="text-xs text-gray-600">New Muslims Supported</div>
                   </div>
                   
@@ -807,7 +807,7 @@ const ProfilePage = () => {
                     <p className="text-2xl font-bold mb-1">
                       {showInRM ? 'RM750' : '0.0562 ETH'}</p>
                     <div className="flex items-center">
-                      <div className="w-3 h-3 rounded-full bg-[#a62b45] mr-1"></div>
+                      <div className="w-3 h-3 rounded-full bg-blue-500 mr-1"></div>
                       <p className="text-sm text-gray-500">Year to date</p>
                       {showInRM ? null : <p className="text-xs text-gray-400 ml-2">(~RM750)</p>}
                     </div>
@@ -1080,7 +1080,7 @@ const ProfilePage = () => {
                         <div className="flex items-center mb-1">
                           <span className={`inline-block w-2 h-2 rounded-full ${
                             transaction.category === 'Food & Groceries' ? 'bg-green-500' :
-                            transaction.category === 'Housing Rent' ? 'bg-[#a62b45]' :
+                            transaction.category === 'Housing Rent' ? 'bg-blue-500' :
                             transaction.category === 'Utilities' ? 'bg-purple-500' : 'bg-yellow-500'
                           } mr-2`}></span>
                           <span className="font-medium text-sm">{transaction.merchant}</span>
@@ -1161,8 +1161,8 @@ const ProfilePage = () => {
                 <div className="bg-gray-50 p-4 rounded-xl">
                   <h3 className="text-sm font-medium text-gray-700">Support Contact</h3>
                   <div className="mt-3 flex items-start">
-                    <div className="w-10 h-10 bg-[#fbe9ed] rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-lg text-[#6f162e]">NH</span>
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-lg text-blue-700">NH</span>
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium">Nur Hafizah binti Ibrahim</p>
@@ -1370,7 +1370,7 @@ const RecentZakatTransactions = () => {
                       <div className="flex items-center mb-1">
                         <span className={`inline-block w-2 h-2 rounded-full ${
                             tx.keyword === 'food' ? 'bg-green-500' :
-                            tx.keyword === 'housing' ? 'bg-[#a62b45]' :
+                            tx.keyword === 'housing' ? 'bg-blue-500' :
                             tx.keyword === 'utilities' ? 'bg-purple-500' : 'bg-yellow-500'
                           } mr-2`}></span>
                           <span className="font-medium text-sm">Zakat Payment</span>

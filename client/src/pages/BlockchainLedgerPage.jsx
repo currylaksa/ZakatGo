@@ -91,30 +91,30 @@ const BlockchainLedgerPage = () => {
   
   return (
     // Main container with navy background gradient
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-[#400017] text-white p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white p-4 md:p-8">
       {/* Assume Navbar is rendered globally in App.js */}
       <div className="max-w-7xl mx-auto">
         
-        <div className="bg-gradient-to-r from-[#5f0220] to-[#6f162e] p-8 rounded-t-lg shadow-lg border-b border-teal-400">
+        <div className="bg-gradient-to-r from-blue-800 to-blue-700 p-8 rounded-t-lg shadow-lg border-b border-teal-400">
           <h1 className="text-4xl font-bold mb-3 text-center text-white">Public Donation Ledger</h1>
-          <p className="text-center text-[#fbe9ed] mb-6 max-w-3xl mx-auto">
+          <p className="text-center text-blue-100 mb-6 max-w-3xl mx-auto">
             Explore the transparent record of all donations on the ZakatGo platform. Every transaction is publicly verifiable while maintaining donor privacy.
           </p>
           
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Total Transactions</h3>
+            <div className="bg-blue-900 bg-opacity-50 p-4 rounded-lg shadow border border-blue-700">
+              <h3 className="text-sm uppercase text-blue-300 mb-1">Total Transactions</h3>
               <p className="text-2xl font-bold text-white">{mockTransactions.length}</p>
             </div>
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Total Amount</h3>
+            <div className="bg-blue-900 bg-opacity-50 p-4 rounded-lg shadow border border-blue-700">
+              <h3 className="text-sm uppercase text-blue-300 mb-1">Total Amount</h3>
               <p className="text-2xl font-bold text-white">
                 MYR {mockTransactions.reduce((sum, tx) => sum + tx.amount, 0).toFixed(2)}
               </p>
             </div>
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Latest Transaction</h3>
+            <div className="bg-blue-900 bg-opacity-50 p-4 rounded-lg shadow border border-blue-700">
+              <h3 className="text-sm uppercase text-blue-300 mb-1">Latest Transaction</h3>
               <p className="text-2xl font-bold text-white">{formatDate(mockTransactions[0].timestamp)}</p>
             </div>
           </div>
@@ -123,13 +123,13 @@ const BlockchainLedgerPage = () => {
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="w-4 h-4 text-[#dc6e85]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
               </div>
               <input
                 type="text"
-                className="bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-teal-500 focus:border-teal-500"
+                className="bg-blue-950 border border-blue-700 text-blue-100 text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-teal-500 focus:border-teal-500"
                 placeholder="Search by ID, sender, or recipient..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -138,7 +138,7 @@ const BlockchainLedgerPage = () => {
             
             <div className="flex gap-2">
               <select
-                className="bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg p-2.5 focus:ring-teal-500 focus:border-teal-500"
+                className="bg-blue-950 border border-blue-700 text-blue-100 text-sm rounded-lg p-2.5 focus:ring-teal-500 focus:border-teal-500"
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
               >
@@ -148,8 +148,8 @@ const BlockchainLedgerPage = () => {
                 <option value="Sadaqah">Sadaqah</option>
               </select>
               
-              <button className="flex items-center gap-1 bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg p-2.5 hover:bg-[#5f0220] transition">
-                <svg className="w-4 h-4 text-[#dc6e85]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <button className="flex items-center gap-1 bg-blue-950 border border-blue-700 text-blue-100 text-sm rounded-lg p-2.5 hover:bg-blue-800 transition">
+                <svg className="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
                 <span className="hidden md:inline">Date Range</span>
@@ -162,7 +162,7 @@ const BlockchainLedgerPage = () => {
         <div className="bg-gray-900 p-6 rounded-b-lg shadow-xl">
           <div className="overflow-x-auto relative shadow-md rounded-lg mb-6">
             <table className="w-full text-sm text-left text-gray-300">
-              <thead className="text-xs uppercase bg-[#5f0220] text-[#fbe9ed]">
+              <thead className="text-xs uppercase bg-blue-800 text-blue-100">
                 <tr>
                   <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('id')}>
                     <div className="flex items-center">
@@ -221,7 +221,7 @@ const BlockchainLedgerPage = () => {
               <tbody>
                 {currentTransactions.length > 0 ? (
                   currentTransactions.map((tx, index) => (
-                    <tr key={index} className="border-b border-gray-800 hover:bg-[#73234B] bg-gray-800 transition duration-150 ease-in-out">
+                    <tr key={index} className="border-b border-gray-800 hover:bg-blue-900 bg-gray-800 transition duration-150 ease-in-out">
                       <td className="py-4 px-2 md:px-6 font-mono text-xs">
                         <div className="flex items-center">
                           {truncateId(tx.id)}
@@ -239,7 +239,7 @@ const BlockchainLedgerPage = () => {
                       <td className="py-4 px-2 md:px-6">{formatDate(tx.timestamp)}</td>
                       <td className="py-4 px-2 md:px-6">
                         <span className="inline-flex items-center">
-                          <span className="w-2 h-2 mr-2 rounded-full bg-[#a62b45]"></span>
+                          <span className="w-2 h-2 mr-2 rounded-full bg-blue-500"></span>
                           {tx.from}
                         </span>
                       </td>
@@ -255,7 +255,7 @@ const BlockchainLedgerPage = () => {
                           tx.type === 'Zakat' 
                             ? 'bg-purple-900 text-purple-200' 
                             : tx.type === 'Sadaqah'
-                              ? 'bg-[#73234B] text-[#f4ccd6]'
+                              ? 'bg-blue-900 text-blue-200'
                               : 'bg-teal-900 text-teal-200'
                         }`}>
                           {tx.type}
@@ -293,7 +293,7 @@ const BlockchainLedgerPage = () => {
                   className={`px-3 py-1 rounded ${
                     currentPage === 1
                       ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
+                      : 'bg-blue-800 text-blue-100 hover:bg-blue-700'
                   }`}
                 >
                   Previous
@@ -306,7 +306,7 @@ const BlockchainLedgerPage = () => {
                     className={`px-3 py-1 rounded ${
                       currentPage === number
                         ? 'bg-teal-600 text-white'
-                        : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
+                        : 'bg-blue-800 text-blue-100 hover:bg-blue-700'
                     }`}
                   >
                     {number}
@@ -319,7 +319,7 @@ const BlockchainLedgerPage = () => {
                   className={`px-3 py-1 rounded ${
                     currentPage === totalPages
                       ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
+                      : 'bg-blue-800 text-blue-100 hover:bg-blue-700'
                   }`}
                 >
                   Next
@@ -329,12 +329,12 @@ const BlockchainLedgerPage = () => {
           )}
           
           {/* Info Footer */}
-          <div className="mt-8 p-4 bg-blue-950 rounded-lg border border-[#5f0220]">
+          <div className="mt-8 p-4 bg-blue-950 rounded-lg border border-blue-800">
             <h3 className="text-sm font-medium text-teal-300 mb-2">About the ZakatGo Blockchain Ledger</h3>
-            <p className="text-xs text-[#dc6e85] mb-2">
+            <p className="text-xs text-blue-300 mb-2">
               This ledger uses simulated data to demonstrate the concept of blockchain transparency. In a real system, this would display actual, verified transactions from a blockchain network. Donor identities are anonymized using wallet addresses.
             </p>
-            <p className="text-xs text-[#dc6e85]">
+            <p className="text-xs text-blue-300">
               Our blockchain technology ensures that every donation is traceable, immutable, and transparent while protecting donor privacy. This allows you to verify that funds reach their intended destinations without compromising personal information.
             </p>
           </div>

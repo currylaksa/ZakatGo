@@ -366,7 +366,7 @@ const ApplicationForm = ({ onSubmit }) => {
           onChange={() => handleInputChange(name)}
           onBlur={() => handleBlur(name)}
           defaultValue={formData[name]} // Use defaultValue to avoid controlled input issues
-          className={`w-full px-4 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-[#a62b45] focus:border-[#a62b45] transition duration-150 ease-in-out`}
+          className={`w-full px-4 py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
           {...props}
         />
       )}
@@ -410,7 +410,7 @@ const ApplicationForm = ({ onSubmit }) => {
             onChange={() => handleInputChange('address')}
             onBlur={() => handleBlur('address')}
             defaultValue={formData.address}
-            className={`w-full px-4 py-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-[#a62b45] focus:border-[#a62b45] transition duration-150 ease-in-out`}
+            className={`w-full px-4 py-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
           />
         </FormField>
 
@@ -475,7 +475,7 @@ const ApplicationForm = ({ onSubmit }) => {
             onChange={() => handleInputChange('asnafCategory')}
             onBlur={() => handleBlur('asnafCategory')}
             defaultValue={formData.asnafCategory}
-            className={`w-full px-4 py-2 border ${errors.asnafCategory ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-[#a62b45] focus:border-[#a62b45] transition duration-150 ease-in-out`}
+            className={`w-full px-4 py-2 border ${errors.asnafCategory ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
           >
             <option value="">-- Select Asnaf Category --</option>
             {asnafCategories.map(category => (
@@ -501,7 +501,7 @@ const ApplicationForm = ({ onSubmit }) => {
             onChange={() => handleInputChange('reason')}
             onBlur={() => handleBlur('reason')}
             defaultValue={formData.reason}
-            className={`w-full px-4 py-2 border ${errors.reason ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-[#a62b45] focus:border-[#a62b45] transition duration-150 ease-in-out`}
+            className={`w-full px-4 py-2 border ${errors.reason ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out`}
             placeholder="Briefly explain why you need assistance."
           />
         </FormField>
@@ -530,7 +530,7 @@ const ApplicationForm = ({ onSubmit }) => {
                   syncFormDataFromRefs();
                   fileInputRef.current.click();
                 }}
-                className="px-4 py-2 bg-[#fbe9ed] text-[#6f162e] text-sm font-medium rounded-md hover:bg-[#fbe9ed] focus:outline-none focus:ring-2 focus:ring-[#a62b45] transition"
+                className="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               >
                 Browse Files
               </button>
@@ -543,7 +543,7 @@ const ApplicationForm = ({ onSubmit }) => {
         <div className="pt-4 text-center">
           <button
             type="submit"
-            className="w-full sm:w-auto inline-flex justify-center items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#871f39] hover:bg-[#6f162e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a62b45] transition duration-150 ease-in-out"
+            className="w-full sm:w-auto inline-flex justify-center items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
           >
             Submit Application
           </button>

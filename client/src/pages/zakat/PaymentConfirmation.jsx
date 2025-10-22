@@ -134,6 +134,13 @@ const PaymentConfirmation = ({ userData }) => {
 
         <div className="pt-6 text-center space-y-2">
            <p className="text-xs text-gray-500">A confirmation has been simulated. In a real application, this would be sent via email.</p>
+<<<<<<< HEAD
+=======
+           {/* Add actual functionality for buttons if needed */}
+          {/* <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mr-2">
+              Download Receipt (PDF)
+          </button> */}
+>>>>>>> parent of 6f7213e (change to utm theme)
           <button className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
                   onClick={() => window.location.reload()}
           >

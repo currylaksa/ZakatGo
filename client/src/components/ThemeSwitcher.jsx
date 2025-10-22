@@ -12,7 +12,7 @@ const ThemeSwitcher = () => {
     { name: 'Dark Blue & Teal', primary: '#04364A', secondary: '#64CCC5' },
     { name: 'Purple & Gray', primary: '#8b5cf6', secondary: '#4b5563' },
     { name: 'Blue & Orange', primary: '#3b82f6', secondary: '#f97316' },
-    { name: 'Red & Navy', primary: '#ef4444', secondary: '#73234B' },
+    { name: 'Red & Navy', primary: '#ef4444', secondary: '#1e3a8a' },
   ];
 
   const handleColorSchemeChange = (scheme) => {

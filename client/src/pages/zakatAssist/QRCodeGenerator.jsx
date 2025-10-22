@@ -161,7 +161,7 @@ const QRCodeGenerator = ({ applicantData }) => {
       <div className="text-center p-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Step 4: Generating Your QR Code</h2>
          <div className="flex justify-center items-center space-x-2 text-gray-600">
-             <svg className="animate-spin h-5 w-5 text-[#871f39]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+             <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
              </svg>
@@ -206,7 +206,7 @@ const QRCodeGenerator = ({ applicantData }) => {
         <div className="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
           <button
              onClick={handlePrint}
-             className="w-full sm:w-auto px-6 py-2 bg-[#871f39] text-white text-sm font-medium rounded-md hover:bg-[#6f162e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a62b45] transition duration-150 ease-in-out flex items-center justify-center"
+             className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out flex items-center justify-center"
           >
              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -233,7 +233,7 @@ const QRCodeGenerator = ({ applicantData }) => {
           </h3>
           <button 
             onClick={() => setShowStoreList(!showStoreList)}
-            className="text-sm text-[#871f39] hover:text-[#5f0220] focus:outline-none"
+            className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
           >
             {showStoreList ? 'Hide List' : 'Show List'}
           </button>
@@ -249,7 +249,7 @@ const QRCodeGenerator = ({ applicantData }) => {
                 id="state-filter"
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#a62b45] focus:border-[#a62b45] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
                 <option value="all">All States</option>
                 {malaysianStates.map((state) => (
@@ -295,8 +295,8 @@ const QRCodeGenerator = ({ applicantData }) => {
               )}
             </div>
 
-            <div className="mt-4 p-3 bg-[#fbe9ed] rounded-md">
-              <p className="text-sm text-[#5f0220]">
+            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+              <p className="text-sm text-blue-800">
                 <span className="font-medium">Note:</span> You may use your Zakat assistance for daily necessities (生活用品) including groceries, household items, personal care products, school supplies, and essential clothing.
               </p>
             </div>

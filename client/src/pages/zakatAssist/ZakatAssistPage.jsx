@@ -244,18 +244,18 @@ const ZakatAssistPage = () => {
           </div>
           
           {/* Info Box Section */}
-          <div className="bg-gradient-to-r from-[#fbe9ed] to-[#fbe9ed] p-6 border-t border-[#fbe9ed]">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 border-t border-blue-100">
             <div className="flex items-start">
               <div className="flex-shrink-0 mt-1">
-                <div className="bg-[#fbe9ed] rounded-full p-2 border border-[#f4ccd6]">
-                  <svg className="w-6 h-6 text-[#871f39]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-blue-100 rounded-full p-2 border border-blue-200">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
               <div className="ml-4">
-                <h4 className="text-md font-medium text-[#5f0220] mb-1">Important Information</h4>
-                <p className="text-sm text-[#6f162e]">
+                <h4 className="text-md font-medium text-blue-800 mb-1">Important Information</h4>
+                <p className="text-sm text-blue-700">
                   If approved, you will receive a QR code that can be used at partner stores like Speed99 for Zakat-funded purchases. The QR code is valid for 30 days from issuance.
                 </p>
               </div>

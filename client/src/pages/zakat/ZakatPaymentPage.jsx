@@ -184,7 +184,7 @@ const ZakatPaymentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-[#fbe9ed] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header with logo */}
         <div className="text-center mb-10">
@@ -195,7 +195,7 @@ const ZakatPaymentPage = () => {
               </svg>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-green-800">Zakat UTM Payment System</h1>
+          <h1 className="text-3xl font-bold text-green-800">ZakatGo Payment System</h1>
           <p className="mt-2 text-gray-600">Simplifying your Zakat payment journey</p>
         </div>
 

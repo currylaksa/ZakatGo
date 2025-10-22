@@ -67,9 +67,9 @@ const StatusUpdate = ({ status: initialStatus, onSuccess, onRetry }) => {
           icon: '⚙️',
           title: 'Processing Application',
           message: 'We are currently processing your application. This should only take a moment.',
-          bgColor: 'bg-[#fbe9ed]',
-          textColor: 'text-[#5f0220]',
-          borderColor: 'border-[#c7435f]',
+          bgColor: 'bg-blue-100',
+          textColor: 'text-blue-800',
+          borderColor: 'border-blue-400',
           nextSteps: "Please wait while we verify your information..."
         };
       case 'approved':
@@ -146,7 +146,7 @@ const StatusUpdate = ({ status: initialStatus, onSuccess, onRetry }) => {
              {details.showRetry && (
                <button
                  onClick={handleRetry}
-                 className="px-5 py-2 bg-[#871f39] text-white text-sm font-medium rounded-md hover:bg-[#6f162e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a62b45] transition duration-150 ease-in-out"
+                 className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
                >
                  Retry Application
                </button>
