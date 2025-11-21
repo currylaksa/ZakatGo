@@ -9,7 +9,7 @@ import PaymentConfirmation from './PaymentConfirmation';
 import dummyUserData from '../../data/dummyZakatUserData';
 
 const ZakatPaymentPage = () => {
-  const DEV_DIRECT_TO_STEP5 = true; // Toggle to false to restore normal flow
+  const DEV_DIRECT_TO_STEP5 = false; // Toggle to false to restore normal flow
 
   const [currentStep, setCurrentStep] = useState(DEV_DIRECT_TO_STEP5 ? 5 : 1);
   const [userData, setUserData] = useState(DEV_DIRECT_TO_STEP5 ? dummyUserData : {

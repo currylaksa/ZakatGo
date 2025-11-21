@@ -5,40 +5,45 @@ import { HiArrowLeft, HiChevronDown } from 'react-icons/hi';
 const JobInfoPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    employerName: '',
-    jobTitle: '',
-    employmentType: '',
-    industry: '',
-    monthlyIncome: ''
+    faculty: '',
+    position: '',
+    staffId: '',
+    studentId: '',
+    researchGroup: ''
   });
 
-  // Employment types for Malaysia
-  const employmentTypes = [
-    'Full-time',
-    'Part-time',
-    'Self-employed',
-    'Contract',
-    'Freelance',
-    'Gig Economy Worker',
-    'Unemployed'
+  // UTM Faculties
+  const utmFaculties = [
+    'Computing',
+    'Engineering',
+    'Science',
+    'Business',
+    'Medicine',
+    'Education',
+    'Built Environment',
+    'Social Sciences',
+    'Islamic Civilization',
+    'Management',
+    'Chemical and Energy Engineering',
+    'Electrical Engineering',
+    'Mechanical Engineering',
+    'Civil Engineering',
+    'Architecture',
+    'Geoinformation and Real Estate',
+    'Other'
   ];
 
-  // Industries common in Malaysia
-  const industries = [
-    'Agriculture',
-    'Manufacturing',
-    'Construction',
-    'Retail & Wholesale',
-    'Food & Beverage',
-    'Hospitality & Tourism',
-    'Healthcare',
-    'Education',
-    'Finance & Banking',
-    'Information Technology',
-    'Oil & Gas',
-    'Public Sector',
-    'Transportation & Logistics',
-    'Telecommunications',
+  // UTM Position Types
+  const utmPositions = [
+    'Professor',
+    'Associate Professor',
+    'Senior Lecturer',
+    'Lecturer',
+    'Assistant Lecturer',
+    'Research Officer',
+    'Administrative Staff',
+    'Student (Undergraduate)',
+    'Student (Postgraduate)',
     'Other'
   ];
 
@@ -52,7 +57,8 @@ const JobInfoPage = () => {
 
   const handleContinue = () => {
     // In a real app, you would validate the form data here
-    navigate('/onboarding/upload-id');
+    // After completing step 2, show success page
+    navigate('/onboarding/success');
   };
 
   return (
@@ -70,66 +76,35 @@ const JobInfoPage = () => {
         {/* Progress bar */}
         <div className="flex-1 px-4 flex flex-col justify-center mt-5">
           <div className="h-1 bg-gray-200 rounded-full">
-            <div className="h-1 bg-secondary rounded-full" style={{ width: '40%' }}></div>
+            <div className="h-1 bg-secondary rounded-full" style={{ width: '100%' }}></div>
           </div>
-          <div className="text-xs text-right text-gray-500 mt-1">2/5</div>
+          <div className="text-xs text-right text-gray-500 mt-1">2/2</div>
         </div>
       </div>
 
       <div className="flex-1 px-6 py-6">
-        <h1 className="text-2xl font-bold mb-2">Job Information</h1>
-        <p className="text-gray-600 mb-6">To accurately assess your loan eligibility, please fill out your current employment information. Your privacy is our priority.</p>
+        <h1 className="text-2xl font-bold mb-2">UTM Information</h1>
+        <p className="text-gray-600 mb-6">Please provide your UTM affiliation details. Your privacy is our priority.</p>
 
         <form className="space-y-5">
-          {/* Current Employer Name */}
+          {/* Faculty */}
           <div>
-            <label htmlFor="employerName" className="block text-sm font-medium text-gray-700 mb-1">
-              Current Employer Name
-            </label>
-            <input
-              type="text"
-              id="employerName"
-              name="employerName"
-              value={formData.employerName}
-              onChange={handleInputChange}
-              placeholder="Enter your employer's name"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition"
-            />
-          </div>
-
-          {/* Job Title/Position */}
-          <div>
-            <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700 mb-1">
-              Job Title/Position
-            </label>
-            <input
-              type="text"
-              id="jobTitle"
-              name="jobTitle"
-              value={formData.jobTitle}
-              onChange={handleInputChange}
-              placeholder="Enter your job title"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition"
-            />
-          </div>
-
-          {/* Employment Type */}
-          <div>
-            <label htmlFor="employmentType" className="block text-sm font-medium text-gray-700 mb-1">
-              Employment Type
+            <label htmlFor="faculty" className="block text-sm font-medium text-gray-700 mb-1">
+              Faculty <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <select
-                id="employmentType"
-                name="employmentType"
-                value={formData.employmentType}
+                id="faculty"
+                name="faculty"
+                value={formData.faculty}
                 onChange={handleInputChange}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition bg-white"
               >
-                <option value="" disabled>Select your employment type</option>
-                {employmentTypes.map((type, index) => (
-                  <option key={index} value={type}>
-                    {type}
+                <option value="" disabled>Select your faculty</option>
+                {utmFaculties.map((faculty, index) => (
+                  <option key={index} value={faculty}>
+                    {faculty}
                   </option>
                 ))}
               </select>
@@ -139,23 +114,24 @@ const JobInfoPage = () => {
             </div>
           </div>
 
-          {/* Industry */}
+          {/* Position */}
           <div>
-            <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-1">
-              Industry
+            <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+              Position <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <select
-                id="industry"
-                name="industry"
-                value={formData.industry}
+                id="position"
+                name="position"
+                value={formData.position}
                 onChange={handleInputChange}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition bg-white"
               >
-                <option value="" disabled>Select your industry</option>
-                {industries.map((industry, index) => (
-                  <option key={index} value={industry}>
-                    {industry}
+                <option value="" disabled>Select your position</option>
+                {utmPositions.map((position, index) => (
+                  <option key={index} value={position}>
+                    {position}
                   </option>
                 ))}
               </select>
@@ -165,25 +141,39 @@ const JobInfoPage = () => {
             </div>
           </div>
 
-          {/* Monthly Income */}
+          {/* Staff ID or Student ID */}
           <div>
-            <label htmlFor="monthlyIncome" className="block text-sm font-medium text-gray-700 mb-1">
-              Monthly Income (MYR)
+            <label htmlFor="staffId" className="block text-sm font-medium text-gray-700 mb-1">
+              Staff ID / Student ID <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                RM
-              </div>
-              <input
-                type="text"
-                id="monthlyIncome"
-                name="monthlyIncome"
-                value={formData.monthlyIncome}
-                onChange={handleInputChange}
-                placeholder="0.00"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition"
-              />
-            </div>
+            <input
+              type="text"
+              id="staffId"
+              name="staffId"
+              value={formData.staffId}
+              onChange={handleInputChange}
+              placeholder="Enter your Staff ID or Student ID"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition"
+            />
+            <p className="text-xs text-gray-500 mt-1">For staff: Enter your Staff ID. For students: Enter your Student ID.</p>
+          </div>
+
+          {/* Research Group (Optional) */}
+          <div>
+            <label htmlFor="researchGroup" className="block text-sm font-medium text-gray-700 mb-1">
+              Research Group (Optional)
+            </label>
+            <input
+              type="text"
+              id="researchGroup"
+              name="researchGroup"
+              value={formData.researchGroup}
+              onChange={handleInputChange}
+              placeholder="Enter your research group name if applicable"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition"
+            />
+            <p className="text-xs text-gray-500 mt-1">Leave blank if not applicable.</p>
           </div>
         </form>
       </div>

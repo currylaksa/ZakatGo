@@ -153,7 +153,8 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
       const bonusFromDoc = Number(docData.bonus || 0);
       const manualBonus = Number(formData.bonusManual || 0);
       const otherIncome = Number(formData.otherIncome || 0);
-      const grossIncome = baseIncome + bonusFromDoc + otherIncome + (bonusFromDoc > 0 ? 0 : manualBonus);
+      const manualBonusProvided = formData.bonusManual !== '';
+      const grossIncome = baseIncome + otherIncome + (manualBonusProvided ? manualBonus : bonusFromDoc);
 
       const spouseRelief = 3000 * Number(formData.spouseCount || 0);
       const childRelief = 1000 * Number(formData.childCount || 0);
@@ -301,7 +302,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           </div>
 
           <div>
-            <label htmlFor="bonusManual" className="block text-sm font-medium text-gray-700 mb-1">Bonus (if not in document) (RM/year)</label>
+            <label htmlFor="bonusManual" className="block text-sm font-medium text-gray-700 mb-1">Bonus (override document value) (RM/year)</label>
             <input
               type="number"
               id="bonusManual"
@@ -310,7 +311,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               onChange={handleChange}
               onBlur={handleBlur}
               className={getInputClassName('bonusManual')}
-              placeholder="e.g. 5000"
+              placeholder="e.g. 0 or 5000"
               min="0"
             />
           </div>
@@ -374,6 +375,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               className={getInputClassName('parentsSupport')}
               placeholder="e.g. 1200"
               min="0"
+               step="0.01"
             />
           </div>
 
@@ -389,6 +391,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               className={getInputClassName('educationExpenses')}
               placeholder="e.g. 3000"
               min="0"
+               step="0.01"
             />
           </div>
 
@@ -404,6 +407,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               className={getInputClassName('medicalExpenses')}
               placeholder="e.g. 1500"
               min="0"
+               step="0.01"
             />
           </div>
 
@@ -419,6 +423,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               className={getInputClassName('tabungHaji')}
               placeholder="e.g. 2000"
               min="0"
+              step="0.01"
             />
           </div>
 
@@ -434,6 +439,7 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
               className={getInputClassName('epfContribution')}
               placeholder="e.g. 24000"
               min="0"
+               step="0.01"
             />
           </div>
         </div>
@@ -444,23 +450,23 @@ const ReviewInformationStep = ({ nextStep, prevStep, userData, updateUserData })
           <div className="mt-3 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <div className="p-3 bg-white rounded border">
               <span className="text-gray-500">Base Income (from doc)</span>
-              <div className="text-lg font-semibold text-gray-900">RM {baseIncomeFromDoc.toLocaleString()}</div>
+              <div className="text-lg font-semibold text-gray-900">RM {baseIncomeFromDoc.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             </div>
             <div className="p-3 bg-white rounded border">
               <span className="text-gray-500">Other + Bonus (manual)</span>
-              <div className="text-lg font-semibold text-gray-900">RM {otherPlusBonusManual.toLocaleString()}</div>
+              <div className="text-lg font-semibold text-gray-900">RM {otherPlusBonusManual.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             </div>
             <div className="p-3 bg-white rounded border">
               <span className="text-gray-500">Allowable Expenses Total</span>
-              <div className="text-lg font-semibold text-gray-900">RM {allowedExpensesRender.toLocaleString()}</div>
+              <div className="text-lg font-semibold text-gray-900">RM {allowedExpensesRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               <div className="mt-2 text-xs text-gray-600 space-y-1">
-                <div>Spouse Relief: RM {spouseReliefRender.toLocaleString()}</div>
-                <div>Children Relief: RM {childReliefRender.toLocaleString()}</div>
-                <div>Parents’ Support: RM {parentsSupportRender.toLocaleString()}</div>
-                <div>Education: RM {educationExpensesRender.toLocaleString()}</div>
-                <div>Medical: RM {medicalExpensesRender.toLocaleString()}</div>
-                <div>Tabung Haji: RM {tabungHajiRender.toLocaleString()}</div>
-                <div>EPF (KWSP): RM {epfContributionRender.toLocaleString()}</div>
+                <div>Spouse Relief: RM {spouseReliefRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>Children Relief: RM {childReliefRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>Parents' Support: RM {parentsSupportRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>Education: RM {educationExpensesRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>Medical: RM {medicalExpensesRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>Tabung Haji: RM {tabungHajiRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div>EPF (KWSP): RM {epfContributionRender.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </div>
             </div>
           </div>

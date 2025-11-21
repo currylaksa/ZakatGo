@@ -28,3 +28,7 @@ export { default as OnboardingSuccessPage } from './OnboardingSuccessPage';
 export { default as WithdrawTutorialPage } from './WithdrawTutorialPage';
 export { default as ZakatPaymentPage } from './zakat/ZakatPaymentPage';
 export { default as ZakatAssistPage } from './zakatAssist/ZakatAssistPage';
+// Admin pages
+export { default as AdminProfilePage } from './AdminProfilePage';
+export { default as AdminDashboardPage } from './AdminDashboardPage';
+export { default as AdminMonthlyDeductionPage } from './AdminMonthlyDeductionPage';

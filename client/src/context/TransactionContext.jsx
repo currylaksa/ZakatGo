@@ -17,11 +17,11 @@ const LOAN_AMOUNT = "0.01";
 
 const createEthereumContract = async () => {
   try {
-    if (!ethereum) {
-      alert("Please install MetaMask!");
-      console.error("createEthereumContract: MetaMask not found.");
-      return null;
-    }
+    // if (!ethereum) {
+    //   alert("Please install MetaMask!");
+    //   console.error("createEthereumContract: MetaMask not found.");
+    //   return null;
+    // }
 
     // Explicitly log the values from constants.js as they are seen by this function
     console.log("createEthereumContract: contractAddress from import:", contractAddress);
@@ -98,7 +98,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const getAllTransactions = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask!");
+   //   if (!ethereum) return alert("Please install MetaMask!");
 
       const contract = await createEthereumContract();
       if (!contract) return;
@@ -143,7 +143,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const getZakatTransactions = async () => {
     try {
-        if (!ethereum) return alert("Please install MetaMask!");
+      //  if (!ethereum) return alert("Please install MetaMask!");
 
         const contract = await createEthereumContract();
         if (!contract) return;
@@ -162,8 +162,9 @@ export const TransactionsProvider = ({ children }) => {
                     message: transaction.message,
                     amount: ethers.formatEther(transaction.amount),
                     keyword: transaction.keyword,
-                    transactionHash: transaction.transactionHash || null
-                }));
+            transactionHash: transaction.transactionHash || null,
+            status: 'Completed'
+        }));
                 
                 setZakatTransactions(structuredTransactions);
                 return;
@@ -191,7 +192,8 @@ export const TransactionsProvider = ({ children }) => {
             message: transaction.message,
             amount: ethers.formatEther(transaction.amount),
             keyword: transaction.keyword,
-            transactionHash: transaction.transactionHash || null
+            transactionHash: transaction.transactionHash || null,
+            status: 'Completed'
         }));
 
         console.log("Structured Zakat transactions:", structuredTransactions);
@@ -230,7 +232,7 @@ export const TransactionsProvider = ({ children }) => {
 
 const checkIfTransactionsExists = async () => {
   try {
-    if (!ethereum) return alert("Please install MetaMask!");
+   // if (!ethereum) return alert("Please install MetaMask!");
 
     const contract = await createEthereumContract();
     if (!contract) return;
@@ -306,7 +308,7 @@ const checkIfTransactionsExists = async () => {
 const sendTransaction = async () => {
   try {
     if (!ethereum) {
-      alert("Please install MetaMask!");
+     // alert("Please install MetaMask!");
       return;
     }
 

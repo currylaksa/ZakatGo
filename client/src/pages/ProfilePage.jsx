@@ -18,16 +18,25 @@ const ProfilePage = () => {
   
   const [impactScore] = useState(235);
   const [showLocalSuggestions, setShowLocalSuggestions] = useState(false);
-  const [showInRM, setShowInRM] = useState(false); // New state for currency toggle
+  const [showInRM, setShowInRM] = useState(true); // New state for currency toggle
   const [ethToMYRRate] = useState(450); // Updated ETH to MYR conversion rate
   
   // Default user profile (fallback)
   const defaultProfile = {
-    name: 'Ali bin Ahmad',
+    name: 'NUR HALIZA BINTI ABDUL WAHAB',
     faculty: 'Computing',
-    role: 'Senior Lecturer',
-    icPassport: '990522040507',
+    position: 'Senior Lecturer',
+    email: 'nurhaliza.abdulwahab@utm.my',
+    phone: '0123456789',
+    address: '123 Main St, Kuala Lumpur, Malaysia',
+    staffId: '123456789',
+    researchGroup: 'PRSG',
+    icPassport: '770716105252',
   };
+  const storedPersonal = (() => { try { return JSON.parse(localStorage.getItem('signupPersonalInfo')||'{}'); } catch { return {}; } })();
+  const storedJob = (() => { try { return JSON.parse(localStorage.getItem('signupJobInfo')||'{}'); } catch { return {}; } })();
+  const userProfile = { ...storedPersonal, ...storedJob };
+  const storedWallet = localStorage.getItem('userWalletAddress') || '';
   
   // Mock donor payment report data
   const [donorPaymentReport] = useState({
@@ -296,9 +305,11 @@ const ProfilePage = () => {
     // In a real implementation, this would generate a PDF file
     alert('Downloading Zakat Payment Report as PDF...');
   };
-
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  
   return (
     <div className="min-h-screen bg-gray-50">
+      
       {/* Page Title and Description */}
       <div className="text-center py-8 max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-green-600 mb-2">ZakatGo Profile</h1>
@@ -308,7 +319,6 @@ const ProfilePage = () => {
             'Manage your wallet, track your donations, and view your impact in the ZakatGo ecosystem.' :
             'Track your Zakat assistance, view spending, and manage your approved funds.'}
         </p>
-        
         {/* Profile View Toggle */}
         <div className="mt-6 inline-flex bg-gray-100 rounded-lg p-1 shadow-inner">
           <button 
@@ -346,19 +356,27 @@ const ProfilePage = () => {
             <h2 className="text-base font-bold">User Profile</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <p><span className="text-gray-600">Name:</span> <span className="text-gray-800">{defaultProfile.name}</span></p>
-            <p><span className="text-gray-600">Faculty:</span> <span className="text-gray-800">{defaultProfile.faculty}</span></p>
-            <p><span className="text-gray-600">Role:</span> <span className="text-gray-800">{defaultProfile.role}</span></p>
-            <p><span className="text-gray-600">IC/Passport:</span> <span className="text-gray-800">{defaultProfile.icPassport}</span></p>
+            <p><span className="text-gray-600">Name:</span> <span className="text-gray-800">{userProfile.fullName || defaultProfile.name}</span></p>
+            <p><span className="text-gray-600">IC:</span> <span className="text-gray-800">{userProfile.ic || defaultProfile.icPassport}</span></p>
+            <p><span className="text-gray-600">Email:</span> <span className="text-gray-800">{userProfile.email || defaultProfile.email}</span></p>
+            <p><span className="text-gray-600">Phone:</span> <span className="text-gray-800">{userProfile.phoneNumber || defaultProfile.phone}</span></p>
+            <p><span className="text-gray-600">Address:</span> <span className="text-gray-800">{userProfile.homeAddress || defaultProfile.address}</span></p>
+            <p><span className="text-gray-600">Faculty:</span> <span className="text-gray-800">{userProfile.faculty || defaultProfile.faculty}</span></p>
+            <p><span className="text-gray-600">Position:</span> <span className="text-gray-800">{userProfile.position || defaultProfile.position}</span></p>
+            <p><span className="text-gray-600">Staff/Student ID:</span> <span className="text-gray-800">{userProfile.staffId || userProfile.studentId || defaultProfile.staffId}</span></p>
+            <p><span className="text-gray-600">Research Group:</span> <span className="text-gray-800">{userProfile.researchGroup || defaultProfile.researchGroup}</span></p>
+            <p><span className="text-gray-600">Wallet Address:</span> <span className="text-gray-800 font-mono break-all">{storedWallet || walletAddress || '—'}</span></p>
           </div>
         </div>
+
+    
         
         {profileView === 'donor' ? (
           // DONOR VIEW
           <>
             {/* Wallet Balance Section - Now with Currency Toggle */}
-            <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-xl p-6 mb-6 shadow-lg text-white mt-4">
-              <div className="flex justify-between items-center">
+            {/* <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-xl p-6 mb-6 shadow-lg text-white mt-4"> */}
+              {/* <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center">
                     <svg className="w-5 h-5 mr-1.5" viewBox="0 0 24 24" fill="none">
@@ -400,11 +418,11 @@ const ProfilePage = () => {
                     </button>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {isWalletConnected && (
                 <>
-                  <div className="mt-3 flex items-center justify-between">
+                  {/* <div className="mt-3 flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div>
                         <div className="flex items-center">
@@ -426,21 +444,20 @@ const ProfilePage = () => {
                         <div className="flex items-center text-xs opacity-80 mt-0.5">
                           <span className="font-mono">{formatAddress(walletAddress)}</span>
                           <a 
-                            href={`https://saturn-explorer.swanchain.io/address/${walletAddress}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="ml-1 opacity-80 hover:opacity-100"
+                            href="#" 
+                            className="text-teal-400 hover:text-teal-300 ml-2"
+                            title="View on blockchain explorer"
                           >
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                             </svg>
                           </a>
                         </div>
                       </div>
-                    </div>
+                    </div>*/}
                     
                     {/* Currency Toggle Button */}
-                    <button 
+                    {/* <button 
                       onClick={toggleCurrency}
                       className="bg-white bg-opacity-20 hover:bg-opacity-30 transition-all rounded-full py-1 px-2 text-xs flex items-center"
                     >
@@ -449,10 +466,10 @@ const ProfilePage = () => {
                       </svg>
                       {showInRM ? "Show in ETH" : "Show in RM"}
                     </button>
-                  </div>
+                  </div>  */}
                 </>
               )}
-            </div>
+            {/* </div> */}
             
             {/* Payment Report Section for Donors */}
             <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
@@ -1273,7 +1290,7 @@ const RecentZakatTransactions = () => {
 
   const convertEthToMYR = (ethAmount) => {
       const myrAmount = Number(ethAmount) * ethToMYRRate;
-      return myrAmount.toFixed(6);
+      return myrAmount.toFixed(2);
   };
   
   // Modified filtering logic to be more forgiving with case sensitivity
@@ -1297,6 +1314,7 @@ const RecentZakatTransactions = () => {
       message: 'Zakat to Fuqara (Food & Groceries)',
       timestamp: 'Apr 20, 2025, 10:15',
       transactionHash: '0xdeadbeef00000000000000000000000000000001',
+      status: 'Sent',
     },
     {
       addressFrom: '0xDEMO000000000000000000000000000000000002',
@@ -1306,6 +1324,7 @@ const RecentZakatTransactions = () => {
       message: 'Zakat support for Housing Rent',
       timestamp: 'Apr 21, 2025, 14:08',
       transactionHash: '0xdeadbeef00000000000000000000000000000002',
+      status: 'Approved',
     },
     {
       addressFrom: '0xDEMO000000000000000000000000000000000003',
@@ -1315,6 +1334,7 @@ const RecentZakatTransactions = () => {
       message: 'Zakat contribution for Utilities',
       timestamp: 'Apr 22, 2025, 09:32',
       transactionHash: '0xdeadbeef00000000000000000000000000000003',
+      status: 'Cancelled',
     },
     {
       addressFrom: '0xDEMO000000000000000000000000000000000004',
@@ -1324,6 +1344,7 @@ const RecentZakatTransactions = () => {
       message: 'Zakat for education supplies',
       timestamp: 'Apr 22, 2025, 16:47',
       transactionHash: '0xdeadbeef00000000000000000000000000000004',
+      status: 'Completed',
     },
   ];
 
@@ -1374,6 +1395,7 @@ const RecentZakatTransactions = () => {
                             tx.keyword === 'utilities' ? 'bg-purple-500' : 'bg-yellow-500'
                           } mr-2`}></span>
                           <span className="font-medium text-sm">Zakat Payment</span>
+                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-stone-200 text-stone-700">{tx.status || 'Completed'}</span>
                       </div>
                       <div className="flex items-center text-xs text-gray-500">
                         <span className="mr-2">To: {tx.addressTo ? `${tx.addressTo.slice(0, 6)}...${tx.addressTo.slice(-4)}` : 'Unknown'}</span>
@@ -1383,10 +1405,17 @@ const RecentZakatTransactions = () => {
                     
                     <div className="text-right">
                       <div className="font-bold text-sm">
-                        {showInRM ? 
-                          `RM ${Number(tx.amount || 0).toFixed(6)}` : 
-                          `${Number(tx.amount || 0).toFixed(6)} ETH`
-                        }
+                        <Link
+                          to={`/zakat/explorer/${encodeURIComponent(tx.transactionHash || '')}?status=${encodeURIComponent(tx.status || 'Completed')}&amount=${encodeURIComponent(showInRM ? convertEthToMYR(tx.amount || 0) : Number(tx.amount || 0).toFixed(6))}&currency=${encodeURIComponent(showInRM ? 'RM' : 'ETH')}&timestamp=${encodeURIComponent(tx.timestamp || new Date().toISOString())}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-700 hover:underline"
+                        >
+                          {showInRM ? 
+                            `RM ${convertEthToMYR(tx.amount || 0)}` : 
+                            `${Number(tx.amount || 0).toFixed(6)} ETH`
+                          }
+                        </Link>
                       </div>
                       <div className="text-xs text-gray-500">
                         {showInRM ? 
@@ -1399,25 +1428,15 @@ const RecentZakatTransactions = () => {
                   </div>
                   
                   <div className="mt-2 flex flex-col text-xs text-gray-500">
-                    <a 
-                      href={`https://saturn-explorer.swanchain.io/address/${tx.addressTo}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center hover:text-green-600 transition-colors mb-1"
-                    >
-                      View Recipient on Saturn Explorer
-                      <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
+                  
                     {tx.transactionHash && (
                       <a 
-                        href={`https://saturn-explorer.swanchain.io/tx/${tx.transactionHash}`}
+                        href={`${origin}/zakat/explorer/${encodeURIComponent(tx.transactionHash || '')}?status=${encodeURIComponent(tx.status || 'Completed')}&amount=${encodeURIComponent(showInRM ? convertEthToMYR(tx.amount || 0) : Number(tx.amount || 0).toFixed(6))}&currency=${encodeURIComponent(showInRM ? 'RM' : 'ETH')}&timestamp=${encodeURIComponent(tx.timestamp || new Date().toISOString())}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center hover:text-green-600 transition-colors"
                       >
-                        View Transaction on Saturn Explorer
+                        View Transaction on Explorer
                         <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>

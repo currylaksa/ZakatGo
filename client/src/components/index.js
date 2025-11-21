@@ -10,3 +10,4 @@ export { default as WalletCard } from "./WalletCard";
 export { default as ThemeSwitcher } from "./ThemeSwitcher";
 export { default as ActionButtons } from "./ActionButtons";
 export { default as LanguageToggle } from "./LanguageToggle";
+export { default as AdminNavbar } from "./AdminNavbar";

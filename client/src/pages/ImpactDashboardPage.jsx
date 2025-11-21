@@ -4,6 +4,14 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 // Colors for charts
 const COLORS = ['#06b6d4', '#3b82f6', '#10b981', '#f97316', '#facc15', '#8b5cf6', '#ec4899', '#14b8a6'];
 
+const formatAmount = (value) => {
+  const num = Number(value);
+  const adjusted = Number.isFinite(num) ? (Number.isInteger(num) ? num + 0.5 : num) : 0;
+  return new Intl.NumberFormat('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(adjusted);
+};
+
+const formatRM = (value) => `RM${formatAmount(value)}`;
+
 // Mock Demographic Data for Zakat Contributors and Recipients
 const demographicData = {
   // Donor age distribution
@@ -25,14 +33,15 @@ const demographicData = {
     { bracket: 'Above RM20,000', count: 15, percentage: 5 },
   ],
   
-  // Donor occupation categories
-  occupationCategories: [
-    { category: 'Professional', count: 98, percentage: 28 },
-    { category: 'Government', count: 67, percentage: 19 },
-    { category: 'Private Sector', count: 112, percentage: 32 },
-    { category: 'Self-employed', count: 45, percentage: 13 },
-    { category: 'Retiree', count: 15, percentage: 5 },
-    { category: 'Other', count: 10, percentage: 3 },
+  // Donor position categories (UTM Positions)
+  positionCategories: [
+    { category: 'Senior Lecturer', count: 215, percentage: 26.4 },
+    { category: 'Administrative Staff', count: 342, percentage: 41.9 },
+    { category: 'Lecturer', count: 104, percentage: 12.8 },
+    { category: 'Associate Professor', count: 68, percentage: 8.3 },
+    { category: 'Professor', count: 42, percentage: 5.2 },
+    { category: 'Research Officer', count: 26, percentage: 3.2 },
+    { category: 'Assistant Lecturer', count: 18, percentage: 2.2 },
   ],
   
   // Nisab awareness status
@@ -44,10 +53,7 @@ const demographicData = {
   
   // Zakat payment frequency
   paymentFrequency: [
-    { frequency: 'Monthly', value: 112, percentage: 32 },
-    { frequency: 'Quarterly', value: 65, percentage: 19 },
-    { frequency: 'Annually', value: 143, percentage: 41 },
-    { frequency: 'Irregular', value: 27, percentage: 8 },
+    { frequency: 'Monthly Auto-Deduction', value: 310, percentage: 100 },
   ],
   
   // Payment methods preferred
@@ -106,6 +112,119 @@ const radarData = [
   { subject: 'Age (Younger)', A: 65, B: 45, fullMark: 100 },
 ];
 
+// Base data for faculties and positions (UTM)
+const facultyBaseData = [
+  { name: 'Faculty of Engineering (FE)', baseAmount: 42560.75, contributors: 312 },
+  { name: 'Faculty of Social Sciences & Humanities (FSSH)', baseAmount: 21340.2, contributors: 185 },
+  { name: 'Faculty of Computing (FC)', baseAmount: 19875.55, contributors: 124 },
+  { name: 'Faculty of Science (FS)', baseAmount: 15420.8, contributors: 108 },
+  { name: 'Faculty of Built Environment & Surveying (FABU)', baseAmount: 11250.45, contributors: 92 },
+  { name: 'Azman Hashim Int. Business School (AHIBS)', baseAmount: 8640.3, contributors: 65 },
+  { name: 'Razak Faculty of Technology & Informatics', baseAmount: 4122.13, contributors: 29 },
+];
+
+const positionBaseData = [
+  { position: 'Senior Lecturer', amount: 38450.45, contributors: 215 },
+  { position: 'Professor', amount: 26120.88, contributors: 42 },
+  { position: 'Associate Professor', amount: 21890.35, contributors: 68 },
+  { position: 'Lecturer', amount: 16240.6, contributors: 104 },
+  { position: 'Administrative Staff', amount: 14532.25, contributors: 342 },
+  { position: 'Research Officer', amount: 3850.15, contributors: 26 },
+  { position: 'Assistant Lecturer', amount: 2125.5, contributors: 18 },
+];
+
+// UTM Malaysia Zakat Data by Faculty and Position
+// This data structure supports filtering by day, month, and year
+const generateUTMZakatData = () => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1; // 1-12
+  const currentDay = now.getDate();
+
+  const months = [];
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(currentYear, currentMonth - 1 - i, 1);
+    const monthNum = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const monthName = date.toLocaleString('default', { month: 'long' });
+    const daysInMonth = new Date(year, monthNum, 0).getDate();
+    const seasonalAngle = (i / 12) * Math.PI * 2;
+
+    const data = facultyBaseData.map((faculty, idx) => {
+      const variance =
+        0.12 * Math.sin(seasonalAngle + idx * 0.3) + (Math.random() * 0.08 - 0.04);
+      const amount = Number((faculty.baseAmount * (1 + variance)).toFixed(2));
+      const contributors = Math.max(
+        1,
+        Math.round(faculty.contributors * (1 + variance / 2))
+      );
+      return {
+        faculty: faculty.name,
+        amount: Math.max(500, amount),
+        contributors,
+      };
+    });
+
+    months.push({
+      year,
+      month: monthNum,
+      monthName,
+      daysInMonth,
+      data,
+    });
+  }
+
+  // Position data aggregated across all faculties
+  const positionData = positionBaseData.map((position) => {
+    const totalAmount = Number(position.amount.toFixed(2));
+    const monthlyAverage = Number((position.amount / 12).toFixed(2));
+    return {
+      position: position.position,
+      totalAmount,
+      monthlyAverage,
+      contributors: position.contributors,
+    };
+  });
+
+  // Generate daily data for current month (last 30 days)
+  const dailyData = [];
+  const daysToShow = Math.min(30, currentDay);
+  for (let i = daysToShow - 1; i >= 0; i--) {
+    const date = new Date(currentYear, currentMonth - 1, currentDay - i);
+    const day = date.getDate();
+    const dayName = date.toLocaleString('default', { weekday: 'short' });
+    const dayAngle = ((daysToShow - i) / daysToShow) * Math.PI * 2;
+
+    facultyBaseData.forEach((faculty, idx) => {
+      const baseDaily = faculty.baseAmount / 30;
+      const variance =
+        0.2 * Math.sin(dayAngle + idx) + (Math.random() * 0.1 - 0.05);
+      const weekendFactor = dayName === 'Sat' || dayName === 'Sun' ? 0.8 : 1;
+      const amount = Number(
+        (baseDaily * (1 + variance) * weekendFactor).toFixed(2)
+      );
+
+      dailyData.push({
+        date: `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        day,
+        dayName,
+        faculty: faculty.name,
+        amount: Math.max(50, amount),
+      });
+    });
+  }
+
+  return {
+    monthly: months,
+    position: positionData,
+    daily: dailyData,
+    faculties: facultyBaseData.map((f) => f.name),
+    positions: positionBaseData.map((p) => p.position),
+  };
+};
+
+const utmZakatData = generateUTMZakatData();
+
 const ImpactDashboardPage = () => {
   const [chartType, setChartType] = useState('bar');
   const [categoryView, setCategoryView] = useState('zakat');
@@ -113,6 +232,9 @@ const ImpactDashboardPage = () => {
   const [demographicView, setDemographicView] = useState('donors');
   const [detailView, setDetailView] = useState('age');
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  const [timeFilter, setTimeFilter] = useState('month'); // 'day', 'month', 'year'
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     const timer = setTimeout(() => setIsBlockchainVerified(true), 2000);
@@ -154,7 +276,7 @@ const ImpactDashboardPage = () => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            Demographic Insights Dashboard for PPZ
+            Demographic Insights Dashboard for UTM
           </h2>
           <p className="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm">
             Comprehensive analysis of ZakatUTM user demographics to help Pusat Pungutan Zakat (PPZ) understand the zakat ecosystem better and identify potential collaboration opportunities.
@@ -199,10 +321,10 @@ const ImpactDashboardPage = () => {
                     Income
                   </button>
                   <button 
-                    onClick={() => setDetailView('occupation')} 
-                    className={`px-3 py-1 text-xs font-medium ${detailView === 'occupation' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    onClick={() => setDetailView('position')} 
+                    className={`px-3 py-1 text-xs font-medium ${detailView === 'position' ? 'bg-[#871f39] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
-                    Occupation
+                    Position Types
                   </button>
                   <button 
                     onClick={() => setDetailView('awareness')} 
@@ -260,7 +382,7 @@ const ImpactDashboardPage = () => {
                   <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">
                     {detailView === 'age' && 'Age Distribution of Zakat Contributors'}
                     {detailView === 'income' && 'Income Brackets of Zakat Contributors'}
-                    {detailView === 'occupation' && 'Occupation Categories of Zakat Contributors'}
+                    {detailView === 'position' && 'Position Distribution of Zakat Contributors'}
                     {detailView === 'awareness' && 'Zakat Knowledge & Awareness Level'}
                     {detailView === 'payment' && 'Zakat Payment Preferences'}
                   </h3>
@@ -270,7 +392,7 @@ const ImpactDashboardPage = () => {
                         data={
                           detailView === 'age' ? demographicData.ageDistribution :
                           detailView === 'income' ? demographicData.incomeBrackets :
-                          detailView === 'occupation' ? demographicData.occupationCategories :
+                          detailView === 'position' ? demographicData.positionCategories :
                           detailView === 'awareness' ? demographicData.nisabAwareness :
                           demographicData.paymentFrequency
                         }
@@ -281,7 +403,7 @@ const ImpactDashboardPage = () => {
                           dataKey={
                             detailView === 'age' ? 'age' :
                             detailView === 'income' ? 'bracket' :
-                            detailView === 'occupation' ? 'category' :
+                            detailView === 'position' ? 'category' :
                             detailView === 'awareness' ? 'status' :
                             'frequency'
                           } 
@@ -374,11 +496,11 @@ const ImpactDashboardPage = () => {
               )}
             </div>
 
-            {/* Info Section - Enhanced with comprehensive insights for PPZ */}
+            {/* Info Section - Enhanced with comprehensive insights for UTM */}
             <div className="bg-gray-50 p-3 md:p-4 rounded-lg border border-gray-200">
               {demographicView === 'donors' && (
                 <div>
-                  <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">Key Insights for PPZ</h3>
+                  <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">Key Insights for UTM</h3>
                   
                   {detailView === 'age' && (
                     <>
@@ -386,7 +508,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Age Distribution Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">Our platform is attracting a significant number of younger Muslims (25-44 age group) who represent 55% of zakat contributors.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can leverage ZakatUTM's digital platform to reach tech-savvy younger Muslims who may not engage with traditional zakat collection channels, while maintaining authoritative oversight of zakat collection.</p>
                         </div>
                       </div>
@@ -421,7 +543,7 @@ const ImpactDashboardPage = () => {
                             </svg>
                             <span className="font-medium">PPZ Benefit:</span>
                           </div>
-                          <p className="mt-1 pl-5 text-gray-700">Majority of our users are in their prime earning years (25-54), representing a stable zakat base with high lifetime value potential for PPZ.</p>
+                          <p className="mt-1 pl-5 text-gray-700">Majority of our users are in their prime earning years (25-54), representing a stable zakat base with high lifetime value potential for UTM.</p>
                         </div>
                       </div>
                     </>
@@ -433,7 +555,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Income Bracket Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">The majority of our users (61%) fall within the RM5,000-15,000 monthly income bracket, representing a significant segment of zakat-eligible Muslims.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">These higher income brackets represent potential for increased zakat collection amounts. PPZ can tap into this demographic through ZakatUTM's digital platform while providing official calculation guidance and verification.</p>
                         </div>
                       </div>
@@ -474,14 +596,14 @@ const ImpactDashboardPage = () => {
                     </>
                   )}
                   
-                  {detailView === 'occupation' && (
+                  {detailView === 'position' && (
                     <>
                       <div className="mb-3 md:mb-4">
-                        <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Occupation Distribution</h4>
-                        <p className="text-xs md:text-sm text-gray-700 mb-2">Private sector employees (32%) and professionals (28%) form the largest segments of zakat contributors on our platform, offering PPZ access to corporate networks.</p>
+                        <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Position Distribution</h4>
+                        <p className="text-xs md:text-sm text-gray-700 mb-2">Administrative staff contribute the highest participation volume, while senior lecturers form the largest academic contributor group with strong monthly compliance.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can launch targeted workplace zakat programs through ZakatGo, partnering with corporations to implement automatic monthly zakat deductions with official PPZ receipts and verification.</p>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
+                          <p className="text-xs text-gray-700">UTM PPZ can design tailored engagement for each staff tier—recognizing high-value academic contributors while enabling frictionless micro-deductions for administrative personnel.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -494,7 +616,7 @@ const ImpactDashboardPage = () => {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200">
-                            {demographicData.occupationCategories.map((item, i) => (
+                            {demographicData.positionCategories.map((item, i) => (
                               <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="px-2 md:px-3 py-1 md:py-2">{item.category}</td>
                                 <td className="px-2 md:px-3 py-1 md:py-2 text-right">{item.count}</td>
@@ -503,7 +625,7 @@ const ImpactDashboardPage = () => {
                             ))}
                             <tr className="bg-green-50 font-medium">
                               <td className="px-2 md:px-3 py-1 md:py-2">Total</td>
-                              <td className="px-2 md:px-3 py-1 md:py-2 text-right">{demographicData.occupationCategories.reduce((sum, item) => sum + item.count, 0)}</td>
+                              <td className="px-2 md:px-3 py-1 md:py-2 text-right">{demographicData.positionCategories.reduce((sum, item) => sum + item.count, 0)}</td>
                               <td className="px-2 md:px-3 py-1 md:py-2 text-right">100%</td>
                             </tr>
                           </tbody>
@@ -515,7 +637,7 @@ const ImpactDashboardPage = () => {
                             </svg>
                             <span className="font-medium">PPZ Benefit:</span>
                           </div>
-                          <p className="mt-1 pl-5 text-gray-700">The high concentration of private sector and professional users offers PPZ an opportunity to implement workplace-based zakat collection programs, significantly increasing collection efficiency while reducing administrative costs.</p>
+                          <p className="mt-1 pl-5 text-gray-700">Clear segmentation by position allows UTM PPZ to calibrate outreach—premium education for professors and senior lecturers, while scaling simple auto-deduction journeys for support staff.</p>
                         </div>
                       </div>
                     </>
@@ -525,9 +647,9 @@ const ImpactDashboardPage = () => {
                     <>
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Zakat Knowledge & Awareness</h4>
-                        <p className="text-xs md:text-sm text-gray-700 mb-2">While 53% of users are well-informed about zakat rules, 47% have limited to moderate understanding, presenting an educational opportunity for PPZ as Malaysia's zakat authority.</p>
+                        <p className="text-xs md:text-sm text-gray-700 mb-2">While 53% of users are well-informed about zakat rules, 47% have limited to moderate understanding, presenting an educational opportunity for UTM as Malaysia's zakat authority.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can integrate authoritative educational content into ZakatUTM's platform, establishing itself as the definitive voice on zakat matters while increasing confidence in zakat calculation accuracy.</p>
                         </div>
                       </div>
@@ -572,10 +694,10 @@ const ImpactDashboardPage = () => {
                     <>
                       <div className="mb-3 md:mb-4">
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Payment Habits & Preferences</h4>
-                        <p className="text-xs md:text-sm text-gray-700 mb-2">42% of users prefer digital platforms for zakat payment, with 32% making regular monthly contributions rather than annual payments - a model that enhances collection predictability.</p>
+                        <p className="text-xs md:text-sm text-gray-700 mb-2">All tracked contributors on Zakat UTM PPZ now choose monthly auto-deductions, ensuring predictable inflows and easier compliance monitoring.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
-                          <p className="text-xs text-gray-700">PPZ can integrate with ZakatUTM's recurring payment system to capture monthly zakat payments, improving cash flow predictability and potentially increasing total collection through the "pay as you earn" model.</p>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
+                          <p className="text-xs text-gray-700">UTM PPZ can lean fully into the “pay-as-you-earn” model—reinforcing automation, offering instant confirmations, and bundling education for staff who have yet to opt in.</p>
                         </div>
                       </div>
                       <div className="overflow-x-auto text-xs">
@@ -625,7 +747,7 @@ const ImpactDashboardPage = () => {
                             </svg>
                             <span className="font-medium">PPZ Benefit:</span>
                           </div>
-                          <p className="mt-1 pl-5 text-gray-700">The significant preference for digital payments (42%) and monthly contributions (32%) presents an opportunity for PPZ to modernize collection methods while stabilizing cash flow throughout the year rather than relying on seasonal spikes.</p>
+                          <p className="mt-1 pl-5 text-gray-700">The significant preference for digital payments (42%) and monthly contributions (32%) presents an opportunity for UTM to modernize collection methods while stabilizing cash flow throughout the year rather than relying on seasonal spikes.</p>
                         </div>
                       </div>
                     </>
@@ -635,7 +757,7 @@ const ImpactDashboardPage = () => {
 
               {demographicView === 'recipients' && (
                 <div>
-                  <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">Beneficiary Insights for PPZ</h3>
+                  <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">Beneficiary Insights for UTM</h3>
                   
                   {detailView === 'category' && (
                     <>
@@ -643,7 +765,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Recipient Categories</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">Single parents (32%) and elderly individuals (24%) represent the largest groups receiving zakat assistance through our platform, highlighting targeted aid opportunities.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can develop specialized, high-impact programs through ZakatGo targeting the specific needs of single-parent households and elderly care, ensuring zakat funds address the most pressing community needs.</p>
                         </div>
                       </div>
@@ -690,7 +812,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Education Level Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">58% of zakat recipients have secondary education or lower, highlighting education as a potential pathway out of poverty and a strategic area for sustainable zakat impact.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can Partner with Zakat UTM to establish educational scholarship programs targeting recipients with lower education levels, creating a sustainable impact model that addresses the root causes of poverty.</p>
                         </div>
                       </div>
@@ -737,7 +859,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Housing Situation Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">59% of recipients are renting their homes, with only 7% owning paid-off homes, indicating housing stability as a significant concern for zakat recipients and a potential area for meaningful intervention.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can develop housing assistance programs through ZakatGo targeting rental subsidies, affordable housing initiatives, or home ownership pathways for zakat-eligible families to address housing insecurity.</p>
                         </div>
                       </div>
@@ -784,7 +906,7 @@ const ImpactDashboardPage = () => {
                         <h4 className="text-sm md:text-md font-medium text-green-700 mb-1 md:mb-2">Household Size Analysis</h4>
                         <p className="text-xs md:text-sm text-gray-700 mb-2">68% of recipient households have 3-6 family members, with 13% having 7+ members, highlighting larger families as a significant zakat recipient demographic requiring tailored support programs.</p>
                         <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6]">
-                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                          <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                           <p className="text-xs text-gray-700">PPZ can develop family-support packages through ZakatGo that scale benefits based on household size, ensuring adequate assistance for larger families while addressing their specific cost-of-living challenges.</p>
                         </div>
                       </div>
@@ -839,7 +961,7 @@ const ImpactDashboardPage = () => {
                     <p className="text-xs md:text-sm text-gray-700 mb-2">This analysis compares the profile of Muslims using digital zakat platforms like ZakatGo versus those using traditional collection channels.</p>
                     
                     <div className="bg-[#fbe9ed] p-2 md:p-3 rounded border border-[#f4ccd6] mb-3 md:mb-4">
-                      <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for PPZ</h5>
+                      <h5 className="text-xs md:text-sm font-medium text-[#6f162e] mb-1">Strategic Opportunity for UTM</h5>
                       <p className="text-xs text-gray-700">By collaborating with ZakatGo, PPZ can access a complementary demographic that may not be fully engaged through traditional channels, particularly younger, tech-savvy, higher-income Muslims - significantly expanding PPZ's overall reach.</p>
                     </div>
                     
@@ -913,12 +1035,12 @@ const ImpactDashboardPage = () => {
             </div>
           </div>
 
-          {/* Call to Action for PPZ - Made responsive */}
+          {/* Call to Action for UTM - Made responsive */}
           <div className="mt-4 md:mt-5 p-3 md:p-5 bg-green-50 rounded-lg border border-green-200">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="mb-3 md:mb-0 md:mr-6 text-center md:text-left">
                 <h3 className="text-md md:text-lg font-semibold text-green-700 mb-1 md:mb-2">Partner with Zakat UTM</h3>
-                <p className="text-xs md:text-sm text-gray-700">Our platform offers PPZ access to tech-savvy zakat payers and detailed demographic insights for targeted outreach. Together, we can modernize zakat collection while maintaining compliance and transparency.</p>
+                <p className="text-xs md:text-sm text-gray-700">Our platform offers UTM access to tech-savvy zakat payers and detailed demographic insights for targeted outreach. Together, we can modernize zakat collection while maintaining compliance and transparency.</p>
               </div>
               <button className="px-4 md:px-6 py-2 md:py-3 bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm font-medium rounded-lg transition-all duration-300 shadow hover:shadow-md flex items-center whitespace-nowrap">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -928,6 +1050,309 @@ const ImpactDashboardPage = () => {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* UTM Malaysia Zakat Breakdown Section */}
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md border border-gray-200 mt-4 md:mt-6">
+          <h2 className="text-lg md:text-xl font-semibold mb-2 text-green-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            UTM Malaysia Zakat Breakdown
+          </h2>
+          <p className="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm">
+            Detailed breakdown of zakat contributions by faculty and position type at Universiti Teknologi Malaysia (UTM).
+          </p>
+
+          {/* Time Filter Controls */}
+          <div className="flex flex-col md:flex-row gap-3 mb-4 md:mb-6">
+            <div className="flex rounded-lg overflow-hidden border border-gray-300">
+              <button 
+                onClick={() => setTimeFilter('day')} 
+                className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium ${timeFilter === 'day' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              >
+                Daily
+              </button>
+              <button 
+                onClick={() => setTimeFilter('month')} 
+                className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium ${timeFilter === 'month' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              >
+                Monthly
+              </button>
+              <button 
+                onClick={() => setTimeFilter('year')} 
+                className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium ${timeFilter === 'year' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              >
+                Yearly
+              </button>
+            </div>
+            
+            {timeFilter === 'month' && (
+              <div className="flex gap-2">
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                  className="px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg bg-white"
+                >
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                    <option key={month} value={month}>
+                      {new Date(2000, month - 1).toLocaleString('default', { month: 'long' })}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg bg-white"
+                >
+                  {Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - 1 + i).map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
+            {timeFilter === 'year' && (
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg bg-white"
+              >
+                {Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - 1 + i).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
+          {/* Calculate filtered data based on time filter */}
+          {(() => {
+            let facultyChartData = [];
+            let positionChartData = [];
+            let summaryText = '';
+
+            if (timeFilter === 'day') {
+              // Aggregate daily data by faculty
+              const facultyMap = {};
+              utmZakatData.daily.forEach((entry) => {
+                if (!facultyMap[entry.faculty]) {
+                  facultyMap[entry.faculty] = 0;
+                }
+                facultyMap[entry.faculty] += entry.amount;
+              });
+              facultyChartData = Object.entries(facultyMap).map(([faculty, amount]) => ({
+                faculty,
+                amount: Math.round(amount),
+                amountFormatted: `RM${(amount / 1000).toFixed(1)}k`
+              }));
+              summaryText = `Daily zakat contributions by faculty (Last 30 days)`;
+            } else if (timeFilter === 'month') {
+              // Get data for selected month
+              const monthData = utmZakatData.monthly.find(
+                m => m.month === selectedMonth && m.year === selectedYear
+              ) || utmZakatData.monthly[utmZakatData.monthly.length - 1];
+              
+              facultyChartData = monthData.data.map((entry) => ({
+                faculty: entry.faculty,
+                amount: entry.amount,
+                amountFormatted: `RM${(entry.amount / 1000).toFixed(1)}k`,
+                contributors: entry.contributors
+              }));
+              summaryText = `Zakat contributions by faculty for ${monthData.monthName} ${monthData.year}`;
+            } else if (timeFilter === 'year') {
+              // Aggregate all months in selected year
+              const yearData = utmZakatData.monthly.filter(m => m.year === selectedYear);
+              const facultyMap = {};
+              yearData.forEach((month) => {
+                month.data.forEach((entry) => {
+                  if (!facultyMap[entry.faculty]) {
+                    facultyMap[entry.faculty] = { amount: 0, contributors: 0 };
+                  }
+                  facultyMap[entry.faculty].amount += entry.amount;
+                  facultyMap[entry.faculty].contributors += entry.contributors;
+                });
+              });
+              facultyChartData = Object.entries(facultyMap).map(([faculty, data]) => ({
+                faculty,
+                amount: Math.round(data.amount),
+                amountFormatted: `RM${(data.amount / 1000).toFixed(1)}k`,
+                contributors: data.contributors
+              }));
+              summaryText = `Annual zakat contributions by faculty for ${selectedYear}`;
+            }
+
+            // Position data (aggregated across all time periods)
+            positionChartData = utmZakatData.position.map((entry) => ({
+              position: entry.position,
+              amount: timeFilter === 'year' ? entry.totalAmount : entry.monthlyAverage,
+              amountFormatted: timeFilter === 'year' 
+                ? `RM${(entry.totalAmount / 1000).toFixed(1)}k`
+                : `RM${(entry.monthlyAverage / 1000).toFixed(1)}k`,
+              contributors: entry.contributors
+            }));
+
+            return (
+              <div className="space-y-6">
+                {/* Summary Text */}
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                  <p className="text-sm text-gray-700">{summaryText}</p>
+                </div>
+
+                {/* Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                  {/* Faculty Breakdown Chart */}
+                  <div className="bg-gray-50 p-3 md:p-4 rounded-lg border border-gray-200">
+                    <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">
+                      Zakat by Faculty Type
+                    </h3>
+                    <div className="h-[300px] md:h-[350px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={[...facultyChartData].sort((a, b) => a.faculty.localeCompare(b.faculty))}
+                          margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis 
+                            dataKey="faculty" 
+                            tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
+                            angle={-45}
+                            textAnchor="end"
+                            height={80}
+                          />
+                          <YAxis 
+                            tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
+                            tickFormatter={(value) => `${formatRM(value / 1000)}k`}
+                          />
+                          <Tooltip 
+                            formatter={(value) => [formatRM(value), 'Amount']}
+                            labelFormatter={(label) => `Faculty: ${label}`}
+                          />
+                          <Legend />
+                          <Bar 
+                            dataKey="amount" 
+                            name="Zakat Amount (RM)" 
+                            fill="#10b981" 
+                            radius={[4, 4, 0, 0]} 
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    {/* Faculty Summary Table */}
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="min-w-full text-xs">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="px-2 py-2 text-left">Faculty</th>
+                            <th className="px-2 py-2 text-right">Amount (RM)</th>
+                            {timeFilter !== 'day' && <th className="px-2 py-2 text-right">Contributors</th>}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {facultyChartData.sort((a, b) => b.amount - a.amount).map((item, i) => (
+                            <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="px-2 py-2 font-medium">{item.faculty}</td>
+                              <td className="px-2 py-2 text-right">{formatAmount(item.amount)}</td>
+                              {timeFilter !== 'day' && <td className="px-2 py-2 text-right">{item.contributors || '—'}</td>}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Position Breakdown Chart */}
+                  <div className="bg-gray-50 p-3 md:p-4 rounded-lg border border-gray-200">
+                    <h3 className="text-md md:text-lg font-medium mb-2 md:mb-3 text-gray-800">
+                      Zakat by Position Type
+                    </h3>
+                    <div className="h-[300px] md:h-[350px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={[...positionChartData].sort((a, b) => a.position.localeCompare(b.position))}
+                          margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis 
+                            dataKey="position" 
+                            tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
+                            angle={-45}
+                            textAnchor="end"
+                            height={100}
+                          />
+                          <YAxis 
+                            tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
+                            tickFormatter={(value) => `${formatRM(value / 1000)}k`}
+                          />
+                          <Tooltip 
+                            formatter={(value) => [formatRM(value), 'Amount']}
+                            labelFormatter={(label) => `Position: ${label}`}
+                          />
+                          <Legend />
+                          <Bar 
+                            dataKey="amount" 
+                            name="Zakat Amount (RM)" 
+                            fill="#3b82f6" 
+                            radius={[4, 4, 0, 0]} 
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    {/* Position Summary Table */}
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="min-w-full text-xs">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="px-2 py-2 text-left">Position</th>
+                            <th className="px-2 py-2 text-right">Amount (RM)</th>
+                            <th className="px-2 py-2 text-right">Contributors</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {positionChartData.sort((a, b) => b.amount - a.amount).map((item, i) => (
+                            <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="px-2 py-2 font-medium">{item.position}</td>
+                              <td className="px-2 py-2 text-right">{formatAmount(item.amount)}</td>
+                              <td className="px-2 py-2 text-right">{item.contributors}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Example Highlight */}
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h4 className="text-sm md:text-md font-medium text-green-700 mb-2">Example Insight</h4>
+                  {timeFilter === 'month' && (
+                    <p className="text-xs md:text-sm text-gray-700">
+                      In {utmZakatData.monthly.find(m => m.month === selectedMonth && m.year === selectedYear)?.monthName || 'this month'}, 
+                      the <strong>Faculty of Engineering (FE)</strong> contributed the highest amount of zakat at{' '}
+                      <strong>{formatRM(facultyChartData.find(f => f.faculty === 'Faculty of Engineering (FE)')?.amount ?? 0)}</strong>, 
+                      demonstrating consistent leadership from UTM's largest faculty.
+                    </p>
+                  )}
+                  {timeFilter === 'year' && (
+                    <p className="text-xs md:text-sm text-gray-700">
+                      In {selectedYear}, the <strong>Faculty of Engineering (FE)</strong> led all faculties with total contributions of{' '}
+                      <strong>{formatRM(facultyChartData.find(f => f.faculty === 'Faculty of Engineering (FE)')?.amount ?? 0)}</strong>, 
+                      followed by the Faculty of Social Sciences & Humanities and the Faculty of Computing.
+                    </p>
+                  )}
+                  {timeFilter === 'day' && (
+                    <p className="text-xs md:text-sm text-gray-700">
+                      Over the last 30 days, zakat contributions have been consistently strong across all faculties, 
+                      with the Faculty of Engineering (FE) maintaining the highest daily average.
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

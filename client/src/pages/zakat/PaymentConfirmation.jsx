@@ -45,16 +45,51 @@ const PaymentConfirmation = ({ userData }) => {
   const zakatMonthly = Number(userData?.calculation?.zakatMonthly || (zakatAnnual / 12));
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const explorerUrl = `${origin}/zakat/explorer/${encodeURIComponent(transactionId)}`;
+  const explorerUrl = `${origin}/zakat/explorer/${encodeURIComponent(transactionId)}?status=${encodeURIComponent(status)}`;
 
   // Persist explorer data for the new page to hydrate from session
   useEffect(() => {
     try {
       const payload = {
-        transactionDetails,
-        blockchainMetadata: userData?.blockchainMetadata || {}
+        transactionDetails: { ...transactionDetails, status },
+        blockchainMetadata: { ...(userData?.blockchainMetadata || {}), status }
       };
       sessionStorage.setItem('zakatExplorerData', JSON.stringify(payload));
+
+      // Persist a standardized admin record so AdminZakatPage reflects the same data
+      const d = new Date(timestamp);
+      const dateStr = d.toISOString().slice(0, 10);
+      const refSuffix = `${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+      const referenceNo = `ZKT-${String(d.getFullYear()).slice(-2)}-${refSuffix}-U001`;
+
+      const adminRow = {
+        id: 1,
+        referenceNo,
+        contributionType: 'Monthly Zakat Deduction',
+        contributionAmount: Number(amount) || 0,
+        status: 'Sent',
+        date: dateStr,
+        transactionHash: transactionId,
+        user: {
+          name,
+          faculty: userData?.personalInfo?.faculty || userData?.documentData?.faculty || '—',
+          phone: userData?.personalInfo?.phone || '—',
+          email: userData?.personalInfo?.email || '—',
+          userId: userData?.personalInfo?.userId || userData?.documentData?.icPassport || '—',
+        },
+        details: {
+          contributionDetailsTitle: 'Zakat Contribution Details',
+          payerAcknowledgement:
+            'I acknowledge that I have assessed Zakat on income according to actual calculations and accept my obligation to fulfill Zakat on income.',
+          contributionMethod: 'Monthly Zakat Deduction',
+          contributionAmount: Number(amount) || 0,
+          monthlyContributionAmount: Number(zakatMonthly) || 0,
+          zakatAffirmation:
+            'I agree my salary will be deducted monthly to fulfill the obligatory zakat on my wealth for the next year for the sake of Allah Almighty.',
+        },
+      };
+
+      sessionStorage.setItem('adminLatestZakatRow', JSON.stringify(adminRow));
     } catch (_) {
       // no-op if storage fails
     }

@@ -39,11 +39,12 @@ const LoginPage = () => {
       setIsSubmitting(false);
       if (isAdmin) {
         localStorage.setItem('isAdminAuthed', 'true');
+        localStorage.setItem('isUserAuthed', 'true');
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect');
         navigate(redirect || '/admin/zakat');
       } else {
-        // Normal prototype login flow
+        localStorage.setItem('isUserAuthed', 'true');
         navigate('/dashboard');
       }
     }, 600);

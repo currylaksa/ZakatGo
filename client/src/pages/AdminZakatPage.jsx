@@ -26,6 +26,13 @@ const AdminZakatPage = () => {
       status: 'Completed',
       date: '2025-04-20',
       transactionHash: '0xdeadbeef00000000000000000000000000000000000000000000000000000001',
+      user: {
+        name: 'Ali Bin Abu',
+        faculty: 'Engineering',
+        phone: '012-3456789',
+        email: 'ali.abu@university.edu',
+        userId: 'U-2025-0001',
+      },
       details: {
         contributionDetailsTitle: 'Zakat Contribution Details',
         payerAcknowledgement:
@@ -42,9 +49,16 @@ const AdminZakatPage = () => {
       referenceNo: 'ZG-2025-0002',
       contributionType: 'Monthly Zakat Deduction',
       contributionAmount: 1800.0,
-      status: 'Uploaded',
+      status: 'Sent',
       date: '2025-04-21',
       transactionHash: '0xdeadbeef00000000000000000000000000000000000000000000000000000002',
+      user: {
+        name: 'Siti Binti Ahmad',
+        faculty: 'Business',
+        phone: '013-5551212',
+        email: 'siti.ahmad@university.edu',
+        userId: 'U-2025-0002',
+      },
       details: {
         contributionDetailsTitle: 'Zakat Contribution Details',
         payerAcknowledgement:
@@ -64,6 +78,13 @@ const AdminZakatPage = () => {
       status: 'Cancelled',
       date: '2025-04-22',
       transactionHash: '0xdeadbeef00000000000000000000000000000000000000000000000000000003',
+      user: {
+        name: 'Lim Wei',
+        faculty: 'Science',
+        phone: '014-7894561',
+        email: 'lim.wei@university.edu',
+        userId: 'U-2025-0003',
+      },
       details: {
         contributionDetailsTitle: 'Zakat Contribution Details',
         payerAcknowledgement:
@@ -83,6 +104,13 @@ const AdminZakatPage = () => {
       status: 'Completed',
       date: '2025-04-23',
       transactionHash: '0xdeadbeef00000000000000000000000000000000000000000000000000000004',
+      user: {
+        name: 'Rahman Bin Ali',
+        faculty: 'Medicine',
+        phone: '015-1012022',
+        email: 'rahman.ali@university.edu',
+        userId: 'U-2025-0004',
+      },
       details: {
         contributionDetailsTitle: 'Zakat Contribution Details',
         payerAcknowledgement:
@@ -99,6 +127,28 @@ const AdminZakatPage = () => {
   // Use state for list so approvals/cancellations reflect in table
   const [zakatList, setZakatList] = useState(dummyZakatList);
 
+  // Hydrate the first row with standardized data from user PaymentConfirmation (sessionStorage)
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('adminLatestZakatRow');
+      if (raw) {
+        const latest = JSON.parse(raw);
+        setZakatList((prev) => {
+          const list = [...prev];
+          const idx = list.findIndex((r) => r.id === 1);
+          if (idx >= 0) {
+            list[idx] = { ...list[idx], ...latest };
+          } else {
+            list.unshift(latest);
+          }
+          return list;
+        });
+      }
+    } catch (_) {
+      // ignore if storage fails
+    }
+  }, []);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
     if (!q) return zakatList;
@@ -109,7 +159,12 @@ const AdminZakatPage = () => {
       String(row.contributionAmount).toLowerCase().includes(q) ||
       row.status.toLowerCase().includes(q) ||
       row.date.toLowerCase().includes(q) ||
-      (row.transactionHash || '').toLowerCase().includes(q)
+      (row.transactionHash || '').toLowerCase().includes(q) ||
+      (row.user?.name || '').toLowerCase().includes(q) ||
+      (row.user?.faculty || '').toLowerCase().includes(q) ||
+      (row.user?.phone || '').toLowerCase().includes(q) ||
+      (row.user?.email || '').toLowerCase().includes(q) ||
+      (row.user?.userId || '').toLowerCase().includes(q)
     );
   }, [search, zakatList]);
 
@@ -127,12 +182,38 @@ const AdminZakatPage = () => {
     if (!selectedRow) return;
     setZakatList((prev) => prev.map((r) => r.id === selectedRow.id ? { ...r, status: 'Completed' } : r));
     setSelectedRow((prev) => prev ? { ...prev, status: 'Completed' } : prev);
+    // Persist status change if this is the standardized record
+    try {
+      const raw = sessionStorage.getItem('adminLatestZakatRow');
+      if (raw) {
+        const latest = JSON.parse(raw);
+        if (latest && latest.id === selectedRow.id) {
+          latest.status = 'Completed';
+          sessionStorage.setItem('adminLatestZakatRow', JSON.stringify(latest));
+        }
+      }
+    } catch (err) {
+      console.warn('AdminZakatPage: failed to persist status "Completed" to sessionStorage', err);
+    }
   };
 
   const onCancel = () => {
     if (!selectedRow) return;
     setZakatList((prev) => prev.map((r) => r.id === selectedRow.id ? { ...r, status: 'Cancelled' } : r));
     setSelectedRow((prev) => prev ? { ...prev, status: 'Cancelled' } : prev);
+    // Persist status change if this is the standardized record
+    try {
+      const raw = sessionStorage.getItem('adminLatestZakatRow');
+      if (raw) {
+        const latest = JSON.parse(raw);
+        if (latest && latest.id === selectedRow.id) {
+          latest.status = 'Cancelled';
+          sessionStorage.setItem('adminLatestZakatRow', JSON.stringify(latest));
+        }
+      }
+    } catch (err) {
+      console.warn('AdminZakatPage: failed to persist status "Cancelled" to sessionStorage', err);
+    }
   };
   const onPrint = () => {
     window.print();
@@ -140,7 +221,62 @@ const AdminZakatPage = () => {
 
   return (
     <HalfCircleBackground title="Admin • Zakat Management" bgClassName="bg-stone-50" titleClassName="text-xl font-bold text-black">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 pt-24 pb-8">
+        {/* Dashboard: Status Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Status chips */}
+          <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4">
+            <div className="text-sm font-semibold text-stone-900 mb-2">Status Overview</div>
+            <div className="flex items-center gap-2 text-xs">
+              {(() => {
+                const counts = zakatList.reduce((acc, r) => { acc[r.status] = (acc[r.status] || 0) + 1; return acc; }, {});
+                const uploaded = counts['Sent'] || 0;
+                const completed = counts['Completed'] || 0;
+                const cancelled = counts['Cancelled'] || 0;
+                const total = zakatList.length || 1;
+                const uPct = Math.round((uploaded / total) * 100);
+                const cPct = Math.round((completed / total) * 100);
+                const xPct = Math.round((cancelled / total) * 100);
+                return (
+                  <div className="w-full">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-amber-100 text-amber-800">Sent: {uploaded}</span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800">Completed: {completed}</span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-800">Cancelled: {cancelled}</span>
+                    </div>
+                    <div className="h-4 w-full bg-stone-200 rounded overflow-hidden flex">
+                      <div className="h-full bg-amber-400" style={{ width: `${uPct}%` }} />
+                      <div className="h-full bg-green-500" style={{ width: `${cPct}%` }} />
+                      <div className="h-full bg-red-500" style={{ width: `${xPct}%` }} />
+                    </div>
+                    <div className="mt-1 text-[10px] text-stone-600">Distribution: {uPct}% Sent • {cPct}% Completed • {xPct}% Cancelled</div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Totals */}
+          <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4">
+            <div className="text-sm font-semibold text-stone-900 mb-2">Totals</div>
+            {(() => {
+              const totalRM = zakatList.reduce((sum, r) => sum + Number(r.contributionAmount || 0), 0);
+              const completedRM = zakatList.filter((r) => r.status === 'Completed').reduce((sum, r) => sum + Number(r.contributionAmount || 0), 0);
+              return (
+                <div className="text-sm text-stone-800">
+                  <p>Total Contributions: RM {totalRM.toFixed(2)}</p>
+                  <p>Completed Contributions: RM {completedRM.toFixed(2)}</p>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Actions */}
+          <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-4">
+            <div className="text-sm font-semibold text-stone-900 mb-2">Actions</div>
+            <div className="text-xs text-stone-700">Click any row to view details and approve/cancel. Explorer link is consistent with user transaction ID.</div>
+          </div>
+        </div>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
             <Link to="/" className="hover:underline">Home</Link>
@@ -185,7 +321,7 @@ const AdminZakatPage = () => {
                     <td className="px-4 py-3">{row.contributionType}</td>
                     <td className="px-4 py-3">{row.contributionAmount.toFixed(2)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Uploaded' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}> 
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Sent' ? 'bg-amber-100 text-amber-800' : row.status === 'Approved' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}> 
                         {row.status}
                       </span>
                     </td>
@@ -194,7 +330,14 @@ const AdminZakatPage = () => {
                       {row.transactionHash ? (
                         <div className="flex items-center gap-2">
                           <span className="font-mono">{`${row.transactionHash.slice(0, 6)}...${row.transactionHash.slice(-4)}`}</span>
-                          <a href={`https://saturn-explorer.swanchain.io/tx/${row.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline text-xs">Explorer</a>
+                          <Link
+                            to={`/zakat/explorer/${encodeURIComponent(row.transactionHash)}?status=${encodeURIComponent(row.status)}&timestamp=${encodeURIComponent(new Date(row.date).toISOString())}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                          >
+                            Explorer
+                          </Link>
                         </div>
                       ) : (
                         <span className="text-stone-400">—</span>
@@ -227,6 +370,17 @@ const AdminZakatPage = () => {
                   </p>
                 </div>
 
+                <div className="bg-stone-50 rounded-lg p-3">
+                  <p className="text-xs text-stone-500">User Information</p>
+                  <div className="mt-1 text-sm text-stone-900">
+                    <p><span className="font-medium">Name:</span> {selectedRow.user?.name || '—'}</p>
+                    <p><span className="font-medium">Faculty:</span> {selectedRow.user?.faculty || '—'}</p>
+                    <p><span className="font-medium">Phone:</span> {selectedRow.user?.phone || '—'}</p>
+                    <p><span className="font-medium">Email:</span> {selectedRow.user?.email || '—'}</p>
+                    <p><span className="font-medium">User ID:</span> {selectedRow.user?.userId || '—'}</p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="bg-stone-50 rounded-lg p-3">
                     <p className="text-xs text-stone-500">Contribution Method</p>
@@ -247,9 +401,14 @@ const AdminZakatPage = () => {
                   <div className="bg-stone-50 rounded-lg p-3 sm:col-span-2">
                     <p className="text-xs text-stone-500">Transaction</p>
                     {selectedRow.transactionHash ? (
-                      <a href={`https://saturn-explorer.swanchain.io/tx/${selectedRow.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-sm font-mono text-blue-600 hover:underline">
+                      <Link
+                        to={`/zakat/explorer/${encodeURIComponent(selectedRow.transactionHash)}?status=${encodeURIComponent(selectedRow.status)}&timestamp=${encodeURIComponent(new Date(selectedRow.date).toISOString())}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-mono text-blue-600 hover:underline"
+                      >
                         {`${selectedRow.transactionHash.slice(0, 10)}...${selectedRow.transactionHash.slice(-6)}`}
-                      </a>
+                      </Link>
                     ) : (
                       <p className="text-sm text-stone-500">No transaction</p>
                     )}
@@ -258,9 +417,9 @@ const AdminZakatPage = () => {
               </div>
 
               <div className="px-5 py-4 border-t border-stone-200 flex items-center justify-between">
-                <div className="text-xs text-stone-700">Status: <span className={`font-semibold ${selectedRow.status === 'Completed' ? 'text-green-800' : selectedRow.status === 'Uploaded' ? 'text-amber-800' : 'text-red-800'}`}>{selectedRow.status}</span></div>
+                <div className="text-xs text-stone-700">Status: <span className={`font-semibold ${selectedRow.status === 'Completed' ? 'text-green-800' : selectedRow.status === 'Sent' ? 'text-amber-800' : selectedRow.status === 'Approved' ? 'text-blue-800' : 'text-red-800'}`}>{selectedRow.status}</span></div>
                 <div className="flex gap-2">
-                  {selectedRow.status === 'Uploaded' && (
+                  {selectedRow.status === 'Sent' && (
                     <>
                       <Button variant="success" size="sm" onClick={onApprove}>Approve</Button>
                       <Button variant="danger" size="sm" onClick={onCancel}>Cancel</Button>

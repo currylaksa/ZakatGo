@@ -183,7 +183,7 @@ const UploadPayslipPage = () => {
               Click to browse your files or drag and drop them here
             </p>
             <p className="text-xs text-gray-400">
-              Supported formats: PDF, JPG, PNG (Max 10MB)
+              Supported formats: JPG, JPEG, PNG, BMP, WebP, RAW (Max 10MB)
             </p>
           </div>
           
@@ -191,7 +191,7 @@ const UploadPayslipPage = () => {
             type="file" 
             ref={fileInputRef}
             onChange={handleFileChange}
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept=".jpg,.jpeg,.png,.bmp,.webp,.raw"
             multiple
             className="hidden"
           />

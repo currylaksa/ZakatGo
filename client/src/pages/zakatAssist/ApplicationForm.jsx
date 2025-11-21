@@ -95,7 +95,7 @@ const ApplicationForm = ({ onSubmit }) => {
       if (!allowedTypes.includes(file.type)) {
         setErrors(prev => ({
           ...prev,
-          document: 'Invalid file type. Please upload PDF, JPG, or PNG.'
+          document: 'Invalid file type. Please upload PDF, JPG, JPEG, PNG, BMP, WebP, RAW.'
         }));
         setDocument(null);
         setDocumentName('');
@@ -515,7 +515,7 @@ const ApplicationForm = ({ onSubmit }) => {
               type="file"
               id="document"
               ref={fileInputRef}
-              accept=".pdf,.jpg,.jpeg,.png"
+              accept=".jpg,.jpeg,.png,.bmp,.webp,.raw"
               onChange={handleFileChange}
               className="sr-only" // Hide the default input
             />
@@ -537,7 +537,7 @@ const ApplicationForm = ({ onSubmit }) => {
             </div>
           </div>
           {errors.document && <p className="mt-1 text-xs text-red-600">{errors.document}</p>}
-          <small className="mt-1 block text-xs text-gray-500">PDF, JPG, or PNG format. Max file size: 5MB.</small>
+          <small className="mt-1 block text-xs text-gray-500"> JPG, JPEG, PNG, BMP, WebP OR RAW format. Max file size: 5MB.</small>
         </div>
 
         <div className="pt-4 text-center">

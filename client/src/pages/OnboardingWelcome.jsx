@@ -1,23 +1,17 @@
+import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaGoogle, FaApple, FaFacebook } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
 
 const OnboardingWelcome = () => {
   const navigate = useNavigate();
 
-  const handleContinueWithGoogle = () => {
-    // In a real app, this would initialize Google OAuth
-    // For now, we'll simulate a successful login and navigate to the personal info page
+  // Automatically navigate to personal info page (sign up form)
+  useEffect(() => {
     navigate('/onboarding/personal-info');
-  };
-
-  const handleSignUp = () => {
-    navigate('/onboarding/personal-info');
-  };
+  }, [navigate]);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <div className="flex-1 flex flex-col items-center px-6 pt-10 pb-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-10 pb-8">
         {/* Logo */}
         <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mb-6">
           <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -25,54 +19,8 @@ const OnboardingWelcome = () => {
           </svg>
         </div>
 
-        {/* Title */}
-        <h1 className="text-2xl font-bold mb-2">Let's Get Started!</h1>
-        <p className="text-gray-600 text-center mb-10">Let's dive in into your account</p>
-
-        {/* Social login buttons */}
-        <div className="w-full space-y-3 mb-6">
-          <button 
-            onClick={handleContinueWithGoogle}
-            className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium"
-          >
-            <FaGoogle className="text-red-500 mr-3" />
-            Continue with Google
-          </button>
-
-          <button className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium">
-            <FaApple className="text-black mr-3" />
-            Continue with Apple
-          </button>
-
-          <button className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium">
-            <FaFacebook className="text-[#871f39] mr-3" />
-            Continue with Facebook
-          </button>
-
-          <button className="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium">
-            <FaXTwitter className="text-black mr-3" />
-            Continue with X
-          </button>
-        </div>
-
-        {/* Sign up button */}
-        <button 
-          onClick={handleSignUp}
-          className="w-full bg-secondary text-white font-semibold py-4 rounded-lg mb-4 hover:bg-secondaryLight transition duration-200"
-        >
-          Sign up
-        </button>
-
-        {/* Sign in link */}
-        <p className="text-gray-600">
-          Already have an account? <Link to="/login" className="text-gray-800 font-medium">Sign in</Link>
-        </p>
-      </div>
-
-      {/* Footer */}
-      <div className="flex justify-center space-x-4 text-xs text-gray-500 pb-4">
-        <Link to="/privacy-policy">Privacy Policy</Link>
-        <Link to="/terms-of-service">Terms of Service</Link>
+        {/* Loading/Redirecting message */}
+        <p className="text-gray-600 text-center">Redirecting to sign up form...</p>
       </div>
     </div>
   );

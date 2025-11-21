@@ -13,7 +13,7 @@ const HalfCircleBackground = ({ children, title, bgClassName = 'bg-neutral', hea
       
       {/* Page title */}
       {title && (
-        <div className="relative z-10 px-4 pt-3 pb-4">
+        <div className="relative z-10 px-4 pt-20 md:pt-24 pb-4">
           <h1 className={titleClassName}>{title}</h1>
         </div>
       )}

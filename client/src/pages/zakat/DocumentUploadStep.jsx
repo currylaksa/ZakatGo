@@ -12,7 +12,11 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
   const acceptedFileTypes = {
     'application/pdf': ['.pdf'],
     'image/jpeg': ['.jpg', '.jpeg'],
-    'image/png': ['.png']
+    'image/png': ['.png'],
+    'image/jpg': ['.jpg'],
+    'image/bmp': ['.bmp'],
+    'image/webp': ['.webp'],
+    'image/raw': ['.raw'],
   };
 
   const onDrop = useCallback(acceptedFiles => {
@@ -113,10 +117,10 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
           <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
-          Upload Income Tax Document
+          Upload Document
         </h3>
         <p className="text-green-700 text-sm mt-1">
-          Upload your income tax document to automatically extract: Basic Salary (must), Allowance (optional), Bonus (optional).
+          Upload your payslip or cukai pendapatan annual (annual income tax) document to automatically extract: Basic Salary (must), Allowance (optional), Bonus (optional).
         </p>
       </div>
 
@@ -149,6 +153,10 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
               <div className="flex flex-wrap justify-center gap-2 pt-2">
                 <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">JPG</span>
                 <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">PNG</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">JPEG</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">BMP</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">WebP</span>
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">RAW</span>
               </div>
               
               <p className="text-xs text-gray-400">Maximum file size: 5MB</p>
@@ -255,10 +263,8 @@ const DocumentUploadStep = ({ nextStep, updateUserData, userData, isLoading, set
       <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
         <h4 className="font-medium text-gray-700 mb-2">Accepted Documents</h4>
         <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
-          <li>Monthly payslip</li>
-          <li>Annual income statement</li>
-          <li>Bank statements showing assets</li>
-          <li>Investment account statements</li>
+          <li>Payslip</li>
+          <li>Cukai Pendapatan Annual (Annual Income Tax)</li>
         </ul>
       </div>
     </div>

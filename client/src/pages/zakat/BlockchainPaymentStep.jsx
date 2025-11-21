@@ -23,6 +23,9 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
   // Helper to hex encode ArrayBuffer
   const toHex = (buffer) => '0x' + Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 
+  // Helper to generate a dummy 64-char hex string
+  const randomHex64 = () => '0x' + [...Array(64)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
   useEffect(() => {
      const amount = 0;
      setError('');
@@ -38,6 +41,22 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
     handleChange({ target: { value: '0' }}, 'amount');
     handleChange({ target: { value: 'ZAKAT_METADATA' }}, 'keyword');
     handleChange({ target: { value: `Store Zakat metadata for categories: ${userData.selectedCategories.map(c => c.name).join(', ')}` }}, 'message');
+  }, []);
+
+  // Seed dummy hashes for display if not present yet
+  useEffect(() => {
+    try {
+      if (!userData?.userIDHash || !userData?.taxDataHash) {
+        const dummyUserIDHash = randomHex64();
+        const dummyTaxDataHash = randomHex64();
+        updateUserData({
+          userIDHash: userData?.userIDHash || dummyUserIDHash,
+          taxDataHash: userData?.taxDataHash || dummyTaxDataHash,
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to seed dummy hashes for Store Details page', e);
+    }
   }, []);
 
   const processPayment = async () => {
@@ -85,7 +104,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         zakatAnnual,
         zakatMonthly,
         zakatCategory,
-        status: 'Uploaded',
+        status: 'Sent',
         name: displayName,
         faculty,
       };
@@ -107,12 +126,58 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         ethAmount: '0',
         rmToEthRate: 0,
         timestamp,
-        status: 'Uploaded',
+        status: 'Sent',
         categories: userData.selectedCategories.map(c => c.name).join(', '),
         walletAddress: currentAccount || null,
+        zakatAnnual: zakatAnnual,
       };
 
       updateUserData({ transactionDetails, blockchainMetadata: metadata });
+
+      // Persist explorer payload and a standardized admin record immediately upon store
+      try {
+        const payload = {
+          transactionDetails: { ...transactionDetails },
+          blockchainMetadata: { ...metadata }
+        };
+        sessionStorage.setItem('zakatExplorerData', JSON.stringify(payload));
+
+        const d = new Date(timestamp);
+        const dateStr = d.toISOString().slice(0, 10);
+        const refSuffix = `${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+        const referenceNo = `ZKT-${String(d.getFullYear()).slice(-2)}-${refSuffix}-U001`;
+
+        const adminRow = {
+          id: 1,
+          referenceNo,
+          contributionType: 'Monthly Zakat Deduction',
+          contributionAmount: Number(transactionDetails.amount) || 0,
+          status: 'Sent',
+          date: dateStr,
+          transactionHash: transactionDetails.transactionId,
+          user: {
+            name: (userData?.personalInfo?.name || userData?.documentData?.name || 'N/A'),
+            faculty: (userData?.personalInfo?.faculty || userData?.documentData?.faculty || '—'),
+            phone: (userData?.personalInfo?.phone || '—'),
+            email: (userData?.personalInfo?.email || '—'),
+            userId: (userData?.personalInfo?.userId || userData?.documentData?.icPassport || '—'),
+          },
+          details: {
+            contributionDetailsTitle: 'Zakat Contribution Details',
+            payerAcknowledgement:
+              'I acknowledge that I have assessed Zakat on income according to actual calculations and accept my obligation to fulfill Zakat on income.',
+            contributionMethod: 'Monthly Zakat Deduction',
+            contributionAmount: Number(transactionDetails.amount) || 0,
+            monthlyContributionAmount: Number(userData?.calculation?.zakatMonthly || 0) || 0,
+            zakatAffirmation:
+              'I agree my salary will be deducted monthly to fulfill the obligatory zakat on my wealth for the next year for the sake of Allah Almighty.',
+          },
+        };
+
+        sessionStorage.setItem('adminLatestZakatRow', JSON.stringify(adminRow));
+      } catch (e) {
+        console.warn('BlockchainPaymentStep: failed to persist explorer/admin row to sessionStorage', e);
+      }
 
       // Refresh any on-chain views (optional; no ETH sent)
       try { await getZakatTransactions(); } catch (e) { /* no-op in store-only mode */ }
@@ -148,19 +213,13 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
             <p><span className="text-gray-600">zakatAnnual:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatAnnual || 0).toFixed(2)}</span></p>
             <p><span className="text-gray-600">zakatMonthly:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatMonthly || 0).toFixed(2)}</span></p>
             <p><span className="text-gray-600">zakatCategory:</span> <span className="text-gray-800">Income Zakat</span></p>
-            <p><span className="text-gray-600">status:</span> <span className="text-gray-800">Uploaded</span></p>
+            <p><span className="text-gray-600">status:</span> <span className="text-gray-800">Sent</span></p>
           </div>
-        </div>
-
-        <div className="p-3 bg-gray-50 rounded border border-gray-100">
-          <p className="text-sm text-gray-600">Ethereum (ETH) to send:</p>
-          <p className="text-lg font-semibold text-indigo-700">0.00000000 ETH</p>
-          <p className="text-xs text-gray-500">No Ethereum will be sent. Data will be stored in a private network.</p>
         </div>
 
         <div className="p-4 bg-green-50 rounded border border-green-200">
           <p className="text-sm text-gray-800">
-            I agree for my salary to be deducted starting from November by RM50.00 per month to fulfill my obligatory zakat payment for the upcoming year, sincerely for the sake of Allah Ta’ala.
+            I agree for my salary to be deducted starting from November by RM{Number(userData?.calculation?.zakatMonthly || 0).toFixed(2)} per month to fulfill my obligatory zakat payment for the upcoming year, sincerely for the sake of Allah Ta’ala.
           </p>
         </div>
       </div>

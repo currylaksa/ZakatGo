@@ -60,6 +60,7 @@ const NavbarItem = ({ title, classProps, to, onClick, hasSubmenu = false, childr
   );
 };
 
+
 // --- Submenu Item Component ---
 const SubmenuItem = ({ title, to, onClick }) => {
   const navigate = useNavigate();
@@ -146,13 +147,21 @@ const zakatGoNavItems = [
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const navigate = useNavigate();
-  // Placeholder for login status - replace with context or state management
-  const isLoggedIn = false;
+  // Read login status from localStorage
+  const isLoggedIn = localStorage.getItem('isUserAuthed') === 'true';
 
   const handleCloseMenu = () => {
     setToggleMenu(false);
   };
-
+  const handleLogout = () => {
+    
+    try {
+      localStorage.removeItem('isUserAuthed');
+      localStorage.removeItem('isAdminAuthed');
+      localStorage.removeItem('userWalletAddress');
+    } catch (_) { /* empty */ }
+    navigate('/login');
+  };
   return (
     // --- Main Navigation Bar ---
     <nav className="w-full flex md:justify-center justify-between items-center p-4 fixed top-0 left-0 z-50 bg-[#5f0220] shadow-md">
@@ -190,10 +199,10 @@ const Navbar = () => {
             />
           )
         ))}
-
+    
         {/* --- Login/Signup Button --- */}
         {isLoggedIn ? (
-           <NavbarItem title="My Account" to="/profile" classProps="ml-5" />
+           <NavbarItem title="Logout" onClick={handleLogout} classProps="ml-5" />
         ) : (
           <NavbarItem
             title="Login / Sign Up"
@@ -253,11 +262,11 @@ const Navbar = () => {
             <button
               onClick={() => {
                 handleCloseMenu();
-                navigate(isLoggedIn ? "/profile" : "/login");
+                navigate(isLoggedIn ? "" : "/login");
               }}
               className="w-full bg-green-600 text-white py-3 rounded-lg font-medium text-center hover:bg-green-700 transition duration-200 shadow-md"
             >
-              {isLoggedIn ? "My Account" : "Login / Sign Up"}
+              {isLoggedIn ? "" : "Login / Sign Up"}
             </button>
           </div>
         </div>
