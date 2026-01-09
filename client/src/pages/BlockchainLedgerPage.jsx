@@ -1,343 +1,207 @@
-// src/components/BlockchainLedgerPage.jsx
 import { useState } from 'react';
 
-// --- Mock Transaction Data ---
-// In a real blockchain app, this data would be fetched from the blockchain.
-// For the prototype, we use static fake data.
-const mockTransactions = [
-  { id: '0xabc123def456', timestamp: '2025-04-09 18:35:10', from: 'Donor Wallet A', to: 'Flood Relief Campaign', amount: 50.00, status: 'Confirmed', type: 'Donation' },
-  { id: '0xdef456ghi789', timestamp: '2025-04-09 15:22:05', from: 'Donor Wallet B', to: 'Zakat Payment (General)', amount: 120.50, status: 'Confirmed', type: 'Zakat' },
-  { id: '0xghi789jkl012', timestamp: '2025-04-08 21:05:45', from: 'Donor Wallet C', to: 'Education Fund', amount: 75.00, status: 'Confirmed', type: 'Donation' },
-  { id: '0xjkl012mno345', timestamp: '2025-04-08 11:15:30', from: 'Donor Wallet D', to: 'Masjid Renovation', amount: 200.00, status: 'Confirmed', type: 'Donation' },
-  { id: '0xmno345pqr678', timestamp: '2025-04-07 09:01:15', from: 'Donor Wallet E', to: 'Food Bank Sadaqah', amount: 30.00, status: 'Confirmed', type: 'Sadaqah' },
-  { id: '0xpqr678stu901', timestamp: '2025-04-06 16:45:00', from: 'Donor Wallet F', to: 'Zakat Payment (General)', amount: 85.75, status: 'Confirmed', type: 'Zakat' },
-  { id: '0xstu901vwx234', timestamp: '2025-04-05 12:30:20', from: 'Donor Wallet G', to: 'Emergency Medical Aid', amount: 150.00, status: 'Confirmed', type: 'Donation' },
-  { id: '0xvwx234yza567', timestamp: '2025-04-04 10:15:45', from: 'Donor Wallet H', to: 'Orphan Sponsorship', amount: 100.00, status: 'Confirmed', type: 'Donation' },
-];
+// --- Mock Block Data ---
+const mockBlocks = Array.from({ length: 20 }, (_, i) => ({
+  number: 8529190 - i,
+  hash: `0x${Math.random().toString(16).substring(2, 18)}...`,
+  time: new Date(Date.now() - i * 5000).toISOString(),
+  txs: 0,
+  transfers: 0,
+  appCalls: 0,
+  assetConfig: 0,
+}));
 
-// Helper function to truncate addresses/IDs for display
-const truncateId = (id) => {
-  if (!id) return '';
-  return `${id.substring(0, 6)}...${id.substring(id.length - 4)}`;
+// Helper to calculate time ago
+const timeAgo = (timestamp) => {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const seconds = Math.floor((now - past) / 1000);
+  
+  if (seconds < 60) return `${seconds} secs ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} mins ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hours ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} days ago`;
 };
 
 const BlockchainLedgerPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterType, setFilterType] = useState('All');
-  const [sortConfig, setSortConfig] = useState({ key: 'timestamp', direction: 'desc' });
+  const [blockStartIndex, setBlockStartIndex] = useState(0);
   
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
+  const blocksPerView = 9;
   
-  // Filter transactions based on search term and type filter
-  const filteredTransactions = mockTransactions.filter(tx => {
-    const matchesSearch = 
-      tx.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tx.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tx.to.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesType = filterType === 'All' || tx.type === filterType;
-    
-    return matchesSearch && matchesType;
-  });
+  // Get visible blocks for carousel
+  const visibleBlocks = mockBlocks.slice(blockStartIndex, blockStartIndex + blocksPerView);
   
-  // Sort transactions
-  const sortedTransactions = [...filteredTransactions].sort((a, b) => {
-    if (sortConfig.key === 'amount') {
-      return sortConfig.direction === 'asc' ? a.amount - b.amount : b.amount - a.amount;
-    }
-    
-    if (sortConfig.key === 'timestamp') {
-      return sortConfig.direction === 'asc' 
-        ? new Date(a.timestamp) - new Date(b.timestamp) 
-        : new Date(b.timestamp) - new Date(a.timestamp);
-    }
-    
-    // Default text comparison for other fields
-    return sortConfig.direction === 'asc'
-      ? a[sortConfig.key].localeCompare(b[sortConfig.key])
-      : b[sortConfig.key].localeCompare(a[sortConfig.key]);
-  });
-  
-  // Pagination
+  // Pagination for blocks table
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTransactions = sortedTransactions.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
+  const currentBlocks = mockBlocks.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(mockBlocks.length / itemsPerPage);
   
-  // Handle sort click
-  const handleSort = (key) => {
-    const direction = sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc';
-    setSortConfig({ key, direction });
+  // Navigation handlers
+  const handleBlockPrev = () => {
+    setBlockStartIndex(prev => Math.max(0, prev - 1));
   };
   
-  // Generate pagination numbers
-  const paginationNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    paginationNumbers.push(i);
-  }
+  const handleBlockNext = () => {
+    setBlockStartIndex(prev => Math.min(mockBlocks.length - blocksPerView, prev + 1));
+  };
   
-  // Format date for better readability
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
   
   return (
-    // Main container with navy background gradient
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-[#400017] text-white p-4 md:p-8">
-      {/* Assume Navbar is rendered globally in App.js */}
-      <div className="max-w-7xl mx-auto">
-        
-        <div className="bg-gradient-to-r from-[#5f0220] to-[#6f162e] p-8 rounded-t-lg shadow-lg border-b border-teal-400">
-          <h1 className="text-4xl font-bold mb-3 text-center text-white">Public Donation Ledger</h1>
-          <p className="text-center text-[#fbe9ed] mb-6 max-w-3xl mx-auto">
-            Explore the transparent record of all donations on the ZakatGo platform. Every transaction is publicly verifiable while maintaining donor privacy.
-          </p>
-          
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Total Transactions</h3>
-              <p className="text-2xl font-bold text-white">{mockTransactions.length}</p>
-            </div>
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Total Amount</h3>
-              <p className="text-2xl font-bold text-white">
-                MYR {mockTransactions.reduce((sum, tx) => sum + tx.amount, 0).toFixed(2)}
-              </p>
-            </div>
-            <div className="bg-[#73234B] bg-opacity-50 p-4 rounded-lg shadow border border-[#6f162e]">
-              <h3 className="text-sm uppercase text-[#dc6e85] mb-1">Latest Transaction</h3>
-              <p className="text-2xl font-bold text-white">{formatDate(mockTransactions[0].timestamp)}</p>
-            </div>
+    <div className="min-h-screen bg-gray-900 text-white mt-20">
+      {/* Block Overview Section */}
+      <div className="bg-black border-b border-gray-800 py-8 mt-20">
+        <div className="max-w-7xl mx-auto px-4 mt-10">
+          <div className="flex items-center gap-3 mb-8">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <polygon points="10,0 0,5 0,15 10,20 20,15 20,5" />
+            </svg>
+            <h1 className="text-2xl font-bold">Block Overview</h1>
           </div>
           
-          {/* Search and Filter Controls */}
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="relative flex-grow">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="w-4 h-4 text-[#dc6e85]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </div>
-              <input
-                type="text"
-                className="bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-teal-500 focus:border-teal-500"
-                placeholder="Search by ID, sender, or recipient..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          {/* Block Carousel */}
+          <div className="flex items-center gap-6">
+            <button
+              onClick={handleBlockPrev}
+              disabled={blockStartIndex === 0}
+              className="p-2 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed transition flex-shrink-0"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div className="flex-1 flex gap-3 overflow-hidden">
+              {visibleBlocks.map((block, index) => (
+                <div key={block.number} className="flex-1 min-w-0 relative">
+                  <div className="relative">
+                    <div className="bg-gray-300 rounded-3xl aspect-square flex items-center justify-center shadow-lg">
+                      {/* Block placeholder */}
+                    </div>
+                    {index < visibleBlocks.length - 1 && (
+                      <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 z-10">
+                        <div className="bg-black rounded-full p-1">
+                          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-center mt-3 text-sm font-medium">#{block.number}</div>
+                </div>
+              ))}
             </div>
             
-            <div className="flex gap-2">
-              <select
-                className="bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg p-2.5 focus:ring-teal-500 focus:border-teal-500"
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-              >
-                <option value="All">All Types</option>
-                <option value="Donation">Donations</option>
-                <option value="Zakat">Zakat</option>
-                <option value="Sadaqah">Sadaqah</option>
-              </select>
-              
-              <button className="flex items-center gap-1 bg-blue-950 border border-[#6f162e] text-[#fbe9ed] text-sm rounded-lg p-2.5 hover:bg-[#5f0220] transition">
-                <svg className="w-4 h-4 text-[#dc6e85]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                <span className="hidden md:inline">Date Range</span>
-              </button>
-            </div>
+            <button
+              onClick={handleBlockNext}
+              disabled={blockStartIndex >= mockBlocks.length - blocksPerView}
+              className="p-2 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed transition flex-shrink-0"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Transaction Table */}
-        <div className="bg-gray-900 p-6 rounded-b-lg shadow-xl">
-          <div className="overflow-x-auto relative shadow-md rounded-lg mb-6">
-            <table className="w-full text-sm text-left text-gray-300">
-              <thead className="text-xs uppercase bg-[#5f0220] text-[#fbe9ed]">
-                <tr>
-                  <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('id')}>
-                    <div className="flex items-center">
-                      Transaction ID
-                      {sortConfig.key === 'id' && (
-                        <svg className="w-4 h-4 ml-1 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('timestamp')}>
-                    <div className="flex items-center">
-                      Date & Time
-                      {sortConfig.key === 'timestamp' && (
-                        <svg className="w-4 h-4 ml-1 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('from')}>
-                    <div className="flex items-center">
-                      From
-                      {sortConfig.key === 'from' && (
-                        <svg className="w-4 h-4 ml-1 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('to')}>
-                    <div className="flex items-center">
-                      To
-                      {sortConfig.key === 'to' && (
-                        <svg className="w-4 h-4 ml-1 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th scope="col" className="py-3 px-2 md:px-6 cursor-pointer" onClick={() => handleSort('amount')}>
-                    <div className="flex items-center">
-                      Amount (MYR)
-                      {sortConfig.key === 'amount' && (
-                        <svg className="w-4 h-4 ml-1 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
-                  </th>
-                  <th scope="col" className="py-3 px-2 md:px-6">Type</th>
-                  <th scope="col" className="py-3 px-2 md:px-6">Status</th>
+      {/* Block Table Section */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-300 text-black text-sm">
+                <th className="px-6 py-4 text-left font-bold">Block</th>
+                <th className="px-6 py-4 text-left font-bold">Hash</th>
+                <th className="px-6 py-4 text-left font-bold">Time</th>
+                <th className="px-6 py-4 text-left font-bold">Txs</th>
+                <th className="px-6 py-4 text-left font-bold">Txs Summary</th>
+                <th className="px-6 py-4 text-left font-bold">Age</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentBlocks.map((block, index) => (
+                <tr 
+                  key={block.number} 
+                  className="border-b border-gray-700 hover:bg-gray-750 transition-colors"
+                  style={{ backgroundColor: index % 2 === 0 ? '#1f2937' : '#374151' }}
+                >
+                  <td className="px-6 py-4 text-white font-medium">{block.number}</td>
+                  <td className="px-6 py-4">
+                    <a href="#" className="text-[#8B2845] hover:text-[#a62b45] transition-colors">
+                      {block.hash}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4 text-gray-300 text-sm">
+                    {new Date(block.time).toLocaleString('en-GB', { 
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: false
+                    }).replace(/\//g, '-')}
+                  </td>
+                  <td className="px-6 py-4 text-gray-300">{block.txs}</td>
+                  <td className="px-6 py-4 text-gray-300 text-sm">
+                    <span>Transfer {block.transfers}</span>
+                    <span className="mx-3">App calls {block.appCalls}</span>
+                    <span>Asset config {block.assetConfig}</span>
+                  </td>
+                  <td className="px-6 py-4 text-gray-300">{timeAgo(block.time)}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {currentTransactions.length > 0 ? (
-                  currentTransactions.map((tx, index) => (
-                    <tr key={index} className="border-b border-gray-800 hover:bg-[#73234B] bg-gray-800 transition duration-150 ease-in-out">
-                      <td className="py-4 px-2 md:px-6 font-mono text-xs">
-                        <div className="flex items-center">
-                          {truncateId(tx.id)}
-                          <a 
-                            href="#" 
-                            className="text-teal-400 hover:text-teal-300 ml-2"
-                            title="View on blockchain explorer"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                          </a>
-                        </div>
-                      </td>
-                      <td className="py-4 px-2 md:px-6">{formatDate(tx.timestamp)}</td>
-                      <td className="py-4 px-2 md:px-6">
-                        <span className="inline-flex items-center">
-                          <span className="w-2 h-2 mr-2 rounded-full bg-[#a62b45]"></span>
-                          {tx.from}
-                        </span>
-                      </td>
-                      <td className="py-4 px-2 md:px-6">
-                        <span className="inline-flex items-center">
-                          <span className="w-2 h-2 mr-2 rounded-full bg-teal-500"></span>
-                          {tx.to}
-                        </span>
-                      </td>
-                      <td className="py-4 px-2 md:px-6 font-medium">{tx.amount.toFixed(2)}</td>
-                      <td className="py-4 px-2 md:px-6">
-                        <span className={`text-xs font-medium px-2.5 py-1 rounded ${
-                          tx.type === 'Zakat' 
-                            ? 'bg-purple-900 text-purple-200' 
-                            : tx.type === 'Sadaqah'
-                              ? 'bg-[#73234B] text-[#f4ccd6]'
-                              : 'bg-teal-900 text-teal-200'
-                        }`}>
-                          {tx.type}
-                        </span>
-                      </td>
-                      <td className="py-4 px-2 md:px-6">
-                        <span className="bg-green-800 text-green-100 text-xs font-medium px-2.5 py-1 rounded">
-                          {tx.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7" className="py-12 text-center text-gray-400 bg-gray-800">
-                      No transactions found matching your search criteria.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* Pagination */}
+        <div className="flex items-center justify-end gap-2 mt-6">
+          <button
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+            className="px-5 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+          >
+            First Page
+          </button>
+          
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition text-xl"
+          >
+            &lt;
+          </button>
+          
+          <div className="px-6 py-2 bg-gray-700 text-white rounded-lg font-medium min-w-[60px] text-center">
+            {currentPage}
           </div>
           
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="text-sm text-gray-400">
-                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, sortedTransactions.length)} of {sortedTransactions.length} entries
-              </div>
-              
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
-                  }`}
-                >
-                  Previous
-                </button>
-                
-                {paginationNumbers.map(number => (
-                  <button
-                    key={number}
-                    onClick={() => setCurrentPage(number)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === number
-                        ? 'bg-teal-600 text-white'
-                        : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
-                    }`}
-                  >
-                    {number}
-                  </button>
-                ))}
-                
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#5f0220] text-[#fbe9ed] hover:bg-[#6f162e]'
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition text-xl"
+          >
+            &gt;
+          </button>
           
-          {/* Info Footer */}
-          <div className="mt-8 p-4 bg-blue-950 rounded-lg border border-[#5f0220]">
-            <h3 className="text-sm font-medium text-teal-300 mb-2">About the ZakatGo Blockchain Ledger</h3>
-            <p className="text-xs text-[#dc6e85] mb-2">
-              This ledger uses simulated data to demonstrate the concept of blockchain transparency. In a real system, this would display actual, verified transactions from a blockchain network. Donor identities are anonymized using wallet addresses.
-            </p>
-            <p className="text-xs text-[#dc6e85]">
-              Our blockchain technology ensures that every donation is traceable, immutable, and transparent while protecting donor privacy. This allows you to verify that funds reach their intended destinations without compromising personal information.
-            </p>
-          </div>
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+            className="px-5 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+          >
+            Last Page
+          </button>
         </div>
       </div>
     </div>

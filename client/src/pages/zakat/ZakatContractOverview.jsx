@@ -40,6 +40,45 @@ const ZakatContractOverview = () => {
     // Build rows from session storage standardized admin record, optionally add a 'Completed' mirror if status updated by admin
     let uploadedSource = [];
     try {
+      //if 0x460D9C8bD8c8A94c624E3e1Ff36D7e67DF4Ba589 then there will be a transaction with status sent
+      if (address === '0x9f3a1b8c7e54df102ab4e18c44c1b92f3c5d7e19f8c' || address === '0x47c2f8bb91d0a6f2443bde0e5c1e79aa64f923118de') {
+        switch (address) {
+          case '0x9f3a1b8c7e54df102ab4e18c44c1b92f3c5d7e19f8c':
+            uploadedSource.push({
+              addressFrom: '0x130D8C8AD9DZ194c624E3e1Ff36D7e6224U50PY9',
+              addressTo: address,
+              amount: 6.75,
+              timestamp: new Date().toISOString(),
+              keyword: 'zakat',
+              transactionHash: '0x460D9C8bD8c8A94c624E3e1Ff36D7e67DF4Ba589',
+              status: 'Sent',
+            });
+            break;
+          case '0x47c2f8bb91d0a6f2443bde0e5c1e79aa64f923118de':
+            uploadedSource.push(
+              {
+              addressFrom: '0x130D8C8AD9DZ194c624E3e1Ff36D7e6224U50PY9',
+              addressTo: address,
+              amount: 18.90,
+              timestamp: '2023-08-10T12:00:00Z',
+              keyword: 'zakat',
+              transactionHash: '0xdeadbeef00000000000000000000000000000002',
+              status: 'Approved',
+            },
+            {
+              addressFrom: '0x130D8C8AD9DZ194c624E3e1Ff36D7e6224U50PY9',
+              addressTo: address,
+              amount: 18.90,
+              timestamp: '2023-08-10T12:00:00Z',
+              keyword: 'zakat',
+              transactionHash: '0x460D9C8bD8c8A94c624E3e1Ff36D7e67DF4Ba589',
+              status: 'Sent',
+            },
+          );
+            break;
+        }
+      }else{
+
       const raw = sessionStorage.getItem('adminLatestZakatRow');
       if (raw) {
         const latest = JSON.parse(raw);
@@ -65,7 +104,7 @@ const ZakatContractOverview = () => {
             });
           }
         }
-      }
+      }}
     } catch (err) {
       console.warn('ZakatContractOverview: failed to read adminLatestZakatRow from sessionStorage', err);
     }
@@ -111,7 +150,7 @@ const ZakatContractOverview = () => {
 
   return (
     <HalfCircleBackground title="Contract Overview" bgClassName="bg-stone-50" titleClassName="text-xl font-bold text-black">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-lg border border-stone-200 p-4">
             <div className="text-xs text-stone-500">ADDRESS</div>
@@ -127,16 +166,16 @@ const ZakatContractOverview = () => {
               </button>
             </div>
           </div>
-          <div className="bg-white rounded-lg border border-stone-200 p-4">
-            <div className="text-xs text-stone-500">ETH BALANCE</div>
+          {/* <div className="bg-white rounded-lg border border-stone-200 p-4">
+            <div className="text-xs text-stone-500"> BALANCE</div>
             <div className="mt-2 flex items-center gap-2 text-stone-900"><span>♦</span><span>0</span></div>
-          </div>
-          <div className="bg-white rounded-lg border border-stone-200 p-4">
+          </div> */}
+          {/* <div className="bg-white rounded-lg border border-stone-200 p-4">
             <div className="text-xs text-stone-500">ACTIONS</div>
             <div className="mt-2 flex items-center gap-2">
-              <Link to="/profile" className="text-blue-600 hover:underline text-xs">View My Transactions</Link>
+              <Link to="/profile" className="text-blue-600 hover:underline text-xs">View My Transaction</Link>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="bg-white rounded-lg border border-stone-200">
@@ -162,34 +201,27 @@ const ZakatContractOverview = () => {
                   <th className="px-4 py-3 text-left font-semibold">Amount</th>
                   <th className="px-4 py-3 text-left font-semibold">Status</th>
                   <th className="px-4 py-3 text-left font-semibold">Age</th>
-                  <th className="px-4 py-3 text-left font-semibold">Actions</th>
+                  {/* <th className="px-4 py-3 text-left font-semibold">Actions</th> */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-200">
                 {filtered.map((row) => (
                   <tr key={row.id} className="hover:bg-stone-50">
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Link
-                          to={`/zakat/explorer/${encodeURIComponent(row.id)}?status=${encodeURIComponent(row.status)}&timestamp=${encodeURIComponent(new Date(row.timestamp).toISOString())}`}
-                          className="text-blue-600 font-mono hover:underline"
-                        >
-                          {`${row.id.slice(0, 10)}...${row.id.slice(-6)}`}
-                        </Link>
-                      </div>
+                      {row.id}
                     </td>
                     <td className="px-4 py-3 font-mono">{row.block}</td>
                     <td className="px-4 py-3">{row.time}</td>
                     <td className="px-4 py-3 font-mono">{row.from}</td>
                     <td className="px-4 py-3 font-mono">{row.to}</td>
-                    <td className="px-4 py-3">{row.amountEth} ETH</td>
+                    <td className="px-4 py-3">{row.amountEth} MYR</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Sent' ? 'bg-amber-100 text-amber-800' : row.status === 'Approved' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}>
                         {row.status}
                       </span>
                     </td>
                     <td className="px-4 py-3">{row.age}</td>
-                    <td className="px-4 py-3">
+                    {/* <td className="px-4 py-3">
                       <select
                         value={row.status}
                         onChange={(e) => onChangeStatus(row.id, e.target.value)}
@@ -200,7 +232,7 @@ const ZakatContractOverview = () => {
                         <option value="Approved">Approved</option>
                         <option value="Cancelled">Cancelled</option>
                       </select>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

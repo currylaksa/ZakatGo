@@ -23,7 +23,7 @@ const PersonalInfoPage = () => {
   };
 
   const handleContinue = () => {
-    try { localStorage.setItem('signupPersonalInfo', JSON.stringify(formData)); } catch (_) { /* empty */ }
+    // In a real app, you would validate the form data here
     navigate('/onboarding/job-info');
   };
 
@@ -206,4 +206,4 @@ const PersonalInfoPage = () => {
   );
 };
 
-export default PersonalInfoPage;
+export default PersonalInfoPage; 

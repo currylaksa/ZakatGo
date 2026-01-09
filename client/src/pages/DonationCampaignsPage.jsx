@@ -264,7 +264,7 @@ const DonationCampaignsPage = () => {
   const mapCenter = userLocation ? [userLocation.lat, userLocation.lng] : [1.4927, 103.7414];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-green-600 mb-2">Donation Campaigns</h1>
@@ -272,24 +272,37 @@ const DonationCampaignsPage = () => {
         </div>
 
         {/* Connect Wallet Prompt */}
-        {!currentAccount && (
+        {/* {!currentAccount && (
           <div className="bg-white rounded-xl shadow-md p-6 mb-6 text-center">
             <p className="mb-4">Connect your wallet to create campaigns or donate.</p>
             <button onClick={() => setModalContent({ type: 'connectWallet', cause: null })} className="bg-secondary hover:bg-secondaryLight text-white py-2 px-5 rounded-full font-medium">
               Connect Wallet
             </button>
           </div>
-        )}
+        )} */}
 
         {/* NGO Hub Button */}
         {currentAccount && (
            <div className="bg-white rounded-xl shadow-md p-4 mb-6">
              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                <div className="mb-2 sm:mb-0">
-                 <h2 className="text-lg font-bold text-gray-800 flex items-center"><FiEdit className="mr-2 text-[#871f39]" />NGO Hub</h2>
+                 <h2 className="text-lg font-bold text-gray-800 flex items-center"><FiEdit className="mr-2 text-[#871f39]" />Campaign Hub</h2>
                  <p className="text-xs text-gray-500 mt-1">Create and manage your organization's campaigns.</p>
                </div>
-               <button onClick={() => navigate('/create-campaigns')} className="bg-[#871f39] hover:bg-[#6f162e] text-white text-sm py-2 px-4 rounded-full transition-transform transform hover:scale-105 flex-shrink-0">
+               <button 
+                 onClick={() => {
+                   const subject = encodeURIComponent('New Campaign Request');
+                   const body = encodeURIComponent(`Hi Admin,\n\nI would like to request creation of a new donation campaign on Zakat UTM Dapps.
+                    \nName: 
+                    \nDistance:
+                    \nType:
+                    \nIn-Kind Needs:
+                    \nTarget Amount:
+                    \n\nPlease contact me to proceed.\n\nThank you.`);
+                   window.location.href = `mailto:islamiccentre@utm.my?subject=${subject}&body=${body}`;
+                 }}
+                 className="bg-[#871f39] hover:bg-[#6f162e] text-white text-sm py-2 px-4 rounded-full transition-transform transform hover:scale-105 flex-shrink-0"
+               >
                  + Create Campaign
                </button>
              </div>

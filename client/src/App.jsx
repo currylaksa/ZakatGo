@@ -32,6 +32,8 @@ import {
   AdminProfilePage,
   AdminDashboardPage,
   AdminMonthlyDeductionPage,
+  TransactionsMYRPage,
+  ExplorerDashboardMYRPage
 } from "./pages";
 import {ZakatPaymentPage} from "./pages/zakat"
 import {ZakatAssistPage} from "./pages/zakatAssist"
@@ -40,7 +42,8 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from './contexts/LanguageContext';
 import ZakatExplorer from "./pages/zakat/ZakatExplorer";
 import ZakatContractOverview from "./pages/zakat/ZakatContractOverview";
-
+import EmailNotificationPage from "./pages/EmailNotificationPage";
+// import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 // Component to conditionally render Navbar based on route
 const AppContent = () => {
   const location = useLocation();
@@ -56,8 +59,10 @@ const AppContent = () => {
   const showThemeSwitcher = false;
   
   return (
+
     <div className="min-h-screen">
       <div className="min-h-screen bg-neutral">
+        
         {!isOnboardingRoute && (isAdminRoute ? <AdminNavbar /> : <Navbar />)}
         <div className={!isOnboardingRoute ? "pt-16" : ""}>
           <Routes>
@@ -68,6 +73,8 @@ const AppContent = () => {
             <Route path="/donate/:id" element={<DonationFormPage />} />
             <Route path="/donation-success" element={<DonationSuccessPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/transactions-myr" element={<TransactionsMYRPage />} />
+            <Route path="/explorer-dashboard-myr" element={<ExplorerDashboardMYRPage />} />
             <Route path="/funding-review/:loanId" element={<FundingReviewPage />} />
             <Route path="/review-summary/:loanId" element={<ReviewSummaryPage />} />
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
@@ -103,9 +110,10 @@ const AppContent = () => {
             <Route path="/admin/profile" element={<AdminProfilePage />} />
             <Route path="/admin/deduction" element={<AdminMonthlyDeductionPage />} />
             <Route path="/admin/zakat" element={<AdminZakatPage />} />
-            
+            {/* <Route path="/admin/notifications" element={<AdminNotificationsPage />} /> */}
             {/* Not found */}
             <Route path="*" element={<NotFoundPage />} />
+             <Route path="/email-notification" element={<EmailNotificationPage />} />
           </Routes>
         </div>
       </div>

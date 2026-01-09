@@ -1,6 +1,7 @@
+// Please paste your full component code here. I will help complete, clean, or fix it once you add the remaining part.
 import { useState } from 'react';
 import mapImage from '../assets/Map.png';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts';
 
 // Reusable Button component with updated styling
 const Button = ({ children, onClick, type = 'primary', className = '' }) => {
@@ -28,12 +29,27 @@ const Button = ({ children, onClick, type = 'primary', className = '' }) => {
 };
 
 // Enhanced Feature Card Component with alert popup
-const FeatureCard = ({ icon, title, description, detailedInfo }) => {
+const FeatureCard = ({ icon, title, description, detailedInfo, learnMoreLink, scrollDown }) => {
   const [showAlert, setShowAlert] = useState(false);
-
+  const scrollDownDef = (scrollDown == null) ? false : scrollDown;
   const handleClick = () => {
     setShowAlert(true);
   };
+
+const handleLearnMore = (targetId) => {
+    // Delay allows the popup closing animation to complete
+  setTimeout(() => {
+    //just scroll down
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, 200);
+  //close any existing alert
+  setShowAlert(false);
+
+
+};
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -53,17 +69,28 @@ const FeatureCard = ({ icon, title, description, detailedInfo }) => {
       {showAlert && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleCloseAlert}>
           <div className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-2xl font-bold text-[#400017]">{title}</h3>
-              <button onClick={handleCloseAlert} className="text-gray-500 hover:text-gray-700">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+            <div className="items-center mb-4">
+              <h3 className="text-2xl font-bold text-[#400017] text-center">{title}</h3>
             </div>
             <div className="text-4xl text-green-600 mb-4 text-center">{icon}</div>
             <p className="text-gray-700 mb-4">{description}</p>
             {detailedInfo && <p className="text-sm text-gray-600">{detailedInfo}</p>}
+            {learnMoreLink && !scrollDownDef ? (
+                <a 
+                  href={learnMoreLink}
+                  className="mt-4 w-full block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
+                >
+                  Learn More
+                </a>
+              ) : learnMoreLink?(
+                <button 
+                  onClick={() => handleLearnMore(learnMoreLink)}
+                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
+                >
+                  Learn More
+                </button>
+              ):<div></div>
+              }
             <button 
               onClick={handleCloseAlert}
               className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
@@ -138,6 +165,8 @@ const Homepage = () => {
     window.location.href = '/campaigns';
   };
 
+
+
   const handleImpactClick = () => {
     window.location.href = '/dashboard';
   };
@@ -180,7 +209,7 @@ const Homepage = () => {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">Zakat UTM PPZ: One-Stop Zakat Platform</h1>
-            <p className="text-lg md:text-xl mb-8 text-[#fbe9ed]">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & Llama Model Integration.</p>
+            <p className="text-lg md:text-xl mb-8 text-[#fbe9ed]">Transparent, Automated & Shariah-Compliant Zakat platform powered by Blockchain & AI Integration.</p>
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-white border-opacity-20">
@@ -190,7 +219,7 @@ const Homepage = () => {
               </div>
               <div className="space-y-4"> 
                 <Button onClick={handleCalculateClick} className="w-full">Calculate My Zakat</Button>
-                <Button onClick={handleZakatPaymentClick} type="tertiary" className="w-full">Zakat Payment System</Button>
+                <Button onClick={handleZakatPaymentClick} type="tertiary" className="w-full">Zakat Payment</Button>
                 <Button onClick={handleCampaignsClick} type="secondary" className="w-full">View Donation Campaigns</Button>
                 <Button onClick={handleAssistanceClick} type="warning" className="w-full">Apply for Zakat Assistance</Button>
               </div>
@@ -208,7 +237,7 @@ const Homepage = () => {
               Zakat UTM PPZ addresses the key challenges in the traditional Zakat system: lack of transparency, inefficiency in distribution, and limited accessibility.
             </p>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Our platform leverages blockchain technology for secure and transparent transactions, while AI automates Zakat calculations based on uploaded documents like payslips.
+              This platform leverages blockchain technology for secure and transparent transactions, while AI automates Zakat calculations based on uploaded documents like payslips.
             </p>
             <div className="flex items-center space-x-4">
               <div className="w-12 h-1 bg-green-600 rounded"></div>
@@ -217,7 +246,7 @@ const Homepage = () => {
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="grid grid-cols-2 gap-6">
-              <StatDisplay value="100%" label="Transparency via Blockchain" />
+              <StatDisplay value="100%" label="Transparent via Blockchain" />
               <StatDisplay value="AI-Powered" label="Zakat Calculation" />
               <StatDisplay value="8" label="Zakat Categories" />
               <StatDisplay value="MYR" label="Secure Payments" />
@@ -231,32 +260,36 @@ const Homepage = () => {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-[#400017]">Key Features</h2>
-            <p className="max-w-2xl mx-auto text-gray-600">Our platform offers innovative solutions designed to make your Zakat payments more transparent, efficient, and accessible.</p>
+            <p className="max-w-2xl mx-auto text-gray-600">This platform offers innovative solutions designed to make your Zakat payments more transparent, efficient, and accessible.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               icon="🧮" 
               title="AI-Powered Zakat Auto-Calculator" 
               description="Automatically calculates your Zakat obligation based on uploaded documents like payslips." 
-              detailedInfo="Our AI system uses advanced machine learning to extract financial information from your documents and calculate zakat accurately according to Shariah principles."
+              detailedInfo="The AI system uses advanced machine learning to extract financial information from your documents and calculate zakat accurately according to Shariah principles."
             />
             <FeatureCard 
               icon="🔗" 
               title="Blockchain Integration" 
               description="Ensures transparent, real-time tracking of donations through secure, immutable records." 
-              detailedInfo="Every transaction is recorded on the blockchain, providing complete transparency and traceability. You can verify your zakat payments anytime through our blockchain explorer."
+              detailedInfo="Every transaction is recorded on the blockchain, providing complete transparency and traceability. You can verify your zakat payments anytime through the blockchain explorer."
+              learnMoreLink="explorer-dashboard-myr"
             />
             <FeatureCard 
               icon="🧾" 
-              title="Categorized Donations" 
+              title="Donation's Categories" 
               description="Select from the 8 categories for Zakat distribution (Fuqara, Masakin, etc.)." 
               detailedInfo="Choose how your zakat is distributed among the 8 asnaf categories as defined in Islamic law, ensuring your contributions reach those who need it most."
+              learnMoreLink="donation-category"
+              scrollDown={true}
             />
             <FeatureCard 
               icon="📱" 
-              title="Unbanked-Friendly" 
-              description="QR codes and National ID recognition for users without bank accounts." 
-              detailedInfo="Our platform is designed to be accessible to everyone, including those without traditional bank accounts. Use QR codes and ID verification for easy access."
+              title="Easy Tracing" 
+              description="Track the status of your zakat payments with ease, from sent to approved or cancelled." 
+              detailedInfo="Once your zakat contribution is sent, you can track its status in real-time on this platform. Whether it's approved, cancelled, or pending, you'll always know the latest information."
+              learnMoreLink="/profile"
             />
             <FeatureCard 
               icon="💰" 
@@ -269,6 +302,7 @@ const Homepage = () => {
               title="Impact Dashboard" 
               description="Track how your donations are making a difference with real-time visualization." 
               detailedInfo="View detailed analytics showing how your zakat contributions are distributed, including breakdowns by faculty, position, and categories."
+              learnMoreLink="/dashboard"
             />
           </div>
         </div>
@@ -343,9 +377,9 @@ const Homepage = () => {
           </div>
         </div>
       </section>
-
+      <div id="donation-category">
       {/* Zakat Categories Section - New section to highlight Islamic aspects */}
-      <section className="py-16 px-4 container mx-auto">
+      <section className="py-16 px-4 container mx-auto" id="donation-category">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 text-[#400017]">Zakat Distribution Categories</h2>
           <p className="max-w-2xl mx-auto text-gray-600">Choose how your Zakat will be distributed among these Shariah-defined categories</p>
@@ -361,7 +395,7 @@ const Homepage = () => {
           <CategoryCard icon="🧳" name="Ibn as-Sabil (Travelers)" />
         </div>
       </section>
-
+      </div>
       {/* How It Works Section - Updated sequence */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
@@ -378,7 +412,7 @@ const Homepage = () => {
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/5">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">2</div>
             <h3 className="text-xl font-semibold mb-2 text-[#400017]">AI Processing</h3>
-            <p className="text-gray-600 text-sm">Our AI automatically calculates your Zakat obligation</p>
+            <p className="text-gray-600 text-sm">AI automatically calculates your Zakat obligation</p>
           </div>
           <div className="hidden md:block text-green-400 text-4xl">→</div>
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/5">
@@ -390,7 +424,7 @@ const Homepage = () => {
           <div className="bg-white p-6 rounded-xl shadow-md text-center mb-8 md:mb-0 w-full md:w-1/5">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-800 text-2xl font-bold mx-auto mb-4">4</div>
             <h3 className="text-xl font-semibold mb-2 text-[#400017]">Zakat Payment</h3>
-            <p className="text-gray-600 text-sm">Pay securely using MYR and track your contribution</p>
+            <p className="text-gray-600 text-sm">Pay securely using MYR</p>
           </div>
           <div className="hidden md:block text-green-400 text-4xl">→</div>
           <div className="bg-white p-6 rounded-xl shadow-md text-center w-full md:w-1/5">
@@ -490,8 +524,8 @@ const Homepage = () => {
             <section className="bg-[#fbe9ed] py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-[#400017]">Track Your Impact</h2>
-            <p className="max-w-2xl mx-auto text-gray-600">Our transparent dashboard lets you see exactly how your contributions are making a difference at UTM PPZ</p>
+            <h2 className="text-3xl font-bold mb-4 text-[#400017]">Track & Monitor the Zakat Distribution</h2>
+            <p className="max-w-2xl mx-auto text-gray-600">The transparent dashboard allows you to track and monitor the distribution of Zakat to beneficiaries in real-time. </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -529,8 +563,17 @@ const Homepage = () => {
                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 10 }} label={{ fontSize: 12 }}>
+                        <Label value="Category" position="insideBottom"/>
+                      </XAxis>
+                      <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} 
+                        label={{ fontSize: 12 }}>
+                        <Label     value="Amount (RM)"
+                          angle={-90}
+                          position="insideLeft"
+                          offset={5}
+                          style={{ textAnchor: 'middle' }}/>
+                      </YAxis>
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="beneficiaries" fill="#1e40af" />
@@ -554,17 +597,29 @@ const Homepage = () => {
                         { faculty: 'Business', amount: 8500 },
                         { faculty: 'Science', amount: 8000 },
                       ]}
-                      margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                      margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="faculty" 
+                       <XAxis
+                        dataKey="faculty"
                         angle={-45}
                         textAnchor="end"
                         height={80}
                         tick={{ fontSize: 10 }}
-                      />
-                      <YAxis tickFormatter={(value) => `RM${(value / 1000).toFixed(0)}k`} />
+                        label={{ fontSize: 12 }}
+                      >
+                        <Label value="Faculty" position="insideBottom"/>
+                      </XAxis>
+                     
+                      <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} 
+                        label={{ fontSize: 12 }}>
+                          
+                        <Label     value="Amount (RM)"
+                          angle={-90}
+                          position="insideLeft"
+                          offset={5}
+                          style={{ textAnchor: 'middle' }}/>
+                      </YAxis>
                       <Tooltip formatter={(value) => [`RM${Number(value).toLocaleString()}`, 'Amount']} />
                       <Legend />
                       <Bar dataKey="amount" name="Zakat Amount (RM)" fill="#10b981" radius={[4, 4, 0, 0]} />
@@ -593,8 +648,19 @@ const Homepage = () => {
                         textAnchor="end"
                         height={80}
                         tick={{ fontSize: 10 }}
-                      />
-                      <YAxis tickFormatter={(value) => `RM${(value / 1000).toFixed(0)}k`} />
+                        
+                      >
+                        <Label value="Position" position="insideBottom"/>
+                      </XAxis>
+                     
+                      <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} 
+                        label={{ fontSize: 12 }}>
+                        <Label     value="Amount (RM)"
+                          angle={-90}
+                          position="insideLeft"
+                          offset={10}
+                          style={{ textAnchor: 'middle' }}/>
+                      </YAxis>
                       <Tooltip formatter={(value) => [`RM${Number(value).toLocaleString()}`, 'Amount']} />
                       <Legend />
                       <Bar dataKey="amount" name="Zakat Amount (RM)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
@@ -615,15 +681,16 @@ const Homepage = () => {
       <section className="bg-[#fbe9ed] py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-[#400017]">NGO Campaigns</h2>
-            <p className="max-w-2xl mx-auto text-gray-600">Support verified NGO campaigns or create your own if you represent an organization</p>
+            <h2 className="text-3xl font-bold mb-4 text-[#400017]">List of Sadaqah & Waqf</h2>
+            <p className="max-w-2xl mx-auto text-gray-600">View the list of Sadaqah and Waqf that are available for you to donate to.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Sample Campaign Cards */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
-                <span className="text-4xl">🏥</span>
-              </div>
+  <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
+  <span className="text-[120px]">🏥</span>
+</div>
+
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 text-[#400017]">Medical Aid for Refugees</h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
@@ -638,7 +705,7 @@ const Homepage = () => {
             
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
-                <span className="text-4xl">🍲</span>
+                <span className="text-[120px]">🍲</span>
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 text-[#400017]">Food Bank Initiative</h3>
@@ -654,7 +721,7 @@ const Homepage = () => {
             
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="h-48 bg-[#f4ccd6] flex items-center justify-center">
-                <span className="text-4xl">🏫</span>
+                <span className="text-[120px]">🏫</span>
               </div>
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-2 text-[#400017]">Education for Orphans</h3>
@@ -677,8 +744,8 @@ const Homepage = () => {
       {/* Geofencing-Based Sadaqah Section - New section based on proposal */}
       <section className="py-16 px-4 container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-[#400017]">Nearby Sadaqah Opportunities</h2>
-          <p className="max-w-2xl mx-auto text-gray-600">Discover verified local causes near you through our geofencing technology</p>
+          <h2 className="text-3xl font-bold mb-4 text-[#400017]">Nearby Sadaqah & Waqf</h2>
+          <p className="max-w-2xl mx-auto text-gray-600">Discover verified local causes near you through the geofencing technology</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <div className="h-64 bg-[#fbe9ed] mb-6 rounded-lg flex items-center justify-center relative">
@@ -728,11 +795,12 @@ const Homepage = () => {
       {/* Call to Action Section */}
       <section className="py-16 px-4 text-center">
         <div className="container mx-auto max-w-4xl bg-gradient-to-r from-[#5f0220] to-[#400017] rounded-2xl p-12 shadow-xl">
-          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Revolutionize Your Zakat Experience?</h2>
-          <p className="text-lg text-[#fbe9ed] mb-8">Join Zakat UTM PPZ for transparent, efficient, and accessible Islamic charitable giving</p>
+          <h2 className="text-3xl font-bold mb-4 text-white">Ready to Experience This Zakat Website ?</h2>
+          <p className="text-lg text-[#fbe9ed] mb-8">Use Zakat UTM now for transparent, efficient, and accessible Islamic charitable giving</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button onClick={handleCalculateClick} className="bg-green-600 hover:bg-green-700">Calculate My Zakat</Button>
-            <Button onClick={handleCampaignsClick} type="secondary" className="w-full">View Donation Campaigns</Button>
+            <Button onClick={handleZakatPaymentClick} type="secondary">Pay My Zakat</Button>
+            <Button onClick={handleCampaignsClick} type="tertiary">View Donation Campaigns</Button>
             <Button onClick={handleAssistanceClick} type="warning">Apply for Assistance</Button>
           </div>
         </div>

@@ -104,7 +104,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         zakatAnnual,
         zakatMonthly,
         zakatCategory,
-        status: 'Sent',
+        status: 'Uploaded',
         name: displayName,
         faculty,
       };
@@ -126,7 +126,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
         ethAmount: '0',
         rmToEthRate: 0,
         timestamp,
-        status: 'Sent',
+        status: 'Uploaded',
         categories: userData.selectedCategories.map(c => c.name).join(', '),
         walletAddress: currentAccount || null,
         zakatAnnual: zakatAnnual,
@@ -152,7 +152,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
           referenceNo,
           contributionType: 'Monthly Zakat Deduction',
           contributionAmount: Number(transactionDetails.amount) || 0,
-          status: 'Sent',
+          status: 'Uploaded',
           date: dateStr,
           transactionHash: transactionDetails.transactionId,
           user: {
@@ -213,7 +213,7 @@ const BlockchainPaymentStep = ({ nextStep, prevStep, userData, updateUserData })
             <p><span className="text-gray-600">zakatAnnual:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatAnnual || 0).toFixed(2)}</span></p>
             <p><span className="text-gray-600">zakatMonthly:</span> <span className="text-gray-800">{Number(userData?.calculation?.zakatMonthly || 0).toFixed(2)}</span></p>
             <p><span className="text-gray-600">zakatCategory:</span> <span className="text-gray-800">Income Zakat</span></p>
-            <p><span className="text-gray-600">status:</span> <span className="text-gray-800">Sent</span></p>
+            <p><span className="text-gray-600">status:</span> <span className="text-gray-800">Uploaded</span></p>
           </div>
         </div>
 

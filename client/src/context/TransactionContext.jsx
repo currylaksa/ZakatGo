@@ -162,9 +162,8 @@ export const TransactionsProvider = ({ children }) => {
                     message: transaction.message,
                     amount: ethers.formatEther(transaction.amount),
                     keyword: transaction.keyword,
-            transactionHash: transaction.transactionHash || null,
-            status: 'Completed'
-        }));
+                    transactionHash: transaction.transactionHash || null
+                }));
                 
                 setZakatTransactions(structuredTransactions);
                 return;
@@ -192,8 +191,7 @@ export const TransactionsProvider = ({ children }) => {
             message: transaction.message,
             amount: ethers.formatEther(transaction.amount),
             keyword: transaction.keyword,
-            transactionHash: transaction.transactionHash || null,
-            status: 'Completed'
+            transactionHash: transaction.transactionHash || null
         }));
 
         console.log("Structured Zakat transactions:", structuredTransactions);
@@ -274,13 +272,13 @@ const checkIfTransactionsExists = async () => {
         // Try to get contract code to verify deployment
         const provider = new ethers.BrowserProvider(ethereum);
         const code = await provider.getCode(contractAddress);
-        if (code === '0x') {
-          console.error("❌ No contract found at address:", contractAddress);
-          alert("Contract not found at the specified address. Please check your configuration.");
-        } else {
-          console.log("✅ Contract exists at address:", contractAddress);
-          console.log("Contract code length:", code.length);
-        }
+        // if (code === '0x') {
+        //   console.error("❌ No contract found at address:", contractAddress);
+        //   alert("Contract not found at the specified address. Please check your configuration.");
+        // } else {
+        //   console.log("✅ Contract exists at address:", contractAddress);
+        //   console.log("Contract code length:", code.length);
+        // }
       }
     }
   } catch (error) {

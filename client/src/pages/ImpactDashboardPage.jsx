@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,Label, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 // Colors for charts
 const COLORS = ['#06b6d4', '#3b82f6', '#10b981', '#f97316', '#facc15', '#8b5cf6', '#ec4899', '#14b8a6'];
@@ -10,7 +10,7 @@ const formatAmount = (value) => {
   return new Intl.NumberFormat('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(adjusted);
 };
 
-const formatRM = (value) => `RM${formatAmount(value)}`;
+const formatRM = (value) => `${formatAmount(value)}`;
 
 // Mock Demographic Data for Zakat Contributors and Recipients
 const demographicData = {
@@ -114,13 +114,13 @@ const radarData = [
 
 // Base data for faculties and positions (UTM)
 const facultyBaseData = [
-  { name: 'Faculty of Engineering (FE)', baseAmount: 42560.75, contributors: 312 },
-  { name: 'Faculty of Social Sciences & Humanities (FSSH)', baseAmount: 21340.2, contributors: 185 },
-  { name: 'Faculty of Computing (FC)', baseAmount: 19875.55, contributors: 124 },
-  { name: 'Faculty of Science (FS)', baseAmount: 15420.8, contributors: 108 },
-  { name: 'Faculty of Built Environment & Surveying (FABU)', baseAmount: 11250.45, contributors: 92 },
-  { name: 'Azman Hashim Int. Business School (AHIBS)', baseAmount: 8640.3, contributors: 65 },
-  { name: 'Razak Faculty of Technology & Informatics', baseAmount: 4122.13, contributors: 29 },
+  { name: 'FE', baseAmount: 42560.75, contributors: 312 },
+  { name: 'FSSH', baseAmount: 21340.2, contributors: 185 },
+  { name: 'FC', baseAmount: 19875.55, contributors: 124 },
+  { name: 'FS', baseAmount: 15420.8, contributors: 108 },
+  { name: 'FABU', baseAmount: 11250.45, contributors: 92 },
+  { name: 'AHIBS', baseAmount: 8640.3, contributors: 65 },
+  { name: 'RFTI', baseAmount: 4122.13, contributors: 29 },
 ];
 
 const positionBaseData = [
@@ -1213,7 +1213,7 @@ const ImpactDashboardPage = () => {
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={[...facultyChartData].sort((a, b) => a.faculty.localeCompare(b.faculty))}
-                          margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                          margin={{ top: 5, right: 5, left: 10, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                           <XAxis 
@@ -1222,11 +1222,15 @@ const ImpactDashboardPage = () => {
                             angle={-45}
                             textAnchor="end"
                             height={80}
-                          />
+                          >
+                            <Label value="Faculty Type" position="insideBottom" />
+                          </XAxis>
                           <YAxis 
                             tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
                             tickFormatter={(value) => `${formatRM(value / 1000)}k`}
-                          />
+                          >
+                            <Label value="Amount (RM)" position="insideLeft" angle={-90} offset={5}  style={{ textAnchor: 'middle' }}  />
+                          </YAxis>
                           <Tooltip 
                             formatter={(value) => [formatRM(value), 'Amount']}
                             labelFormatter={(label) => `Faculty: ${label}`}
@@ -1282,11 +1286,15 @@ const ImpactDashboardPage = () => {
                             angle={-45}
                             textAnchor="end"
                             height={100}
-                          />
+                          >
+                            <Label value="Position Type" position="insideBottom" />
+                            </XAxis>
                           <YAxis 
                             tick={{ fill: '#4b5563', fontSize: isMobileView ? 9 : 11 }}
                             tickFormatter={(value) => `${formatRM(value / 1000)}k`}
-                          />
+                          >
+                            <Label value="Amount (RM)" position="insideLeft" angle={-90} offset={5}  style={{ textAnchor: 'middle' }}  />
+                          </YAxis>
                           <Tooltip 
                             formatter={(value) => [formatRM(value), 'Amount']}
                             labelFormatter={(label) => `Position: ${label}`}

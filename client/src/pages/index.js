@@ -32,3 +32,5 @@ export { default as ZakatAssistPage } from './zakatAssist/ZakatAssistPage';
 export { default as AdminProfilePage } from './AdminProfilePage';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as AdminMonthlyDeductionPage } from './AdminMonthlyDeductionPage';
+export { default as TransactionsMYRPage } from './TransactionsMYRPage';
+export { default as ExplorerDashboardMYRPage } from './ExplorerDashboardMYRPage';

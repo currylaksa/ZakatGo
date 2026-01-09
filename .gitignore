@@ -70,3 +70,4 @@ node_modules/
 
 # Built assets (root)
 dist/
+.codebuddy

@@ -133,8 +133,8 @@ const zakatGoNavItems = [
     title: "Zakat Services",
     hasSubmenu: true,
     submenuItems: [
-      { title: "Zakat Payment System", path: "/zakat-payment" },
-      { title: "Zakat Assistance System", path: "/zakat-assist" }
+      { title: "Zakat Payment", path: "/zakat-payment" },
+      { title: "Zakat Assistance", path: "/zakat-assist" }
     ]
   },
   { title: "Donation Campaigns", path: "/campaigns" },
@@ -199,7 +199,7 @@ const Navbar = () => {
             />
           )
         ))}
-    
+        <NavbarItem title="Explorer" to="/explorer-dashboard-myr" />
         {/* --- Login/Signup Button --- */}
         {isLoggedIn ? (
            <NavbarItem title="Logout" onClick={handleLogout} classProps="ml-5" />

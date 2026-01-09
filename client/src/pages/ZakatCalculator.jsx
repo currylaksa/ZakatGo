@@ -22,20 +22,20 @@ const InputField = ({ label, type = 'number', value, onChange, placeholder, help
 
 // Reusable Button component
 const Button = ({ children, onClick, type = 'primary', disabled = false }) => {
-    const baseStyle = "px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-white shadow-lg";
-    const primaryStyle = `bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-500 
-                          hover:shadow-teal-500/30 hover:shadow-xl transform hover:-translate-y-0.5 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`; 
-    const secondaryStyle = `bg-[#6f162e] hover:bg-[#871f39] ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
-    
-    return (
-      <button 
-        onClick={onClick} 
-        className={`${baseStyle} ${type === 'primary' ? primaryStyle : secondaryStyle}`}
-        disabled={disabled}
-      >
-        {children}
-      </button>
-    );
+  const baseStyle = "px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-white shadow-lg";
+  const primaryStyle = `bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-400 hover:to-teal-500 
+                        hover:shadow-teal-500/30 hover:shadow-xl transform hover:-translate-y-0.5 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`; 
+  const secondaryStyle = `bg-[#6f162e] hover:bg-[#871f39] ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+
+  return (
+    <button 
+      onClick={onClick} 
+      className={`${baseStyle} ${type === 'primary' ? primaryStyle : secondaryStyle}`}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  );
 };
 
 // Decorative Pattern Component
@@ -49,71 +49,75 @@ const IslamicPattern = () => (
 
 const ZakatCalculator = () => {
   // --- State for Inputs ---
-  const [pendapatan, setPendapatan] = useState('');
-  const [perbelanjaan, setPerbelanjaan] = useState('');
+  const [income, setIncome] = useState('');
+  const [expenses, setExpenses] = useState('');
 
   // --- State for Calculation Results ---
-  const [nisabEmas, setNisabEmas] = useState(null);
+  const [nisabGold, setNisabGold] = useState(null);
   const [nisabLoading, setNisabLoading] = useState(false);
-  const [pendapatanUtkZakat, setPendapatanUtkZakat] = useState(0);
-  const [wajibBayarZakat, setWajibBayarZakat] = useState(false);
-  const [zakatSetahun, setZakatSetahun] = useState(0);
-  const [zakatSebulan, setZakatSebulan] = useState(0);
+  const [incomeForZakat, setIncomeForZakat] = useState(0);
+  const [mustPayZakat, setMustPayZakat] = useState(false);
+  const [annualZakat, setAnnualZakat] = useState(0);
+  const [monthlyZakat, setMonthlyZakat] = useState(0);
   const [calculationDone, setCalculationDone] = useState(false);
 
-  // Fetch live nisab emas from MAIJ API
+  // Fetch live nisab gold from MAIJ API
   useEffect(() => {
-    const fetchNisabEmas = async () => {
+    const fetchNisabGold = async () => {
       setNisabLoading(true);
       try {
-        // Try to fetch from MAIJ API
-        // Note: This is a placeholder - the actual API endpoint may vary
-        // Since CORS might block, we'll use a fallback calculation
-        // For now, using a mock value based on typical gold price (85g * current gold price per gram)
-        // Typical gold price in Malaysia: ~RM280-300 per gram
-        // 85g * RM280 = RM23,800 (approximate)
-        const estimatedNisab = 23800; // Fallback value
-        setNisabEmas(estimatedNisab);
+        // Placeholder / fallback
+        const estimatedNisab = 23800; 
+        setNisabGold(estimatedNisab);
       } catch (error) {
-        // Fallback to estimated value if API fails
         console.log('Using fallback nisab value');
-        setNisabEmas(23800); // Approximate value for 85g gold
+        setNisabGold(23800); 
       } finally {
         setNisabLoading(false);
       }
     };
-    fetchNisabEmas();
+    fetchNisabGold();
   }, []);
 
   // --- Input Change Handlers ---
   const handleInputChange = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
-       setter(value);
-       setCalculationDone(false);
+      setter(value);
+      setCalculationDone(false);
     }
   };
 
   // --- Calculation Logic ---
   const calculateZakat = () => {
-    const pendapatanVal = parseFloat(pendapatan) || 0;
-    const perbelanjaanVal = parseFloat(perbelanjaan) || 0;
-    const pendapatanUtkZakatVal = pendapatanVal - perbelanjaanVal;
-    const nisab = nisabEmas || 23800;
-    const wajibBayar = pendapatanUtkZakatVal >= nisab;
-    const zakatSetahunVal = wajibBayar ? pendapatanUtkZakatVal * 0.025 : 0;
-    const zakatSebulanVal = zakatSetahunVal / 12;
+    const incomeVal = parseFloat(income) || 0;
+    const expensesVal = parseFloat(expenses) || 0;
+    const incomeForZakatVal = incomeVal - expensesVal;
+    const nisab = nisabGold || 23800;
+    const mustPay = incomeForZakatVal >= nisab;
+    const annualZakatVal = mustPay ? incomeForZakatVal * 0.025 : 0;
+    const monthlyZakatVal = annualZakatVal / 12;
 
-    setPendapatanUtkZakat(pendapatanUtkZakatVal);
-    setWajibBayarZakat(wajibBayar);
-    setZakatSetahun(zakatSetahunVal);
-    setZakatSebulan(zakatSebulanVal);
+    setIncomeForZakat(incomeForZakatVal);
+    setMustPayZakat(mustPay);
+    setAnnualZakat(annualZakatVal);
+    setMonthlyZakat(monthlyZakatVal);
     setCalculationDone(true);
-    
+
     // Smooth scroll to results
     setTimeout(() => {
       document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  };
+
+  // --- Reset / Done Handlers ---
+  const handleRecalculate = () => {
+    setCalculationDone(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDone = () => {
+    window.history.back();
   };
 
   // --- Format Currency ---
@@ -143,15 +147,15 @@ const ZakatCalculator = () => {
           <div className="bg-gradient-to-r from-[#6f162e]/80 to-[#5f0220]/80 p-5 rounded-xl mb-8 
                         border border-[#871f39]/50 shadow-lg relative overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-lg font-semibold mb-2 text-teal-300">Current Nisab Emas (85g)</h2>
+              <h2 className="text-lg font-semibold mb-2 text-teal-300">Current Nisab Gold (85g)</h2>
               <p className="text-sm text-[#fbe9ed] mb-2">
-                The minimum wealth required for Zakat obligation, based on 85g Gold
+                The minimum wealth required for Zakat obligation, based on 85g of Gold
               </p>
               {nisabLoading ? (
                 <p className="text-lg text-[#fbe9ed]">Loading current nisab value...</p>
               ) : (
                 <p className="text-2xl font-bold mt-1 text-white">
-                  {formatCurrency(nisabEmas || 23800)}
+                  {formatCurrency(nisabGold || 23800)}
                 </p>
               )}
               <p className="text-xs text-[#dc6e85]/70 mt-2">
@@ -170,15 +174,15 @@ const ZakatCalculator = () => {
                     <span className="text-sm">📐</span>
                   </span>
                 </span>
-                Formula Pengiraan Zakat
+                Zakat Calculation Formula
               </h2>
               <p className="text-sm text-[#fbe9ed] mb-3">
-                <strong className="text-teal-300">Pendapatan utk dikira zakat:</strong> Jumlah pendapatan - Jumlah perbelanjaan
+                <strong className="text-teal-300">Income for Zakat calculation:</strong> Total income - Total expenses
               </p>
-              {pendapatan && perbelanjaan && (
+              {income && expenses && (
                 <div className="bg-[#5f0220]/30 p-3 rounded-lg border border-[#6f162e]/50">
                   <p className="text-lg font-semibold text-teal-300">
-                    RM {parseFloat(pendapatan || 0).toLocaleString('en-MY', { minimumFractionDigits: 2 })} - RM {parseFloat(perbelanjaan || 0).toLocaleString('en-MY', { minimumFractionDigits: 2 })} = RM {((parseFloat(pendapatan || 0) - parseFloat(perbelanjaan || 0))).toLocaleString('en-MY', { minimumFractionDigits: 2 })}
+                    RM {parseFloat(income || 0).toLocaleString('en-MY', { minimumFractionDigits: 2 })} - RM {parseFloat(expenses || 0).toLocaleString('en-MY', { minimumFractionDigits: 2 })} = RM {((parseFloat(income || 0) - parseFloat(expenses || 0))).toLocaleString('en-MY', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               )}
@@ -193,14 +197,14 @@ const ZakatCalculator = () => {
                       <span className="text-sm">1</span>
                     </span>
                   </span>
-                  Jumlah Pendapatan
+                  Total Income
                 </h2>
                 
                 <InputField 
-                  label="Jumlah Pendapatan (RM)" 
-                  value={pendapatan} 
-                  onChange={handleInputChange(setPendapatan)}
-                  helpText="Masukkan jumlah pendapatan tahunan anda"
+                  label="Total Annual Income (RM)" 
+                  value={income} 
+                  onChange={handleInputChange(setIncome)}
+                  helpText="Enter your total annual income"
                   placeholder="0.00"
                 />
               </div>
@@ -212,14 +216,14 @@ const ZakatCalculator = () => {
                       <span className="text-sm">2</span>
                     </span>
                   </span>
-                  Jumlah Perbelanjaan
+                  Total Expenses
                 </h2>
                 
                 <InputField 
-                  label="Jumlah Perbelanjaan (RM)" 
-                  value={perbelanjaan} 
-                  onChange={handleInputChange(setPerbelanjaan)}
-                  helpText="Masukkan jumlah perbelanjaan tahunan anda"
+                  label="Total Annual Expenses (RM)" 
+                  value={expenses} 
+                  onChange={handleInputChange(setExpenses)}
+                  helpText="Enter your total annual expenses"
                   placeholder="0.00"
                 />
               </div>
@@ -244,40 +248,40 @@ const ZakatCalculator = () => {
                             shadow-lg border border-[#871f39]/30 space-y-4">
                 <div className="p-4 bg-[#6f162e]/40 rounded-lg border border-[#871f39]/30">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-[#dc6e85]">Pendapatan utk dikira zakat:</span>
-                    <span className="text-xl font-semibold text-white">{formatCurrency(pendapatanUtkZakat)}</span>
+                    <span className="text-sm text-[#dc6e85]">Income for Zakat calculation:</span>
+                    <span className="text-xl font-semibold text-white">{formatCurrency(incomeForZakat)}</span>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-[#6f162e]/40 rounded-lg border border-[#871f39]/30">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-[#dc6e85]">Nisab Emas (85g):</span>
-                    <span className="text-xl font-semibold text-white">{formatCurrency(nisabEmas || 23800)}</span>
+                    <span className="text-sm text-[#dc6e85]">Nisab Gold (85g):</span>
+                    <span className="text-xl font-semibold text-white">{formatCurrency(nisabGold || 23800)}</span>
                   </div>
                 </div>
                 
                 <div className="p-4 bg-[#6f162e]/40 rounded-lg border border-[#871f39]/30">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-[#dc6e85]">Wajib Bayar Zakat:</span>
-                    <span className={`text-lg font-bold ${wajibBayarZakat ? 'text-teal-300' : 'text-red-400'}`}>
-                      {wajibBayarZakat ? 'Ya (Yes)' : 'Tidak (No)'}
+                    <span className="text-sm text-[#dc6e85]">Must Pay Zakat:</span>
+                    <span className={`text-lg font-bold ${mustPayZakat ? 'text-teal-300' : 'text-red-400'}`}>
+                      {mustPayZakat ? 'Yes' : 'No'}
                     </span>
                   </div>
                 </div>
                 
-                {wajibBayarZakat && (
+                {mustPayZakat && (
                   <>
                     <div className="p-4 bg-[#6f162e]/40 rounded-lg border border-[#871f39]/30">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#dc6e85]">Jumlah Zakat Setahun (2.5%):</span>
-                        <span className="text-xl font-semibold text-teal-300">{formatCurrency(zakatSetahun)}</span>
+                        <span className="text-sm text-[#dc6e85]">Annual Zakat (2.5%):</span>
+                        <span className="text-xl font-semibold text-teal-300">{formatCurrency(annualZakat)}</span>
                       </div>
                     </div>
                     
                     <div className="p-4 bg-[#6f162e]/40 rounded-lg border border-[#871f39]/30">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#dc6e85]">Jumlah Zakat Sebulan:</span>
-                        <span className="text-xl font-semibold text-teal-300">{formatCurrency(zakatSebulan)}</span>
+                        <span className="text-sm text-[#dc6e85]">Monthly Zakat:</span>
+                        <span className="text-xl font-semibold text-teal-300">{formatCurrency(monthlyZakat)}</span>
                       </div>
                     </div>
                   </>
@@ -287,12 +291,12 @@ const ZakatCalculator = () => {
                               border border-teal-700/30 shadow-lg">
                   <div className="text-center">
                     <h3 className="text-xl font-semibold text-teal-300 mb-2">
-                      {wajibBayarZakat ? 'Total Zakat Due (2.5%)' : 'Zakat Status'}
+                      {mustPayZakat ? 'Total Zakat Yearly (2.5%)' : 'Zakat Status'}
                     </h3>
-                    {wajibBayarZakat ? (
+                    {mustPayZakat ? (
                       <>
-                        <p className="text-4xl font-bold text-white mt-2">{formatCurrency(zakatSetahun)}</p>
-                        <p className="text-lg text-teal-200 mt-2">Monthly: {formatCurrency(zakatSebulan)}</p>
+                        <p className="text-4xl font-bold text-white mt-2">{formatCurrency(annualZakat)}</p>
+                        <p className="text-lg text-teal-200 mt-2">Monthly: {formatCurrency(monthlyZakat)}</p>
                         <p className="mt-3 text-teal-300 text-sm">
                           May Allah accept your Zakat and multiply your rewards
                         </p>
@@ -313,6 +317,16 @@ const ZakatCalculator = () => {
                   Please consult with your local official Zakat authority (e.g., MAIJ in Johor, PPZ-MAIWP, LZS) or a qualified Islamic scholar 
                   for precise calculations and rulings specific to your situation.
                 </p>
+              </div>
+
+              {/* Recalculate & Done Buttons */}
+              <div className="mt-6 flex flex-col md:flex-row justify-center gap-4">
+                <Button type="secondary" onClick={handleRecalculate}>
+                  Recalculate
+                </Button>
+                <Button type="primary" onClick={handleDone}>
+                  Done
+                </Button>
               </div>
             </div>
           )}

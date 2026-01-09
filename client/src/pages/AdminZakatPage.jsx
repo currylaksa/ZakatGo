@@ -49,7 +49,7 @@ const AdminZakatPage = () => {
       referenceNo: 'ZG-2025-0002',
       contributionType: 'Monthly Zakat Deduction',
       contributionAmount: 1800.0,
-      status: 'Sent',
+      status: 'Uploaded',
       date: '2025-04-21',
       transactionHash: '0xdeadbeef00000000000000000000000000000000000000000000000000000002',
       user: {
@@ -230,7 +230,7 @@ const AdminZakatPage = () => {
             <div className="flex items-center gap-2 text-xs">
               {(() => {
                 const counts = zakatList.reduce((acc, r) => { acc[r.status] = (acc[r.status] || 0) + 1; return acc; }, {});
-                const uploaded = counts['Sent'] || 0;
+                const uploaded = counts['Uploaded'] || 0;
                 const completed = counts['Completed'] || 0;
                 const cancelled = counts['Cancelled'] || 0;
                 const total = zakatList.length || 1;
@@ -240,7 +240,7 @@ const AdminZakatPage = () => {
                 return (
                   <div className="w-full">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-amber-100 text-amber-800">Sent: {uploaded}</span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-amber-100 text-amber-800">Uploaded: {uploaded}</span>
                       <span className="inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-800">Completed: {completed}</span>
                       <span className="inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-800">Cancelled: {cancelled}</span>
                     </div>
@@ -249,7 +249,7 @@ const AdminZakatPage = () => {
                       <div className="h-full bg-green-500" style={{ width: `${cPct}%` }} />
                       <div className="h-full bg-red-500" style={{ width: `${xPct}%` }} />
                     </div>
-                    <div className="mt-1 text-[10px] text-stone-600">Distribution: {uPct}% Sent • {cPct}% Completed • {xPct}% Cancelled</div>
+                    <div className="mt-1 text-[10px] text-stone-600">Distribution: {uPct}% Uploaded • {cPct}% Completed • {xPct}% Cancelled</div>
                   </div>
                 );
               })()}
@@ -321,7 +321,7 @@ const AdminZakatPage = () => {
                     <td className="px-4 py-3">{row.contributionType}</td>
                     <td className="px-4 py-3">{row.contributionAmount.toFixed(2)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Sent' ? 'bg-amber-100 text-amber-800' : row.status === 'Approved' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}> 
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${row.status === 'Completed' ? 'bg-green-100 text-green-800' : row.status === 'Uploaded' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}> 
                         {row.status}
                       </span>
                     </td>
@@ -417,9 +417,9 @@ const AdminZakatPage = () => {
               </div>
 
               <div className="px-5 py-4 border-t border-stone-200 flex items-center justify-between">
-                <div className="text-xs text-stone-700">Status: <span className={`font-semibold ${selectedRow.status === 'Completed' ? 'text-green-800' : selectedRow.status === 'Sent' ? 'text-amber-800' : selectedRow.status === 'Approved' ? 'text-blue-800' : 'text-red-800'}`}>{selectedRow.status}</span></div>
+                <div className="text-xs text-stone-700">Status: <span className={`font-semibold ${selectedRow.status === 'Completed' ? 'text-green-800' : selectedRow.status === 'Uploaded' ? 'text-amber-800' : 'text-red-800'}`}>{selectedRow.status}</span></div>
                 <div className="flex gap-2">
-                  {selectedRow.status === 'Sent' && (
+                  {selectedRow.status === 'Uploaded' && (
                     <>
                       <Button variant="success" size="sm" onClick={onApprove}>Approve</Button>
                       <Button variant="danger" size="sm" onClick={onCancel}>Cancel</Button>

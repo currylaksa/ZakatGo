@@ -2,7 +2,6 @@ import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { HalfCircleBackground, Button } from '../../components';
 import { TransactionContext } from '../../context/TransactionContext';
-import { contractAddress } from '../../utils/constants';
 
 const ZakatExplorer = () => {
   const { hash, txId } = useParams();
@@ -13,6 +12,8 @@ const ZakatExplorer = () => {
   // Read status from URL params (for new-tab navigation)
   const params = new URLSearchParams(location.search);
   const statusParam = params.get('status');
+  const contractAddressParam = params.get('contractAddress');
+
   // Try to hydrate from navigation state first, then from session
   let stateDetails = location.state?.details || {};
   let persisted = {};
@@ -28,8 +29,8 @@ const ZakatExplorer = () => {
   const transactionId = hash || txId || details.transactionId || 'N/A';
   const timestamp = details.timestamp || metadata.timestamp || new Date().toISOString();
   // Ensure sender always has a wallet address (cannot be 'N/A')
-  const sender = details.walletAddress || currentAccount || ('0x' + [...Array(40)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''));
-  const receiver = contractAddress || 'N/A';
+  const sender = details.walletAddress || currentAccount || '0x130D8C8AD9DZ194c624E3e1Ff36D7e6224U50PY9';
+  const receiver = details.contractAddress || contractAddressParam || 'N/A';
   const zakatAnnual = Number(details.zakatAnnual || 0);
   const onComplete = statusParam || details.status || metadata.status || 'Unknown';
   const displayStatus = onComplete === 'Uploaded' ? 'Sent' : onComplete;
@@ -56,11 +57,11 @@ const ZakatExplorer = () => {
         {/* Overview */}
         <div className="bg-white rounded-lg border border-stone-200 shadow-sm">
           <div className="p-4 border-b border-stone-200">
-            <h2 className="text-lg font-semibold text-stone-900">Transaction Overview</h2>
+            <h2 className="text-lg font-semibold text-stone-900">Contribution Overview</h2>
           </div>
           <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <div className="rounded-md border border-stone-200 bg-stone-50 p-3">
-              <div className="text-xs text-stone-500 mb-1">Transaction ID</div>
+              <div className="text-xs text-stone-500 mb-1">Contribution ID</div>
               <div className="flex items-center justify-between gap-2">
                 <div className="text-sm font-mono text-stone-900 break-all">{transactionId}</div>
                 <button onClick={() => copyToClipboard(transactionId)} className="text-xs px-2 py-1 rounded bg-stone-200 text-stone-700">Copy</button>
@@ -80,7 +81,7 @@ const ZakatExplorer = () => {
         {/* Details */}
         <div className="bg-white rounded-lg border border-stone-200 shadow-sm">
           <div className="p-4 border-b border-stone-200">
-            <h3 className="text-lg font-semibold text-stone-900">Transaction Details</h3>
+            <h3 className="text-lg font-semibold text-stone-900">Contribution Details</h3>
           </div>
           <div className="divide-y divide-stone-200">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4">
@@ -113,14 +114,10 @@ const ZakatExplorer = () => {
                     </Link>
                   </span>
                 )}
-              </div>
+            </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4">
-              <div className="text-xs text-stone-500">Gas Fee</div>
-              <div className="md:col-span-2 text-sm text-stone-900">0.00 MYR</div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4">
-              <div className="text-xs text-stone-500">Transaction Fee</div>
+              <div className="text-xs text-stone-500">Contribution Fee</div>
               <div className="md:col-span-2 text-sm text-stone-900">0.00 MYR</div>
             </div>
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -129,7 +126,7 @@ const ZakatExplorer = () => {
                 <div className="text-sm text-stone-900">Monthly Zakat Deduction</div>
               </div>
               <div className="bg-stone-50 rounded-md p-3">
-                <div className="text-xs text-stone-500">OnComplete</div>
+                <div className="text-xs text-stone-500">Status</div>
                 <div className="text-sm text-stone-900">{displayStatus}</div>
               </div>
             </div>
@@ -137,15 +134,15 @@ const ZakatExplorer = () => {
         </div>
 
         {/* More details */}
-        <div className="bg-white rounded-lg border border-stone-200 shadow-sm">
+        {/* <div className="bg-white rounded-lg border border-stone-200 shadow-sm">
           <div className="p-4 border-b border-stone-200"><h3 className="text-lg font-semibold text-stone-900">More Details</h3></div>
           <div className="p-4 space-y-3 text-sm text-stone-800">
             <div className="flex items-center justify-between"><span className="text-stone-500">Gas Limit & Usage by Txn:</span><span>300000 | 23688 (7.90%)</span></div>
             <div className="flex items-center justify-between"><span className="text-stone-500">Gas Fees:</span><span>Base: 0 Gwei | Max: 0 Gwei | Max Priority: 0 Gwei</span></div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="text-xs text-stone-500 text-center">Prototype Explorer — confirms metadata stored in private network</div>
+        <div className="text-xs text-stone-500 text-center">Contribution Explorer — confirms metadata stored in private network</div>
       </div>
     </HalfCircleBackground>
   );

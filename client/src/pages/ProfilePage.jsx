@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ethers } from 'ethers';
 import { TransactionContext } from "../context/TransactionContext";
-
+import html2pdf from "html2pdf.js";
 const ProfilePage = () => {
   const navigate = useNavigate();
   
@@ -29,7 +29,7 @@ const ProfilePage = () => {
     email: 'nurhaliza.abdulwahab@utm.my',
     phone: '0123456789',
     address: '123 Main St, Kuala Lumpur, Malaysia',
-    staffId: '123456789',
+    staffId: '15003',
     researchGroup: 'PRSG',
     icPassport: '770716105252',
   };
@@ -40,6 +40,7 @@ const ProfilePage = () => {
   
   // Mock donor payment report data
   const [donorPaymentReport] = useState({
+    ...defaultProfile,
     totalZakatAmount: 1245.00,
     paymentDate: 'April 15, 2025',
     paymentReference: 'ZKT-25-0415-D789',
@@ -299,11 +300,20 @@ const ProfilePage = () => {
   const toggleProfileView = (view) => {
     setProfileView(view);
   };
-
+    const pdfRef = useRef();
   // Helper function to download payment report as PDF
   const downloadPaymentReport = () => {
-    // In a real implementation, this would generate a PDF file
-    alert('Downloading Zakat Payment Report as PDF...');
+    const element = pdfRef.current;
+
+    const options = {
+      filename: `Zakat_Report_${donorPaymentReport.certificate.number}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "pt", format: "a4", orientation: "portrait" }
+    };
+
+    html2pdf().set(options).from(element).save();
+    
   };
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   
@@ -365,7 +375,7 @@ const ProfilePage = () => {
             <p><span className="text-gray-600">Position:</span> <span className="text-gray-800">{userProfile.position || defaultProfile.position}</span></p>
             <p><span className="text-gray-600">Staff/Student ID:</span> <span className="text-gray-800">{userProfile.staffId || userProfile.studentId || defaultProfile.staffId}</span></p>
             <p><span className="text-gray-600">Research Group:</span> <span className="text-gray-800">{userProfile.researchGroup || defaultProfile.researchGroup}</span></p>
-            <p><span className="text-gray-600">Wallet Address:</span> <span className="text-gray-800 font-mono break-all">{storedWallet || walletAddress || '—'}</span></p>
+            {/* <p><span className="text-gray-600">Wallet Address:</span> <span className="text-gray-800 font-mono break-all">{storedWallet || walletAddress || '—'}</span></p> */}
           </div>
         </div>
 
@@ -471,14 +481,15 @@ const ProfilePage = () => {
               )}
             {/* </div> */}
             
-            {/* Payment Report Section for Donors */}
+            {/* Contribution Report Section for Donors */}
+            <div ref={pdfRef}>
             <div className="bg-white rounded-xl p-6 mb-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <h2 className="text-base font-bold">Zakat Payment Report</h2>
+                  <h2 className="text-base font-bold">Zakat Contribution Report</h2>
                 </div>
                 
                 <button 
@@ -496,12 +507,12 @@ const ProfilePage = () => {
               <div className="bg-green-50 p-4 rounded-xl mb-5">
                 <div className="flex flex-wrap items-center justify-between">
                   <div className="mb-2 md:mb-0">
-                    <div className="text-sm text-gray-600">Total Zakat Payment</div>
+                    <div className="text-sm text-gray-600">Total Zakat Contribution</div>
                     <div className="text-2xl font-bold text-green-700">RM {donorPaymentReport.totalZakatAmount.toFixed(2)}</div>
                   </div>
                   
                   <div className="text-right mb-2 md:mb-0 md:mr-4">
-                    <div className="text-sm text-gray-600">Payment Date</div>
+                    <div className="text-sm text-gray-600">Contribution Date</div>
                     <div className="font-medium">{donorPaymentReport.paymentDate}</div>
                   </div>
                   
@@ -603,6 +614,7 @@ const ProfilePage = () => {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
             
             {/* Quick Action Cards - Redesigned */}
@@ -909,7 +921,13 @@ const ProfilePage = () => {
                   </button>
                   
                   <button 
-                    onClick={() => navigate('/contact')}
+                    onClick={() =>
+                      //go to email  islamiccentre@utm.my
+                       //add subject Zakat Dapp Assistance
+                       //add some content like "I need help with the Zakat Dapp"
+                      window.location.href = 'mailto:islamiccentre@utm.my?subject=Zakat Dapp Assistance&body=I need help with the Zakat Dapp'
+                     
+                    }
                     className="flex flex-col items-center justify-center bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-all"
                   >
                     <svg className="w-6 h-6 text-gray-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1209,7 +1227,10 @@ const ProfilePage = () => {
                 </button>
                 
                 <button 
-                  onClick={() => navigate('/contact')}
+                  onClick={() =>
+                    //go to email  islamiccentre@utm.my
+                    window.location.href = 'mailto:islamiccentre@utm.my'
+                  }
                   className="flex flex-col items-center justify-center bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-all"
                 >
                   <svg className="w-6 h-6 text-gray-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1307,18 +1328,8 @@ const RecentZakatTransactions = () => {
   // Dummy transactions for prototype/demo display
   const dummyZakatTransactions = [
     {
-      addressFrom: '0xDEMO000000000000000000000000000000000001',
-      addressTo: '0xD0N0R00000000000000000000000000000000001',
-      amount: '0.015',
-      keyword: 'food',
-      message: 'Zakat to Fuqara (Food & Groceries)',
-      timestamp: 'Apr 20, 2025, 10:15',
-      transactionHash: '0xdeadbeef00000000000000000000000000000001',
-      status: 'Sent',
-    },
-    {
       addressFrom: '0xDEMO000000000000000000000000000000000002',
-      addressTo: '0xD0N0R00000000000000000000000000000000002',
+      addressTo: '0x47c2f8bb91d0a6f2443bde0e5c1e79aa64f923118de',
       amount: '0.042',
       keyword: 'housing',
       message: 'Zakat support for Housing Rent',
@@ -1327,8 +1338,28 @@ const RecentZakatTransactions = () => {
       status: 'Approved',
     },
     {
+      addressFrom: '0xDEMO000000000000000000000000000000000001',
+      addressTo: '0x47c2f8bb91d0a6f2443bde0e5c1e79aa64f923118de',
+      amount: '0.042',
+      keyword: 'food',
+      message: 'Zakat to Fuqara (Food & Groceries)',
+      timestamp: 'Apr 20, 2025, 10:15',
+      transactionHash: '0xdeadbeef00000000000000000000000000000100',
+      status: 'Sent',
+    },
+    {
+      addressFrom: '0xDEMO000000000000000000000000000000000001',
+      addressTo: '0x9f3a1b8c7e54df102ab4e18c44c1b92f3c5d7e19f8c',
+      amount: '0.015',
+      keyword: 'food',
+      message: 'Zakat to Fuqara (Food & Groceries)',
+      timestamp: 'Apr 20, 2025, 10:15',
+      transactionHash: '0xdeadbeef00000000000000000000000000000001',
+      status: 'Sent',
+    },
+    {
       addressFrom: '0xDEMO000000000000000000000000000000000003',
-      addressTo: '0xD0N0R00000000000000000000000000000000003',
+      addressTo: '0x73ae8842d1c0bd9f4035a727a1e63cf885cc998e2a',
       amount: '0.0085',
       keyword: 'utilities',
       message: 'Zakat contribution for Utilities',
@@ -1338,7 +1369,7 @@ const RecentZakatTransactions = () => {
     },
     {
       addressFrom: '0xDEMO000000000000000000000000000000000004',
-      addressTo: '0xD0N0R00000000000000000000000000000000004',
+      addressTo: '0x2dbeaf01189bf5c70c4acb7f9b9e7f1dcdc12dd88d',
       amount: '0.025',
       keyword: 'education',
       message: 'Zakat for education supplies',
@@ -1367,7 +1398,7 @@ const RecentZakatTransactions = () => {
                   <h2 className="text-base font-bold">My Zakat Transactions</h2>
                 </div>
                 
-                <button 
+                {/* <button 
                   onClick={() => setShowInRM(!showInRM)}
                   className="text-xs bg-gray-100 hover:bg-gray-200 transition-all rounded-full py-1 px-2 flex items-center text-gray-700"
                 >
@@ -1375,7 +1406,7 @@ const RecentZakatTransactions = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
                 {showInRM ? "Show in ETH" : "Show in RM"}
-              </button>
+              </button> */}
           </div>
 
           {isLoading ? (
@@ -1417,12 +1448,12 @@ const RecentZakatTransactions = () => {
                           }
                         </Link>
                       </div>
-                      <div className="text-xs text-gray-500">
+                      {/* <div className="text-xs text-gray-500">
                         {showInRM ? 
                           `(${tx.amount || 0} ETH)` : 
                           `(~RM ${convertEthToMYR(tx.amount || 0)})`
                         }
-                      </div>
+                      </div> */}
                       <div className="text-xs text-gray-500 mt-1">{tx.timestamp || 'Unknown date'}</div>
                     </div>
                   </div>
@@ -1431,12 +1462,12 @@ const RecentZakatTransactions = () => {
                   
                     {tx.transactionHash && (
                       <a 
-                        href={`${origin}/zakat/explorer/${encodeURIComponent(tx.transactionHash || '')}?status=${encodeURIComponent(tx.status || 'Completed')}&amount=${encodeURIComponent(showInRM ? convertEthToMYR(tx.amount || 0) : Number(tx.amount || 0).toFixed(6))}&currency=${encodeURIComponent(showInRM ? 'RM' : 'ETH')}&timestamp=${encodeURIComponent(tx.timestamp || new Date().toISOString())}`}
+                        href={`${origin}/zakat/explorer/${encodeURIComponent(tx.transactionHash || '')}?status=${encodeURIComponent(tx.status || 'Completed')}&amount=${encodeURIComponent(showInRM ? convertEthToMYR(tx.amount || 0) : Number(tx.amount || 0).toFixed(6))}&contractAddress=${encodeURIComponent(tx.addressTo || 'N/A')}&timestamp=${encodeURIComponent(tx.timestamp || new Date().toISOString())}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center hover:text-green-600 transition-colors"
                       >
-                        View Transaction on Explorer
+                        View Contribution on Explorer
                         <svg className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
@@ -1461,7 +1492,7 @@ const RecentZakatTransactions = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <p className="text-sm font-medium mb-1">No transactions found</p>
-              <p className="text-xs">Make your first Zakat payment to see your transactions</p>
+              <p className="text-xs">Make your first Zakat Contribution to see your transactions</p>
               
               {/* Debug information - only show during development */}
               {debugInfo && (
